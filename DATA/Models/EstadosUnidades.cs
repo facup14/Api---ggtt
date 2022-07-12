@@ -14,7 +14,7 @@ namespace DATA.Models
         
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdEstadoUnidad { get; set; }
+        public long IdEstadoUnidad { get; set; }
         public string Estado { get; set; }
         public string Obs { get; set; }
         public virtual ICollection<CentrodeCosto> CentrodeCosto { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 
 namespace Services.Common.Mapping
 {
@@ -7,8 +8,11 @@ namespace Services.Common.Mapping
 
         public static T MapTo<T>(this object value)
         {
-            return JsonSerializer.Deserialize<T>(
-                JsonSerializer.Serialize(value));
+            var serialize = JsonSerializer.Serialize(value);
+            Console.WriteLine(serialize);            
+            var deserialize = JsonSerializer.Deserialize<T>(serialize);
+            Console.WriteLine(deserialize);
+            return deserialize;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace DATA.Models
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdSituacionUnidad { get; set; }
+        public long IdSituacionUnidad { get; set; }
         public string Situacion { get; set; }
         public string Obs { get; set; }
         public virtual ICollection<Unidades> Unidades { get; set; }

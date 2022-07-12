@@ -33,6 +33,12 @@ namespace API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
             services.AddTransient<IUnidadesQueryService, UnidadesQueryService>();
+            services.AddTransient<ISituacionesUnidadesQueryService, SituacionesUnidadesQueryService>();            
+            services.AddTransient<ITitulosQueryService, TitulosQueryService>();
+            services.AddTransient<ITrazasQueryService, TrazasQueryService>();
+            services.AddTransient<IUnidadesDeMedidaQueryService, UnidadesDeMedidaQueryService>();
+            services.AddTransient<IVariablesUnidadesQueryService, VariablesUnidadesQueryService>();
+            services.AddTransient<IEquipamientoQueryService, EquipamientoQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
             
 

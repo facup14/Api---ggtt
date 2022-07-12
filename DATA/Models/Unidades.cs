@@ -8,7 +8,7 @@ namespace DATA.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdUnidad { get; set; }
+        public long IdUnidad { get; set; }
         [MaxLength(50)]
         public string? NroUnidad { get; set; }
         [MaxLength(15)]
@@ -50,18 +50,19 @@ namespace DATA.Models
         public double? HsKmsDiaTrabajo { get; set; }
         public double? LtsDiaTrabajo { get; set; }
         public int? LitrosxTraza { get; set; }
-        public int? idNombreEquipamiento { get; set; }
+        public long? idNombreEquipamiento { get; set; }
         public bool? HabilitaOtraUnidadMedida { get; set; }
+        [Required]
         [ForeignKey("idModelo")]
-        public int idModelo { get; set; }
+        public long idModelo { get; set; }
         public virtual Modelos IdModelo { get; set; }
-
+        [Required]
         [ForeignKey("idEstadoUnidad")]
-        public int idEstadoUnidad { get; set; }
+        public long idEstadoUnidad { get; set; }
         public virtual EstadosUnidades IdEstadoUnidad { get; set; }
-        
+        [Required]        
         [ForeignKey("idSituacionUnidad")]
-        public int idSituacionUnidad { get; set; }
+        public long idSituacionUnidad { get; set; }
         public virtual SituacionesUnidades IdSituacionUnidad { get; set; }
         
         

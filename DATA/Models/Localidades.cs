@@ -15,12 +15,12 @@ namespace DATA.Models
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdLocalidad { get; set; }
+        public long IdLocalidad { get; set; }
         [MaxLength(50)]
         public string Localidad { get; set; }
         public string CodigoPostal { get; set; }
         [ForeignKey("idProvincia")]
-        public int idProvincia { get; set; }
+        public long idProvincia { get; set; }
         public virtual Provincias IdProvincia { get; set; }
         [NotMapped]
         public virtual ICollection<Trazas> LocalidadDesde { get; set; } //En la BD salen como FK pero no se de donde las saca ni hay columna a la que vayan 

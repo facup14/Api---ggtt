@@ -12,7 +12,7 @@ namespace DATA.Models
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdAgrupacionSindical { get; set; }
+        public long IdAgrupacionSindical { get; set; }
         [MaxLength(50)]
         public string Descripcion { get; set; }
         public string Obs { get; set; }

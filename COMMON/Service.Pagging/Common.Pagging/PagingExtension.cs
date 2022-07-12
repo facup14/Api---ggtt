@@ -1,4 +1,5 @@
 ﻿using Common.Collection;
+using DATA.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace Services.Common.Paging
             if( result.Total > 0)
             {
                 result.Pages = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(result.Total) / take));
+            }
+            if(result.Pages < page)
+            {
+                throw new EmptyCollectionException("La colección no poseé mas de" + " " + result.Pages + " " + "pagina/as");
             }
 
             return result;
