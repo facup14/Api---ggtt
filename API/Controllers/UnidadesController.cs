@@ -97,7 +97,7 @@ namespace API.Controllers
             }catch(Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la unidad, la unidad con id" +" "+ id + " "+ "no existe");
+                throw new Exception("Error al eliminar la unidad, la unidad con id" +" "+ id + " "+ "no existe HOLA");
             }
             
         }
