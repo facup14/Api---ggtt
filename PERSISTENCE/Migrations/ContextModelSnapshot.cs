@@ -21,9 +21,9 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.AgrupacionesSindicales", b =>
                 {
-                    b.Property<int>("IdAgrupacionSindical")
+                    b.Property<long>("IdAgrupacionSindical")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
@@ -48,10 +48,10 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.CentrodeCosto", b =>
                 {
-                    b.Property<int>("idCentrodeCosto")
+                    b.Property<long>("idCentrodeCosto")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idCentrodeCosto")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CentroDeCosto")
@@ -71,8 +71,8 @@ namespace PERSISTENCE.Migrations
                     b.Property<int>("Tipo")
                         .HasColumnType("int");
 
-                    b.Property<int>("idEstadoUnidad")
-                        .HasColumnType("int");
+                    b.Property<long>("idEstadoUnidad")
+                        .HasColumnType("bigint");
 
                     b.HasKey("idCentrodeCosto")
                         .HasName("PK_CentroCosto");
@@ -89,10 +89,10 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Choferes", b =>
                 {
-                    b.Property<int>("IdChofer")
+                    b.Property<long>("IdChofer")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idChofer")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Activo")
@@ -151,20 +151,20 @@ namespace PERSISTENCE.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<int>("idAgrupacionSindical")
-                        .HasColumnType("int");
+                    b.Property<long>("idAgrupacionSindical")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("idConvenio")
-                        .HasColumnType("int");
+                    b.Property<long>("idConvenio")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("idEmpresa")
-                        .HasColumnType("int");
+                    b.Property<long>("idEmpresa")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("idEspecialidad")
-                        .HasColumnType("int");
+                    b.Property<long>("idEspecialidad")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("idFuncion")
-                        .HasColumnType("int");
+                    b.Property<long>("idFuncion")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("idTitulo")
                         .HasColumnType("int");
@@ -188,9 +188,9 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Convenios", b =>
                 {
-                    b.Property<int>("IdConvenio")
+                    b.Property<long>("IdConvenio")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
@@ -214,9 +214,9 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Empresas", b =>
                 {
-                    b.Property<int>("IdEmpresa")
+                    b.Property<long>("IdEmpresa")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
@@ -240,9 +240,9 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Especialidades", b =>
                 {
-                    b.Property<int>("IdEspecialidad")
+                    b.Property<long>("IdEspecialidad")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
@@ -266,10 +266,10 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.EstadosUnidades", b =>
                 {
-                    b.Property<int>("IdEstadoUnidad")
+                    b.Property<long>("IdEstadoUnidad")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idEstadoUnidad")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Estado")
@@ -277,8 +277,8 @@ namespace PERSISTENCE.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.Property<int>("Obs")
-                        .HasColumnType("int")
+                    b.Property<string>("Obs")
+                        .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
                     b.HasKey("IdEstadoUnidad");
@@ -293,9 +293,9 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Funciones", b =>
                 {
-                    b.Property<int>("IdFuncion")
+                    b.Property<long>("IdFuncion")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
@@ -319,9 +319,9 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Grupos", b =>
                 {
-                    b.Property<int>("IdGrupo")
+                    b.Property<long>("IdGrupo")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
@@ -347,12 +347,47 @@ namespace PERSISTENCE.Migrations
                     b.ToTable("Grupos");
                 });
 
+            modelBuilder.Entity("DATA.Models.HistoricoPartesNeumaticos", b =>
+                {
+                    b.Property<long>("IdHistoricoParteNeumatico")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("IdNeumatico")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdParte")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdTraza")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdTraza1")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdUnidad")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("KmAgregados")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdHistoricoParteNeumatico");
+
+                    b.HasIndex("IdTraza1");
+
+                    b.ToTable("HistoricoPartesNeumaticos");
+                });
+
             modelBuilder.Entity("DATA.Models.Localidades", b =>
                 {
-                    b.Property<int>("IdLocalidad")
+                    b.Property<long>("IdLocalidad")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idLocalidad")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CodigoPostal")
@@ -364,9 +399,9 @@ namespace PERSISTENCE.Migrations
                         .HasMaxLength(200)
                         .IsUnicode(false);
 
-                    b.Property<int>("idProvincia")
+                    b.Property<long>("idProvincia")
                         .HasColumnName("idProvincia")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdLocalidad");
 
@@ -382,10 +417,10 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Marcas", b =>
                 {
-                    b.Property<int>("IdMarca")
+                    b.Property<long>("IdMarca")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idMarca")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Marca")
@@ -409,14 +444,14 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Modelos", b =>
                 {
-                    b.Property<int>("IdModelo")
+                    b.Property<long>("IdModelo")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idModelo")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("IdGrupo")
-                        .HasColumnType("int");
+                    b.Property<long>("IdGrupo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Modelo")
                         .HasColumnType("varchar(50)")
@@ -427,9 +462,9 @@ namespace PERSISTENCE.Migrations
                         .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
-                    b.Property<int>("idMarca")
+                    b.Property<long>("idMarca")
                         .HasColumnName("idMarca")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdModelo");
 
@@ -450,10 +485,10 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Provincias", b =>
                 {
-                    b.Property<int>("IdProvincia")
+                    b.Property<long>("IdProvincia")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idProvincia")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Provincia")
@@ -473,10 +508,10 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.SituacionesUnidades", b =>
                 {
-                    b.Property<int>("IdSituacionUnidad")
+                    b.Property<long>("IdSituacionUnidad")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idSituacionUnidad")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Obs")
@@ -521,43 +556,43 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Trazas", b =>
                 {
-                    b.Property<int>("IdTraza")
+                    b.Property<long>("IdTraza")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DistanciaKm")
+                    b.Property<int?>("DistanciaKM")
                         .HasColumnName("DistanciaKM")
                         .HasColumnType("int");
 
-                    b.Property<int>("Litros")
+                    b.Property<long?>("IdLocalidadDesde")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdLocalidadHasta")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("Litros")
                         .HasColumnType("int");
 
                     b.Property<string>("Obs")
                         .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
-                    b.Property<int>("idLocalidadDesde")
-                        .HasColumnType("int");
-
-                    b.Property<int>("idLocalidadHasta")
-                        .HasColumnType("int");
-
                     b.HasKey("IdTraza");
 
-                    b.HasIndex("idLocalidadDesde");
+                    b.HasIndex("IdLocalidadDesde");
 
-                    b.HasIndex("idLocalidadHasta");
+                    b.HasIndex("IdLocalidadHasta");
 
                     b.ToTable("Trazas");
                 });
 
             modelBuilder.Entity("DATA.Models.Unidades", b =>
                 {
-                    b.Property<int>("IdUnidad")
+                    b.Property<long>("IdUnidad")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("idUnidad")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AcreedorPrendario")
@@ -687,18 +722,18 @@ namespace PERSISTENCE.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.Property<int>("idEstadoUnidad")
-                        .HasColumnType("int");
+                    b.Property<long>("idEstadoUnidad")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("idModelo")
-                        .HasColumnType("int");
+                    b.Property<long>("idModelo")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("idNombreEquipamiento")
+                    b.Property<long?>("idNombreEquipamiento")
                         .HasColumnName("idNombreEquipamiento")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("idSituacionUnidad")
-                        .HasColumnType("int");
+                    b.Property<long>("idSituacionUnidad")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdUnidad");
 
@@ -720,9 +755,9 @@ namespace PERSISTENCE.Migrations
                     b.ToTable("Unidades");
                 });
 
-            modelBuilder.Entity("DATA.Models.UnidadesDeMedida", b =>
+            modelBuilder.Entity("DATA.Models.UnidadesMedida", b =>
                 {
-                    b.Property<int>("IdUnidadDeMedida")
+                    b.Property<int>("IdUnidadMedida")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -732,7 +767,7 @@ namespace PERSISTENCE.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.HasKey("IdUnidadDeMedida")
+                    b.HasKey("IdUnidadMedida")
                         .HasName("PK_UnidadesMedida");
 
                     b.HasIndex("UnidadDeMedida")
@@ -740,17 +775,17 @@ namespace PERSISTENCE.Migrations
                         .HasName("det_unidaddemedidaunica")
                         .HasFilter("[UnidadDeMedida] IS NOT NULL");
 
-                    b.HasIndex("IdUnidadDeMedida", "UnidadDeMedida")
+                    b.HasIndex("IdUnidadMedida", "UnidadDeMedida")
                         .HasName("IX_UnidadesDeMedida_IdUnidadDeMedidaUnidadDeMedida");
 
-                    b.ToTable("UnidadesDeMedidas");
+                    b.ToTable("UnidadesDeMedida");
                 });
 
             modelBuilder.Entity("DATA.Models.VariablesUnidades", b =>
                 {
-                    b.Property<int>("IdVariableUnidad")
+                    b.Property<long>("IdVariableUnidad")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Nombre")
@@ -818,6 +853,13 @@ namespace PERSISTENCE.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DATA.Models.HistoricoPartesNeumaticos", b =>
+                {
+                    b.HasOne("DATA.Models.Trazas", "idTraza")
+                        .WithMany("HistoricoPartes")
+                        .HasForeignKey("IdTraza1");
+                });
+
             modelBuilder.Entity("DATA.Models.Localidades", b =>
                 {
                     b.HasOne("DATA.Models.Provincias", "IdProvincia")
@@ -846,19 +888,17 @@ namespace PERSISTENCE.Migrations
 
             modelBuilder.Entity("DATA.Models.Trazas", b =>
                 {
-                    b.HasOne("DATA.Models.Localidades", "IdLocalidadDesde")
+                    b.HasOne("DATA.Models.Localidades", "idLocalidadDesde")
                         .WithMany("LocalidadDesde")
-                        .HasForeignKey("idLocalidadDesde")
+                        .HasForeignKey("IdLocalidadDesde")
                         .HasConstraintName("FK_TrazaDesde_Localidades")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
-                    b.HasOne("DATA.Models.Localidades", "IdLocalidadHasta")
+                    b.HasOne("DATA.Models.Localidades", "idLocalidadHasta")
                         .WithMany("LocalidadHasta")
-                        .HasForeignKey("idLocalidadHasta")
+                        .HasForeignKey("IdLocalidadHasta")
                         .HasConstraintName("FK_TrazaHasta_Localidades")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientCascade);
                 });
 
             modelBuilder.Entity("DATA.Models.Unidades", b =>

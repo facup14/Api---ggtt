@@ -9,7 +9,7 @@ namespace DATA.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdChofer { get; set; }
+        public long IdChofer { get; set; }
         [MaxLength(50)]
         public string ApellidoyNombre { get; set; }
         [MaxLength(20)]
@@ -33,23 +33,23 @@ namespace DATA.Models
         //public Talleres Taller { get; set; }
         [ForeignKey("idEmpresa")]
         public string Empresa { get; set; }
-        public int idEmpresa { get; set; }
+        public long idEmpresa { get; set; }
         public virtual Empresas IdEmpresa { get; set; }
         [ForeignKey("idAgrupacionSindical")]
         public string AgrupacionSindical { get; set; }
-        public int idAgrupacionSindical { get; set; }
+        public long idAgrupacionSindical { get; set; }
         public virtual AgrupacionesSindicales IdAgrupacionSindical { get; set; }        
         [ForeignKey("idConvenio")]
         public string Convenio { get; set; }
-        public int idConvenio { get; set; }
+        public long idConvenio { get; set; }
         public virtual Convenios IdConvenio { get; set; }
         [ForeignKey("idFuncion")]
         public string Funcion { get; set; }
-        public int idFuncion { get; set; }
+        public long idFuncion { get; set; }
         public virtual Funciones IdFuncion { get; set; }
         [ForeignKey("idEspecialidad")]
         public string Especialidad { get; set; }
-        public int idEspecialidad { get; set; }
+        public long idEspecialidad { get; set; }
         [MaxLength(50)]
         public virtual Especialidades IdEspecialidad { get; set; }
         [ForeignKey("idTitulo")]

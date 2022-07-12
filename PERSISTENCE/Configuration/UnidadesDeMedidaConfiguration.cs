@@ -7,7 +7,7 @@ namespace PERSISTENCE.Configuration
 {
     public class UnidadesDeMedidaConfiguration
     {
-        public UnidadesDeMedidaConfiguration(EntityTypeBuilder<UnidadesDeMedida> entity)
+        public UnidadesDeMedidaConfiguration(EntityTypeBuilder<UnidadesMedida> entity)
         {
             entity.HasKey(e => e.IdUnidadDeMedida)
                     .HasName("PK_UnidadesMedida");

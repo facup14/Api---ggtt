@@ -1,4 +1,6 @@
 ﻿using Common.Collection;
+using DATA.DTOS;
+using DATA.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Service.Queries.DTOS;
@@ -15,10 +17,10 @@ namespace Service.Queries
 /// </summary>
     public interface IUnidadesQueryService
     {
-        Task<DataCollection<UnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidades = null);
-        Task<UnidadesDTO> GetAsync(int id);
-        Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, int it);
-        Task<UnidadesDTO> DeleteAsync(int id);
+        Task<DataCollection<UnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidades = null);
+        Task<UnidadesDTO> GetAsync(long id);
+        Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, long it);
+        Task<UnidadesDTO> DeleteAsync(long id);
     }
     public class UnidadesQueryService : IUnidadesQueryService
     {
@@ -29,7 +31,7 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<UnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidades = null)
+        public async Task<DataCollection<UnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidades = null)
         {
             try
             {
@@ -37,66 +39,85 @@ namespace Service.Queries
                 .Where(x => unidades == null || unidades.Contains(x.IdUnidad))
                 .OrderByDescending(x => x.IdUnidad)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<UnidadesDTO>>();
             }catch(Exception ex)
             {
-                throw new Exception("Error al obtener las unidades");
+                throw ex;
             }
             
         }
-
-        public async Task<UnidadesDTO> GetAsync(int id)
+        public async Task<UnidadesDTO> GetAsync(long id)
         {
             try
             {
-               return (await _context.Unidades.SingleAsync(x => x.IdUnidad == id)).MapTo<UnidadesDTO>(); 
-            }catch(Exception ex)
-            {
-                if (_context.Unidades.SingleAsync(x => x.IdUnidad == id) == null)
+                var unidad = await _context.Unidades.SingleAsync(x => x.IdUnidad == id);
+                                
+                if (await _context.Unidades.SingleAsync(x => x.IdUnidad == id) == null)
                 {
-                    throw new Exception("Error al obtener la unidad, la unidad con id" + " " + id + " " + "no existe");
+                    throw new EmptyCollectionException("Error al obtener la unidad, la unidad con id" + " " + id + " " + "no existe");
                 }
-                throw new Exception("Error al obtener la unidad");
+                return unidad.MapTo<UnidadesDTO>();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
             
         }
-        public async Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, int id)
+        public async Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, long id)
         {
-            if(_context.Unidades.SingleAsync(x => x.IdUnidad == id) == null) {
-                throw new Exception("La unidad con id" + " " + id + " " + ",no existe");
+            if(unidad.idEstadoUnidad == 0 && unidad.idModelo == 0 && unidad.idSituacionUnidad == 0)
+            {
+                throw new EmptyCollectionException("El Estado, Modelo y Situación de la Unidad son Obligatorios");
             }
-            var unidade = await _context.Unidades.SingleAsync(x => x.IdUnidad == id);
-            unidade.NroUnidad = unidad.NroUnidad;
-            unidade.Dominio = unidad.Dominio;
-            unidade.Motor = unidad.Motor;
-            unidade.Chasis = unidad.Chasis;
-            unidade.Titular = unidad.Titular;
+            if (unidad.idEstadoUnidad == 0)
+            {
+                throw new EmptyCollectionException("El Estado de la Unidad es Obligatorio");
+            }
+            if (unidad.idModelo == 0)
+            {
+                throw new EmptyCollectionException("El Modelo de la Unidad es Obligatorio");
+            }
+            if (unidad.idSituacionUnidad == 0)
+            {
+                throw new EmptyCollectionException("La Situación de la Unidad es Obligatoria");
+            }
+            if (await _context.Unidades.FindAsync(id) is null)
+            {
+                throw new EmptyCollectionException("Error al obtener la unidad, la unidad con id" + " " + id + " " + "no existe");
+            }
+            var unidade = await _context.Unidades.FindAsync(id);
+
+            unidade.NroUnidad = unidad.NroUnidad ?? unidade.NroUnidad;
+            unidade.Dominio = unidad.Dominio ?? unidade.Dominio;
+            unidade.Motor = unidad.Motor ?? unidade.Motor;
+            unidade.Chasis = unidad.Chasis ?? unidade.Chasis;
+            unidade.Titular = unidad.Titular ?? unidade.Titular;
             unidade.idEstadoUnidad = unidad.idEstadoUnidad;
             unidade.idModelo = unidad.idModelo;
             unidade.idSituacionUnidad = unidad.idSituacionUnidad;
-                
-            await _context.SaveChangesAsync();
+
+
+                await _context.SaveChangesAsync();
                 
             return unidad.MapTo<UpdateUnidadDTO>();
         }
-        public async Task<UnidadesDTO> DeleteAsync(int id)
+        public async Task<UnidadesDTO> DeleteAsync(long id)
         {
-            try
+            var unidade = await _context.Unidades.FindAsync(id);
+            if (unidade == null)
             {
-                var unidade = await _context.Unidades.SingleAsync(x => x.IdUnidad == id);
-                _context.Unidades.Remove(unidade);
-                await _context.SaveChangesAsync();
-                return unidade.MapTo<UnidadesDTO>();
-            }catch(Exception ex)
-            {
-                if (_context.Unidades.SingleAsync(x => x.IdUnidad == id) == null)
-                {
-                    throw new Exception("Error al eliminar la unidad, la unidad con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al eliminar la unidad");
+               throw new EmptyCollectionException("Error al eliminar la unidad, la unidad con id" + " " + id + " " + "no existe");
             }
             
+            _context.Unidades.Remove(unidade);
+                
+            await _context.SaveChangesAsync();
+            return unidade.MapTo<UnidadesDTO>();                        
         }
         
     }

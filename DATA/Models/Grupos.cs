@@ -12,7 +12,7 @@ namespace DATA.Models
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdGrupo { get; set; }
+        public long IdGrupo { get; set; }
         [MaxLength(50)]
         public string Descripcion { get; set; }
         public string Obs { get; set; }

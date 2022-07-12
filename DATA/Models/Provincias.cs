@@ -13,7 +13,7 @@ namespace DATA.Models
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdProvincia { get; set; }
+        public long IdProvincia { get; set; }
         [MaxLength(200)]
         public string Provincia { get; set; }
         public virtual ICollection<Localidades> Localidades { get; set; }
