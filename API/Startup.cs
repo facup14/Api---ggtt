@@ -34,7 +34,13 @@ namespace API
             });
             services.AddTransient<IUnidadesQueryService, UnidadesQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
-            
+
+            services.AddTransient<IAgrupacionesSindicalesQueryService, AgrupacionesSindicalesQueryService>();
+            services.AddTransient<ICentrodeCostoQueryService, CentrodeCostoQueryService>();
+            services.AddTransient<IConveniosQueryService, ConveniosQueryService>();
+            services.AddTransient<IEmpresasQueryService, EmpresasQueryService>();
+            services.AddTransient<IEspecialidadesQueryService, EspecialidadesQueryService>();
+            services.AddTransient<IEstadosUnidadesQueryService, EstadosUnidadesQueryService>();
 
 
 

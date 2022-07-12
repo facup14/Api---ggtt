@@ -14,9 +14,9 @@ namespace DATA.Models
         public string Obs { get; set; }
         public int Tipo { get; set; }
         [ForeignKey("idEstadoUnidad")]
-        public int idEstadoUnidad { get; set; }
+        public long? idEstadoUnidad { get; set; }
         public virtual EstadosUnidades IdEstadoUnidad { get; set; }
-        public int CodigoBas { get; set; }
+        public int? CodigoBas { get; set; }
 
     }
 }

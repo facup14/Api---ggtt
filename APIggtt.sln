@@ -1,27 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32616.157
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DATA", "DATA\DATA.csproj", "{6D42B501-62DC-4ADD-9F96-A04C5B4937A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DATA", "DATA\DATA.csproj", "{6D42B501-62DC-4ADD-9F96-A04C5B4937A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{CF9CB00D-C503-48B7-86F7-71980B5817C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{CF9CB00D-C503-48B7-86F7-71980B5817C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PERSISTENCE", "PERSISTENCE\PERSISTENCE.csproj", "{869FD7A4-70C1-4D8B-8D58-2CD6F4542936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PERSISTENCE", "PERSISTENCE\PERSISTENCE.csproj", "{869FD7A4-70C1-4D8B-8D58-2CD6F4542936}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{9C67AD88-4FF4-4F29-9148-B9359AC682AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Collection", "COMMON\Service.Collection\Common.Collection\Common.Collection.csproj", "{988098A4-E272-45BE-B90C-2D3A629AE73E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Collection", "COMMON\Service.Collection\Common.Collection\Common.Collection.csproj", "{988098A4-E272-45BE-B90C-2D3A629AE73E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Mapping", "COMMON\Service.Mapping\Common.Mapping\Common.Mapping.csproj", "{1170CB6C-9867-4B25-A413-192ABBC2BC0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Mapping", "COMMON\Service.Mapping\Common.Mapping\Common.Mapping.csproj", "{1170CB6C-9867-4B25-A413-192ABBC2BC0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Pagging", "COMMON\Service.Pagging\Common.Pagging\Common.Pagging.csproj", "{FD544343-FDAD-4644-95CA-7BCA74755F3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Pagging", "COMMON\Service.Pagging\Common.Pagging\Common.Pagging.csproj", "{FD544343-FDAD-4644-95CA-7BCA74755F3D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{C9CA1DE9-DAB8-4207-B053-7E2595892E45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.EventHandlers", "SERVICE\Service.EventHandlers\Service.EventHandlers.csproj", "{04247147-7298-48BE-984F-1694CEAC922D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.EventHandlers", "SERVICE\Service.EventHandlers\Service.EventHandlers.csproj", "{04247147-7298-48BE-984F-1694CEAC922D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Queries", "SERVICE\Service.Queries\Service.Queries.csproj", "{8AA41AED-9840-467C-BB4C-D734541AAF3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Queries", "SERVICE\Service.Queries\Service.Queries.csproj", "{8AA41AED-9840-467C-BB4C-D734541AAF3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

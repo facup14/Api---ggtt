@@ -19,7 +19,7 @@ namespace PERSISTENCE
         public DbSet<Modelos> Modelos { get; set; }
         public DbSet<Grupos> Grupos { get; set; }
         public DbSet<AgrupacionesSindicales> AgrupacionesSindicales { get; set; }
-        public DbSet<CentrodeCosto> CentrodeCostos { get; set; }
+        public DbSet<CentrodeCosto> CentrodeCosto { get; set; }
         public DbSet<Choferes> Choferes { get; set; }
         public DbSet<Convenios> Convenios { get; set; }
         public DbSet<Empresas> Empresas { get; set; }

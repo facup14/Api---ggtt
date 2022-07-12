@@ -57,7 +57,7 @@ namespace DATA.Models
         public virtual Modelos IdModelo { get; set; }
 
         [ForeignKey("idEstadoUnidad")]
-        public int idEstadoUnidad { get; set; }
+        public long idEstadoUnidad { get; set; }
         public virtual EstadosUnidades IdEstadoUnidad { get; set; }
         
         [ForeignKey("idSituacionUnidad")]
