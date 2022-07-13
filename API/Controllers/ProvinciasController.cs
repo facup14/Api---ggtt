@@ -6,7 +6,6 @@ using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;

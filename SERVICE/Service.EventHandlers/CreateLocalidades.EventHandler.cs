@@ -28,8 +28,6 @@ namespace Service.EventHandlers
                 throw new EmptyCollectionException("Debe ingresar la Provincia");
             }
             
-
-            
             var result = await _context.AddAsync(new Localidades
             {
                 Localidad = notification.Localidad,
@@ -39,13 +37,8 @@ namespace Service.EventHandlers
             var localidad = await _context.Localidades.FirstOrDefaultAsync(l => l.Localidad == result.Entity.Localidad);
             if (localidad != null && localidad.Localidad == notification.Localidad)
             {
-                throw new EmptyCollectionException("La Localidad ya existe");
-            }
-            if(localidad is null)
-            {
-                await _context.SaveChangesAsync();
-            }
-                                   
+                throw new EmptyCollectionException("La Localidad" + " " + notification.Localidad + ", ya existe con id:"+ " " + localidad.IdLocalidad);
+            }                                  
            
             await _context.SaveChangesAsync();
         }
