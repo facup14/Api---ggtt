@@ -17,73 +17,73 @@ using DATA.DTOS;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("especialidades")]
-    public class EspecialidadesController : ControllerBase
+    [Route("provincias")]
+    public class ProvinciasController : ControllerBase
     {
 
-        private readonly ILogger<EspecialidadesController> _logger;
-        private readonly IEspecialidadesQueryService _especialidadesQueryService;
+        private readonly ILogger<ProvinciasController> _logger;
+        private readonly IProvinciasQueryService _provinciasQueryService;
         private readonly IMediator _mediator;
-        public EspecialidadesController(ILogger<EspecialidadesController> logger, IEspecialidadesQueryService productQueryService, IMediator mediator)
+        public ProvinciasController(ILogger<ProvinciasController> logger, IProvinciasQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _especialidadesQueryService = productQueryService;
+            _provinciasQueryService = productQueryService;
             _mediator = mediator;
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<EspecialidadesDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<DataCollection<ProvinciasDTO>> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
-                IEnumerable<int> especialidades = null;
+                IEnumerable<long> provincias = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    especialidades = ids.Split(',').Select(x => Convert.ToInt32(x));
+                    provincias = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                return await _especialidadesQueryService.GetAllAsync(page, take, especialidades);
+                return await _provinciasQueryService.GetAllAsync(page, take, provincias);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener las especialidades");
+                throw new Exception("Error al obtener las provincias");
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<EspecialidadesDTO> Get(int id)
+        public async Task<ProvinciasDTO> Get(long id)
         {
             try
             {
-                return await _especialidadesQueryService.GetAsync(id);
+                return await _provinciasQueryService.GetAsync(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener especialidades, la especialidad con id" + " " + id + " " + "no existe");
+                throw new Exception("Error al obtener la provincia, la provincia con id" + " " + id + " " + "no existe");
 
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateEspecialidadesDTO> Put(UpdateEspecialidadesDTO especialidad, int id)
+        public async Task<UpdateProvinciaDTO> Put(UpdateProvinciaDTO provincia, long id)
         {
             try
             {
-                return await _especialidadesQueryService.PutAsync(especialidad, id);
+                return await _provinciasQueryService.PutAsync(provincia, id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar la especialidad, la especialidad con id" + " " + id + " " + "no existe");
+                throw new Exception("Error al actualizar la provincia, la provincia con id" + " " + id + " " + "no existe");
             }
 
         }
 
         //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEspecialidadCommand command)
+        public async Task<IActionResult> Create(CreateProvinciaCommand command)
         {
             try
             {
@@ -93,20 +93,20 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear la especialidad");
+                throw new Exception("Error al crear la provincia");
             }
         }
         [HttpDelete("{id}")]
-        public async Task<EspecialidadesDTO> Delete(int id)
+        public async Task<ProvinciasDTO> Delete(long id)
         {
             try
             {
-                return await _especialidadesQueryService.DeleteAsync(id);
+                return await _provinciasQueryService.DeleteAsync(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la especialidad, la especialidad  con id" + " " + id + " " + "no existe");
+                throw new Exception("Error al eliminar la provincia, la provincia con id" + " " + id + " " + "no existe");
             }
 
         }

@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Service.Queries.DTOS;
+using DATA.DTOS;
+using DATA.DTOS.Updates;
 using Services.Common.Mapping;
 using Services.Common.Paging;
 using System;

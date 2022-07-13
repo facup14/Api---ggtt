@@ -1,5 +1,8 @@
 ﻿using Common.Collection;
 using MediatR;
+using DATA.DTOS.Updates;
+using DATA.Errors;
+using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
@@ -9,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Service.EventHandlers.Command;
+using DATA.DTOS;
 
 namespace API.Controllers
 {

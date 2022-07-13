@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
-namespace Service.Queries.DTOS
+namespace DATA.DTOS
 {
     public class ConveniosDTO
     {

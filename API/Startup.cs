@@ -47,6 +47,10 @@ namespace API
             services.AddTransient<IEmpresasQueryService, EmpresasQueryService>();
             services.AddTransient<IEspecialidadesQueryService, EspecialidadesQueryService>();
             services.AddTransient<IEstadosUnidadesQueryService, EstadosUnidadesQueryService>();
+            services.AddTransient<IMarcasQueryService, MarcasQueryService>();
+            services.AddTransient<IModelosQueryService, ModelosQueryService>();
+            services.AddTransient<IProvinciasQueryService, ProvinciasQueryService>();
+
 
 
 
@@ -78,6 +82,7 @@ namespace API
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                c.RoutePrefix = string.Empty;
             });
         }
     }
