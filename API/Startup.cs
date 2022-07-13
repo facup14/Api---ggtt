@@ -45,6 +45,10 @@ namespace API
             services.AddTransient<IEmpresasQueryService, EmpresasQueryService>();
             services.AddTransient<IEspecialidadesQueryService, EspecialidadesQueryService>();
             services.AddTransient<IEstadosUnidadesQueryService, EstadosUnidadesQueryService>();
+            services.AddTransient<IMarcasQueryService, MarcasQueryService>();
+            services.AddTransient<IModelosQueryService, ModelosQueryService>();
+            services.AddTransient<IProvinciasQueryService, ProvinciasQueryService>();
+
             services.AddTransient<IFuncionesQueryService, FuncionesQueryService>();
             services.AddTransient<IGruposQueryService, GruposQueryService>();
             services.AddTransient<ILocalidadQueryService, LocalidadesQueryService>();

@@ -1,5 +1,4 @@
 ﻿
-
 namespace DATA.DTOS
 {
     public class EspecialidadesDTO

@@ -13,79 +13,77 @@ using System.Linq;
 using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("empresas")]
-    public class EmpresasController : ControllerBase
+    [Route("modelos")]
+    public class ModelosController : ControllerBase
     {
 
-        private readonly ILogger<EmpresasController> _logger;
-        private readonly IEmpresasQueryService _empresasQueryService;
+        private readonly ILogger<ModelosController> _logger;
+        private readonly IModelosQueryService _modelosQueryService;
         private readonly IMediator _mediator;
-        public EmpresasController(ILogger<EmpresasController> logger, IEmpresasQueryService productQueryService, IMediator mediator)
+        public ModelosController(ILogger<ModelosController> logger, IModelosQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _empresasQueryService = productQueryService;
+            _modelosQueryService = productQueryService;
             _mediator = mediator;
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<EmpresasDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<DataCollection<ModelosDTO>> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
-                IEnumerable<int> empresas = null;
+                IEnumerable<long> modelos = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    empresas = ids.Split(',').Select(x => Convert.ToInt32(x));
+                    modelos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                return await _empresasQueryService.GetAllAsync(page, take, empresas);
+                return await _modelosQueryService.GetAllAsync(page, take, modelos);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener las empresas");
+                throw new Exception("Error al obtener los modelos");
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<EmpresasDTO> Get(int id)
+        public async Task<ModelosDTO> Get(long id)
         {
             try
             {
-                return await _empresasQueryService.GetAsync(id);
+                return await _modelosQueryService.GetAsync(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener eempresa, el empresa con id" + " " + id + " " + "no existe");
+                throw new Exception("Error al obtener los modelos, el modelo con id" + " " + id + " " + "no existe");
 
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateEmpresaDTO> Put(UpdateEmpresaDTO empresa, int id)
+        public async Task<UpdateModeloDTO> Put(UpdateModeloDTO modelo, long id)
         {
             try
             {
-                return await _empresasQueryService.PutAsync(empresa, id);
+                return await _modelosQueryService.PutAsync(modelo, id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar el empresa, el empresa con id" + " " + id + " " + "no existe");
+                throw new Exception("Error al actualizar el modelo, el modelo con id" + " " + id + " " + "no existe");
             }
 
         }
 
         //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEmpresaCommand command)
+        public async Task<IActionResult> Create(CreateModeloCommand command)
         {
             try
             {
@@ -95,20 +93,20 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear la empresa");
+                throw new Exception("Error al crear el modelo");
             }
         }
         [HttpDelete("{id}")]
-        public async Task<EmpresasDTO> Delete(int id)
+        public async Task<ModelosDTO> Delete(long id)
         {
             try
             {
-                return await _empresasQueryService.DeleteAsync(id);
+                return await _modelosQueryService.DeleteAsync(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la empresa, la empresa  con id" + " " + id + " " + "no existe");
+                throw new Exception("Error al eliminar el modelo, el modelo con id" + " " + id + " " + "no existe");
             }
 
         }

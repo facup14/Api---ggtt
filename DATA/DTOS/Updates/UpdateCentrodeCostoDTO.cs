@@ -1,4 +1,5 @@
-﻿namespace DATA.DTOS.Updates
+﻿
+namespace DATA.DTOS.Updates
 {
     public class UpdateCentrodeCostoDTO
     {
