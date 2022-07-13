@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Service.EventHandlers.Command;
+using DATA.DTOS.Updates;
 
 namespace API.Controllers
 {

@@ -45,7 +45,7 @@ namespace DATA.Models
         public virtual Convenios IdConvenio { get; set; }
         [ForeignKey("idFuncion")]
         public string Funcion { get; set; }
-        public long idFuncion { get; set; }
+        public int idFuncion { get; set; }
         public virtual Funciones IdFuncion { get; set; }
         [ForeignKey("idEspecialidad")]
         public string Especialidad { get; set; }

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Service.Queries.DTOS
+namespace DATA.DTOS.Updates
 {
-    public class UpdateEspecialidadesDTO
+    public class UpdateEstadoUnidadDTO
     {
-        public string Descripcion { get; set; }
+        public string Estado { get; set; }
         public string Obs { get; set; }
     }
 }

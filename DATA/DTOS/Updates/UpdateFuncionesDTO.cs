@@ -1,10 +1,9 @@
 ﻿
 
-namespace Service.Queries.DTOS
+namespace DATA.DTOS.Updates
 {
-    public class ConveniosDTO
+    public class UpdateFuncionesDTO
     {
-        public int idConvenio { get; set; }
         public string Descripcion { get; set; }
         public string Obs { get; set; }
     }

@@ -1,6 +1,4 @@
-﻿
-
-namespace DATA.DTOS
+﻿namespace DATA.DTOS
 {
     public class VariablesUnidadesDTO
     {

@@ -1,4 +1,4 @@
-﻿namespace Service.Queries.DTOS
+﻿namespace DATA.DTOS.Updates
 {
     public class UpdateCentrodeCostoDTO
     {

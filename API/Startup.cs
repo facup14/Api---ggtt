@@ -38,17 +38,17 @@ namespace API
             services.AddTransient<ITrazasQueryService, TrazasQueryService>();
             services.AddTransient<IUnidadesDeMedidaQueryService, UnidadesDeMedidaQueryService>();
             services.AddTransient<IVariablesUnidadesQueryService, VariablesUnidadesQueryService>();
-            services.AddTransient<IEquipamientoQueryService, EquipamientoQueryService>();
-            services.AddMediatR(Assembly.Load("Service.EventHandlers"));
-
+            services.AddTransient<IEquipamientoQueryService, EquipamientoQueryService>();    
             services.AddTransient<IAgrupacionesSindicalesQueryService, AgrupacionesSindicalesQueryService>();
             services.AddTransient<ICentrodeCostoQueryService, CentrodeCostoQueryService>();
             services.AddTransient<IConveniosQueryService, ConveniosQueryService>();
             services.AddTransient<IEmpresasQueryService, EmpresasQueryService>();
             services.AddTransient<IEspecialidadesQueryService, EspecialidadesQueryService>();
             services.AddTransient<IEstadosUnidadesQueryService, EstadosUnidadesQueryService>();
+            services.AddTransient<IFuncionesQueryService, FuncionesQueryService>();
+            services.AddTransient<IGruposQueryService, GruposQueryService>();
 
-
+            services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
 
@@ -62,7 +62,6 @@ namespace API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
             }
             app.UseHttpsRedirection();
             
@@ -78,7 +77,9 @@ namespace API
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                c.RoutePrefix = string.Empty;
             });
+            
         }
     }
 }
