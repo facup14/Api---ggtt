@@ -4,7 +4,6 @@ using DATA.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers;
 using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
@@ -16,16 +15,16 @@ using System.Threading.Tasks;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("grupo")]
-    public class GrupoController : ControllerBase
+    [Route("localidad")]
+    public class LocalidadController : ControllerBase
     {
-        private readonly ILogger<GrupoController> _logger;
-        private readonly IGruposQueryService _gruposQueryService;
+        private readonly ILogger<LocalidadController> _logger;
+        private readonly ILocalidadQueryService _localidadesQueryService;
         private readonly IMediator _mediator;
-        public GrupoController(ILogger<GrupoController> logger, IGruposQueryService productQueryService, IMediator mediator)
+        public LocalidadController(ILogger<LocalidadController> logger, ILocalidadQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _gruposQueryService = productQueryService;
+            _localidadesQueryService = productQueryService;
             _mediator = mediator;
         }
         [HttpGet]
@@ -33,19 +32,19 @@ namespace API.Controllers
         {
             try
             {
-                IEnumerable<long> gruupos = null;
+                IEnumerable<long> localidades = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    gruupos = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    localidades = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listGrupos = await _gruposQueryService.GetAllAsync(page, take, gruupos);
+                var listLocalidades = await _localidadesQueryService.GetAllAsync(page, take, localidades);
 
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = listGrupos
+                    Result = listLocalidades
                 };
                 return Ok(result);
 
@@ -77,12 +76,12 @@ namespace API.Controllers
         {
             try
             {
-                var grupo = await _gruposQueryService.GetAsync(id);
+                var localidad = await _localidadesQueryService.GetAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = grupo,
+                    Result = localidad,
                 };
                 return Ok(result);
             }
@@ -99,16 +98,16 @@ namespace API.Controllers
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateGruposDTO titulo, long id)
+        public async Task<IActionResult> Put(UpdateLocalidadesDTO titulo, long id)
         {
             try
             {
-                var newGrupo = await _gruposQueryService.PutAsync(titulo, id);
+                var newLocalidad = await _localidadesQueryService.PutAsync(titulo, id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = newGrupo
+                    Result = newLocalidad
                 };
                 return Ok(result);
             }
@@ -139,7 +138,7 @@ namespace API.Controllers
         {
             try
             {
-                var deleteList = await _gruposQueryService.DeleteAsync(id);
+                var deleteList = await _localidadesQueryService.DeleteAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -171,7 +170,7 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateGrupoCommand command)
+        public async Task<IActionResult> Create(CreateLocalidadesCommand command)
         {
             try
             {

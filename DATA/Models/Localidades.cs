@@ -16,6 +16,7 @@ namespace DATA.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdLocalidad { get; set; }
+        [Key]
         [MaxLength(50)]
         public string Localidad { get; set; }
         public string CodigoPostal { get; set; }

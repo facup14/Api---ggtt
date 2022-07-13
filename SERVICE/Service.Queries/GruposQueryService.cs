@@ -78,6 +78,7 @@ namespace Service.Queries
 
             updateGrupos.Descripcion = grupo.Descripcion;
             updateGrupos.Obs = grupo.Obs;
+            updateGrupos.RutaImagen = grupo.RutaImagen;
 
 
             await _context.SaveChangesAsync();

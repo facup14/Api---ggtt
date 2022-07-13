@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS.Updates;
+using DATA.DTOS;
 
 namespace API.Controllers
 {

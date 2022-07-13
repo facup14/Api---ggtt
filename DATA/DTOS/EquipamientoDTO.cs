@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DATA.DTOS
+﻿namespace DATA.DTOS
 {
     public class EquipamientoDTO
     {

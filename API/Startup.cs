@@ -47,7 +47,7 @@ namespace API
             services.AddTransient<IEstadosUnidadesQueryService, EstadosUnidadesQueryService>();
             services.AddTransient<IFuncionesQueryService, FuncionesQueryService>();
             services.AddTransient<IGruposQueryService, GruposQueryService>();
-
+            services.AddTransient<ILocalidadQueryService, LocalidadesQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);

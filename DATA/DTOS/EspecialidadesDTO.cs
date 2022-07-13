@@ -1,6 +1,6 @@
 ﻿
 
-namespace Service.Queries.DTOS
+namespace DATA.DTOS
 {
     public class EspecialidadesDTO
     {
