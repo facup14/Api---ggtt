@@ -68,7 +68,7 @@ namespace Service.Queries
         {
             if (await _context.Grupos.FindAsync(id) == null)
             {
-                throw new EmptyCollectionException("Error al obtener el Grupo, el Grupo con id" + " " + id + " " + "no existe");
+                throw new EmptyCollectionException("Error al actualizar el Grupo, el Grupo con id" + " " + id + " " + "no existe");
             }
             if (grupo.Descripcion == "" || grupo.Descripcion is null)
             {

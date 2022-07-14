@@ -70,7 +70,7 @@ namespace Service.Queries
         {
             if (await _context.Funciones.FindAsync(id) == null)
             {
-                throw new EmptyCollectionException("Error al obtener la Función, la Función con id" + " " + id + " " + "no existe");
+                throw new EmptyCollectionException("Error al actualizar la Función, la Función con id" + " " + id + " " + "no existe");
             }
             if (funcion.Descripcion == "" || funcion.Descripcion is null)
             {

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -33,7 +34,7 @@ namespace API.Controllers
         }
         //products Trae todas los centro de costo
         [HttpGet]
-        public async Task<DataCollection<CentrodeCostoDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -43,41 +44,107 @@ namespace API.Controllers
                     centrosdecosto = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                return await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto);
+                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = listCentros
+                };
+                return Ok(result);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener los centros de costo");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         //products/1 Trae el centro de costo con el id colocado
         [HttpGet("{id}")]
-        public async Task<CentrodeCostoDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return await _centrosdecostoQueryService.GetAsync(id);
+                var centroCosto = await _centrosdecostoQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = centroCosto
+                };
+                return Ok(result);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener la unidad, el centro de costo con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
 
             }
         }
         //products/id Actualiza una centro de costo por el id
         [HttpPut("{id}")]
-        public async Task<UpdateCentrodeCostoDTO> Put(UpdateCentrodeCostoDTO centrodecosto, int id)
+        public async Task<IActionResult> Put(UpdateCentrodeCostoDTO centrodecosto, int id)
         {
             try
             {
-                return await _centrosdecostoQueryService.PutAsync(centrodecosto, id);
+                var centroCosto = await _centrosdecostoQueryService.PutAsync(centrodecosto, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = centroCosto
+                };
+                return Ok(result);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar la unidad, el centro de costo con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
 
         }
@@ -89,25 +156,68 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear el centro de costo");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<CentrodeCostoDTO> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                return await _centrosdecostoQueryService.DeleteAsync(id);
+                var centroCosto = await _centrosdecostoQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = centroCosto
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la unidad, el centro de costo con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
 
         }

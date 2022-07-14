@@ -15,6 +15,7 @@ using Service.EventHandlers.Command;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -34,7 +35,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<EstadosUnidadesDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -44,41 +45,109 @@ namespace API.Controllers
                     estadosunidades = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                return await _estadosunidadesQueryService.GetAllAsync(page, take, estadosunidades);
+                var listEstados =  await _estadosunidadesQueryService.GetAllAsync(page, take, estadosunidades);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = listEstados
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener los estados");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<EstadosUnidadesDTO> Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                return await _estadosunidadesQueryService.GetAsync(id);
+                var estado =  await _estadosunidadesQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = estado
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener estados, el estado con id" + " " + id + " " + "no existe");
 
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateEstadoUnidadDTO> Put(UpdateEstadoUnidadDTO estadounidad, long id)
+        public async Task<IActionResult> Put(UpdateEstadoUnidadDTO estadounidad, long id)
         {
             try
             {
-                return await _estadosunidadesQueryService.PutAsync(estadounidad, id);
+                var updateEstado = await _estadosunidadesQueryService.PutAsync(estadounidad, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateEstado
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar estados, el estado con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }
@@ -90,25 +159,70 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear el estado");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<EstadosUnidadesDTO> Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                return await _estadosunidadesQueryService.DeleteAsync(id);
+                var deleteEstado = await _estadosunidadesQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = deleteEstado
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar el estado, el estado  con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }

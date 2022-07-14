@@ -2,7 +2,7 @@
 {
     public class ConveniosDTO
     {
-        public int idConvenio { get; set; }
+        public int IdConvenio { get; set; }
         public string Descripcion { get; set; }
         public string Obs { get; set; }
     }

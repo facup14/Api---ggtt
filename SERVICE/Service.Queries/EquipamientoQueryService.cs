@@ -69,7 +69,7 @@ namespace Service.Queries
         {
             if (await _context.Equipamientos.FindAsync(id) == null)
             {
-                throw new EmptyCollectionException("Error al obtener el Titulo, el Titulo con id" + " " + id + " " + "no existe");
+                throw new EmptyCollectionException("Error al actualizar el Titulo, el Titulo con id" + " " + id + " " + "no existe");
             }
             var updateEquipamiento = await _context.Equipamientos.FindAsync(id);
 

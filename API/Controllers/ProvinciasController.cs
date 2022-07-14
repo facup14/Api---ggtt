@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -31,7 +32,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<ProvinciasDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -41,41 +42,109 @@ namespace API.Controllers
                     provincias = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                return await _provinciasQueryService.GetAllAsync(page, take, provincias);
+                var listProvincias = await _provinciasQueryService.GetAllAsync(page, take, provincias);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = listProvincias
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener las provincias");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<ProvinciasDTO> Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                return await _provinciasQueryService.GetAsync(id);
+                var provincia = await _provinciasQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = provincia
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener la provincia, la provincia con id" + " " + id + " " + "no existe");
 
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateProvinciaDTO> Put(UpdateProvinciaDTO provincia, long id)
+        public async Task<IActionResult> Put(UpdateProvinciaDTO provincia, long id)
         {
             try
             {
-                return await _provinciasQueryService.PutAsync(provincia, id);
+                var updateProvincia = await _provinciasQueryService.PutAsync(provincia, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateProvincia
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar la provincia, la provincia con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }
@@ -87,25 +156,70 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear la provincia");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<ProvinciasDTO> Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                return await _provinciasQueryService.DeleteAsync(id);
+                var deleteProvincia = await _provinciasQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = deleteProvincia
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la provincia, la provincia con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }

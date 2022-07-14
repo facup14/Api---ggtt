@@ -16,7 +16,7 @@ namespace PERSISTENCE.Configuration
 
             entity.Property(e => e.AgrupacionSindical).IsUnicode(false);
 
-            entity.Property(e => e.ApellidoyNombre)
+            entity.Property(e => e.ApellidoyNombres)
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -70,11 +70,12 @@ namespace PERSISTENCE.Configuration
                 .HasForeignKey(d => d.idFuncion)
                 .HasConstraintName("FK_Choferes_Funciones");
 
-            entity.HasOne(d => d.IdTitulo)
+            entity.HasOne(d => d.idTitulo)
                 .WithMany(p => p.Choferes)
-                .HasForeignKey(d => d.idTitulo)
-                .HasConstraintName("FK_Choferes_Titulos");
-            
+                .HasForeignKey(d => d.IdTitulo)
+                .HasConstraintName("FK_Choferes_Titulos")
+                .OnDelete(DeleteBehavior.ClientCascade);
+
         }
     }
 }

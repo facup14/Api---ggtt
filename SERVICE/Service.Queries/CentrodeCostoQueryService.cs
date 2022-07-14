@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -37,7 +38,10 @@ namespace Service.Queries
                 .Where(x => centros == null || centros.Contains(x.idCentrodeCosto))
                 .OrderByDescending(x => x.idCentrodeCosto)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<CentrodeCostoDTO>>();
             }
             catch (Exception ex)
@@ -51,23 +55,23 @@ namespace Service.Queries
         {
             try
             {
-                return (await _context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id)).MapTo<CentrodeCostoDTO>();
-            }
-            catch (Exception ex)
-            {
-                if (_context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id).Result == null)
+                if (await _context.CentrodeCosto.FindAsync(id) == null)
                 {
-                    throw new Exception("Error al obtener le centro de costo, le centro de costo con id" + " " + id + " " + "no existe");
+                    throw new EmptyCollectionException("Error al obtener el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
                 }
-                throw new Exception("Error al obtener el centro de costo");
+                return (await _context.CentrodeCosto.FindAsync(id)).MapTo<CentrodeCostoDTO>();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error al obtener el Centro de Costo");
             }
 
         }
         public async Task<UpdateCentrodeCostoDTO> PutAsync(UpdateCentrodeCostoDTO CentrodeCosto, long id)
         {
-            if (_context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id).Result == null)
+            if (await _context.CentrodeCosto.FindAsync(id) == null)
             {
-                throw new Exception("El centro de costo con id" + " " + id + " " + ",no existe");
+                throw new EmptyCollectionException("Error al actualizar el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
             }
             var centro = await _context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id);
             centro.CentroDeCosto = CentrodeCosto.CentrodeCosto;
@@ -84,17 +88,17 @@ namespace Service.Queries
         {
             try
             {
-                var centro = await _context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id);
+                var centro = await _context.CentrodeCosto.FindAsync(id);
+                if (centro == null)
+                {
+                    throw new EmptyCollectionException("Error al eliminar el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
+                }
                 _context.CentrodeCosto.Remove(centro);
                 await _context.SaveChangesAsync();
                 return centro.MapTo<CentrodeCostoDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id).Result == null)
-                {
-                    throw new Exception("Error al eliminar en centro de costo, el centro de costo con id" + " " + id + " " + "no existe");
-                }
                 throw new Exception("Error al eliminar el centro de costo");
             }
 

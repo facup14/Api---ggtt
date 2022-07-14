@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -33,7 +34,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<ConveniosDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -43,41 +44,106 @@ namespace API.Controllers
                     convenios = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                return await _conveniosQueryService.GetAllAsync(page, take, convenios);
+                var listCentros = await _conveniosQueryService.GetAllAsync(page, take, convenios); ;
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = listCentros
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener los convenios");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<ConveniosDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return await _conveniosQueryService.GetAsync(id);
+                var convenio = await _conveniosQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = convenio
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener el convenio, el convenio con id" + " " + id + " " + "no existe");
-
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateConvenioDTO> Put(UpdateConvenioDTO convenio, int id)
+        public async Task<IActionResult> Put(UpdateConvenioDTO convenio, int id)
         {
             try
             {
-                return await _conveniosQueryService.PutAsync(convenio, id);
+                var convenioUpdate = await _conveniosQueryService.PutAsync(convenio, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = convenioUpdate
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar el convenio, el convenio con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
 
         }
@@ -89,25 +155,68 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear el convenio");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<ConveniosDTO> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                return await _conveniosQueryService.DeleteAsync(id);
+                var convenioDelete = await _conveniosQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = convenioDelete
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar el convenio, el coenvenio  con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
 
         }

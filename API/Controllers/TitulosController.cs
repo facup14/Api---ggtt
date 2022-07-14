@@ -33,10 +33,10 @@ namespace API.Controllers
         {
             try
             {
-                IEnumerable<long> titulos = null;
+                IEnumerable<int> titulos = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    titulos = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    titulos = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
                 var listTitulos = await _titulosQueryService.GetAllAsync(page, take, titulos);

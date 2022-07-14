@@ -15,6 +15,7 @@ using Service.EventHandlers.Command;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -34,7 +35,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<EmpresasDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -44,41 +45,106 @@ namespace API.Controllers
                     empresas = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                return await _empresasQueryService.GetAllAsync(page, take, empresas);
+                var listEmpresas = await _empresasQueryService.GetAllAsync(page, take, empresas);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = listEmpresas
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener las empresas");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<EmpresasDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return await _empresasQueryService.GetAsync(id);
+                var empresa = await _empresasQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = empresa
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener eempresa, el empresa con id" + " " + id + " " + "no existe");
-
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateEmpresaDTO> Put(UpdateEmpresaDTO empresa, int id)
+        public async Task<IActionResult> Put(UpdateEmpresaDTO empresa, int id)
         {
             try
             {
-                return await _empresasQueryService.PutAsync(empresa, id);
+                var empresaUpdate = await _empresasQueryService.PutAsync(empresa, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = empresaUpdate
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar el empresa, el empresa con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
 
         }
@@ -90,25 +156,68 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear la empresa");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<EmpresasDTO> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                return await _empresasQueryService.DeleteAsync(id);
+                var empresaDelete = await _empresasQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = empresaDelete
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la empresa, la empresa  con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
 
         }

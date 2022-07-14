@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DATA.Extensions;
 
 namespace Service.Queries
 {
@@ -40,12 +41,15 @@ namespace Service.Queries
                 .Where(x => empresas == null || empresas.Contains(x.IdEmpresa))
                 .OrderByDescending(x => x.IdEmpresa)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<EmpresasDTO>>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener las Agrupaciones Sindicales");
+                throw new Exception("Error al obtener las Empresas");
             }
 
         }
@@ -54,23 +58,23 @@ namespace Service.Queries
         {
             try
             {
-                return (await _context.Empresas.SingleAsync(x => x.IdEmpresa == id)).MapTo<EmpresasDTO>();
+                if (await _context.Empresas.FindAsync(id) == null)
+                {
+                    throw new EmptyCollectionException("Error al obtener la Empresa, la Empresa con id" + " " + id + " " + "no existe");
+                }
+                return (await _context.Empresas.FindAsync(id)).MapTo<EmpresasDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.Empresas.SingleAsync(x => x.IdEmpresa == id) == null)
-                {
-                    throw new Exception("Error al obtener el convenio, lel convenio con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al obtener el convenio");
+                throw new Exception("Error al obtener la Empresa");
             }
 
         }
         public async Task<UpdateEmpresaDTO> PutAsync(UpdateEmpresaDTO Empresa, int id)
         {
-            if (_context.Empresas.SingleAsync(x => x.IdEmpresa == id).Result == null)
+            if (await _context.Empresas.FindAsync(id) == null)
             {
-                throw new Exception("El empresa con id" + " " + id + " " + ",no existe");
+                throw new EmptyCollectionException("Error al actualizar la Empresa, la Empresa con id" + " " + id + " " + "no existe");
             }
             var empresa = await _context.Empresas.SingleAsync(x => x.IdEmpresa == id);
             empresa.Descripcion = Empresa.Descripcion;
@@ -85,17 +89,17 @@ namespace Service.Queries
             try
             {
                 var empresa = await _context.Empresas.SingleAsync(x => x.IdEmpresa == id);
+                if (empresa == null)
+                {
+                    throw new EmptyCollectionException("Error al eliminar la Empresa, la Empresa con id" + " " + id + " " + "no existe");
+                }
                 _context.Empresas.Remove(empresa);
                 await _context.SaveChangesAsync();
                 return empresa.MapTo<EmpresasDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.Empresas.SingleAsync(x => x.IdEmpresa == id) == null)
-                {
-                    throw new Exception("Error al eliminar empresa, el convenio con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al eliminar el empresa");
+                throw new Exception("Error al eliminar la Empresa");
             }
 
         }

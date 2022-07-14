@@ -41,7 +41,10 @@ namespace Service.Queries
                 .Where(x => agrupaciones == null || agrupaciones.Contains(x.IdAgrupacionSindical))
                 .OrderByDescending(x => x.IdAgrupacionSindical)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<AgrupacionesSindicalesDTO>>();
             }
             catch (Exception ex)
@@ -55,25 +58,26 @@ namespace Service.Queries
         {
             try
             {
+                if (await _context.AgrupacionesSindicales.FindAsync(id) == null)
+                {
+                    throw new EmptyCollectionException("Error al obtener la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
+                }
                 return (await _context.AgrupacionesSindicales.SingleAsync(x => x.IdAgrupacionSindical == id)).MapTo<AgrupacionesSindicalesDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.AgrupacionesSindicales.SingleAsync(x => x.IdAgrupacionSindical == id) == null)
-                {
-                    throw new Exception("Error al obtener la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al obtener la Agrupacion Sindical");
+                throw ex;
             }
 
         }
         public async Task<UpdateAgrupacionSindicalDTO> PutAsync(UpdateAgrupacionSindicalDTO AgrupacionSindical, int id)
         {
-            if (_context.AgrupacionesSindicales.SingleAsync(x => x.IdAgrupacionSindical == id).Result == null)
+            if (await _context.AgrupacionesSindicales.FindAsync(id) == null)
             {
-                throw new Exception("La Agrupacion Sindical con id" + " " + id + " " + ",no existe");
+                throw new EmptyCollectionException("Error al actualizar la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
             }
-            var agrupacion = await _context.AgrupacionesSindicales.SingleAsync(x => x.IdAgrupacionSindical == id);
+            var agrupacion = await _context.AgrupacionesSindicales.FindAsync(id);
+            
             agrupacion.Descripcion = AgrupacionSindical.Descripcion;
             agrupacion.Obs = AgrupacionSindical.Obs;
 
@@ -85,18 +89,21 @@ namespace Service.Queries
         {
             try
             {
-                var agrupacion = await _context.AgrupacionesSindicales.SingleAsync(x => x.IdAgrupacionSindical == id);
+                var agrupacion = await _context.AgrupacionesSindicales.FindAsync(id);
+                if (agrupacion == null)
+                {
+                    throw new EmptyCollectionException("Error al eliminar la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
+                }
                 _context.AgrupacionesSindicales.Remove(agrupacion);
+                
                 await _context.SaveChangesAsync();
+                
                 return agrupacion.MapTo<AgrupacionesSindicalesDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.AgrupacionesSindicales.SingleAsync(x => x.IdAgrupacionSindical == id) == null)
-                {
-                    throw new Exception("Error al eliminar la Agrupacion Sindical, la Agupación Sindical con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al eliminar la Agrupacion Sindical");
+
+                throw ex;
             }
 
         }

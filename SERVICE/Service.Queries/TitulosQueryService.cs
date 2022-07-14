@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -15,7 +16,7 @@ namespace Service.Queries
 {
     public interface ITitulosQueryService
     {
-        Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<long> titulos = null);
+        Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null);
         Task<TitulosDTO> GetAsync(int id);
         Task<UpdateTitulosDTO> PutAsync(UpdateTitulosDTO titulo, int id);
         Task<TitulosDTO> DeleteAsync(int id);
@@ -27,7 +28,7 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<long> titulos = null)
+        public async Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null)
         {
             try
             {
@@ -79,7 +80,7 @@ namespace Service.Queries
 
             updateTitulo.Descripcion = titulo.Descripcion;
             updateTitulo.Obs = titulo.Obs ?? updateTitulo.Obs;
-
+            
 
             await _context.SaveChangesAsync();
 
@@ -87,17 +88,24 @@ namespace Service.Queries
         }
         public async Task<TitulosDTO> DeleteAsync(int id)
         {
+            
             var titulo = await _context.Titulos.FindAsync(id);
             if (titulo == null)
             {
                 throw new EmptyCollectionException("Error al eliminar el Titulo, el Titulo con id" + " " + id + " " + "no existe");
             }
-            
-            _context.Titulos.Remove(titulo);
+            var tituloChofer = await _context.Titulos.Include(x => x.Choferes).Where(c => c.IdTitulo == id).SingleOrDefaultAsync();
+            if(tituloChofer.Choferes.Count > 0)
+            {
+                throw new EmptyCollectionException("No se puede eliminar el Titulo, tiene Choferes asociados");
+            }
 
+            _context.Titulos.Remove(titulo);
             await _context.SaveChangesAsync();
             
             return titulo.MapTo<TitulosDTO>();
+            
+            
         }
     }
 }

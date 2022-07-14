@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -32,7 +33,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<ModelosDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -42,41 +43,109 @@ namespace API.Controllers
                     modelos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                return await _modelosQueryService.GetAllAsync(page, take, modelos);
+                var listModelos = await _modelosQueryService.GetAllAsync(page, take, modelos);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = listModelos
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener los modelos");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<ModelosDTO> Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                return await _modelosQueryService.GetAsync(id);
+                var modelo = await _modelosQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = modelo
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener los modelos, el modelo con id" + " " + id + " " + "no existe");
 
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateModeloDTO> Put(UpdateModeloDTO modelo, long id)
+        public async Task<IActionResult> Put(UpdateModeloDTO modelo, long id)
         {
             try
             {
-                return await _modelosQueryService.PutAsync(modelo, id);
+                var updateModelo = await _modelosQueryService.PutAsync(modelo, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateModelo
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar el modelo, el modelo con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }
@@ -88,25 +157,70 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear el modelo");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<ModelosDTO> Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                return await _modelosQueryService.DeleteAsync(id);
+                var deleteModelo = await _modelosQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = deleteModelo
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar el modelo, el modelo con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }

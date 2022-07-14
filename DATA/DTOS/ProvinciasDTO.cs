@@ -6,6 +6,7 @@ namespace DATA.DTOS
 {
     public class ProvinciasDTO
     {
+        public long IdProvincia { get; set; }
         public string Provincia { get; set; }
 
     }

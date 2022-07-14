@@ -68,7 +68,7 @@ namespace Service.Queries
         {
             if (await _context.Localidades.FindAsync(id) == null)
             {
-                throw new EmptyCollectionException("Error al obtener la Localidad, la Localidad con id" + " " + id + " " + "no existe");
+                throw new EmptyCollectionException("Error al actualizar la Localidad, la Localidad con id" + " " + id + " " + "no existe");
             }
             if (localidad.idProvincia == 0)
             {

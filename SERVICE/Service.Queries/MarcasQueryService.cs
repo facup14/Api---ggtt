@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DATA.Extensions;
 
 namespace Service.Queries
 {
@@ -38,12 +39,15 @@ namespace Service.Queries
                 .Where(x => marcas == null || marcas.Contains(x.IdMarca))
                 .OrderByDescending(x => x.IdMarca)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<MarcasDTO>>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener las Convenios");
+                throw new Exception("Error al obtener las Marcas");
             }
 
         }
@@ -52,23 +56,23 @@ namespace Service.Queries
         {
             try
             {
-                return (await _context.Marcas.SingleAsync(x => x.IdMarca == id)).MapTo<MarcasDTO>();
+                if (await _context.Marcas.FindAsync(id) == null)
+                {
+                    throw new EmptyCollectionException("Error al obtener la Marca, la Marca con id" + " " + id + " " + "no existe");
+                }
+                return (await _context.Marcas.FindAsync(id)).MapTo<MarcasDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.Convenios.SingleAsync(x => x.IdConvenio == id) == null)
-                {
-                    throw new Exception("Error al obtener marcas, la marca  con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al obtener  la marca");
+                throw new Exception("Error al obtener  la Marca");
             }
 
         }
         public async Task<UpdateMarcaDTO> PutAsync(UpdateMarcaDTO Marca, long id)
         {
-            if (_context.Marcas.SingleAsync(x => x.IdMarca == id).Result == null)
+            if (await _context.Marcas.FindAsync(id) == null)
             {
-                throw new Exception("La marca con id" + " " + id + " " + ",no existe");
+                throw new EmptyCollectionException("Error al actualizar la Marca, la Marca con id" + " " + id + " " + "no existe");
             }
             var marca = await _context.Marcas.SingleAsync(x => x.IdMarca == id);
             marca.Marca = Marca.Marca;
@@ -83,17 +87,17 @@ namespace Service.Queries
             try
             {
                 var marca = await _context.Marcas.SingleAsync(x => x.IdMarca == id);
+                if (marca == null)
+                {
+                    throw new EmptyCollectionException("Error al eliminar la Marca, la Marca con id" + " " + id + " " + "no existe");
+                }
                 _context.Marcas.Remove(marca);
                 await _context.SaveChangesAsync();
                 return marca.MapTo<MarcasDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.Marcas.SingleAsync(x => x.IdMarca == id) == null)
-                {
-                    throw new Exception("Error al eliminar la marca, la marca con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al eliminar la marca");
+                throw new Exception("Error al eliminar la Marca");
             }
 
         }

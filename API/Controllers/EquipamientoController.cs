@@ -32,19 +32,19 @@ namespace API.Controllers
         {
             try
             {
-                IEnumerable<long> titulos = null;
+                IEnumerable<long> equipamientos = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    titulos = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    equipamientos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listTitulos = await _equipamientosQueryService.GetAllAsync(page, take, titulos);
+                var listEquipamientos = await _equipamientosQueryService.GetAllAsync(page, take, equipamientos);
 
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = listTitulos
+                    Result = listEquipamientos
                 };
                 return Ok(result);
 
@@ -76,12 +76,12 @@ namespace API.Controllers
         {
             try
             {
-                var unidad = await _equipamientosQueryService.GetAsync(id);
+                var equipamiento = await _equipamientosQueryService.GetAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = unidad,
+                    Result = equipamiento,
                 };
                 return Ok(result);
             }
@@ -90,11 +90,21 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.NotFound,
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
                     Message = ex.Message,
                     Result = null
                 });
+            }
+            catch (Exception ex)
+            {
 
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         [HttpPut("{id}")]

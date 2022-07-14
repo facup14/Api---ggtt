@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DATA.Extensions;
 
 namespace Service.Queries
 {
@@ -38,12 +39,15 @@ namespace Service.Queries
                 .Where(x => provincias == null || provincias.Contains(x.IdProvincia))
                 .OrderByDescending(x => x.IdProvincia)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<ProvinciasDTO>>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener las provincias");
+                throw new Exception("Error al obtener las Provincias");
             }
 
         }
@@ -52,25 +56,25 @@ namespace Service.Queries
         {
             try
             {
-                return (await _context.Provincias.SingleAsync(x => x.IdProvincia == id)).MapTo<ProvinciasDTO>();
+                if (await _context.Provincias.FindAsync(id) == null)
+                {
+                    throw new EmptyCollectionException("Error al obtener la Provincia, la Provincia con id" + " " + id + " " + "no existe");
+                }                
+                return (await _context.Provincias.FindAsync(id)).MapTo<ProvinciasDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.Provincias.SingleAsync(x => x.IdProvincia == id) == null)
-                {
-                    throw new Exception("Error al obtener provincias, la provincia con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al obtener la provincia");
+                throw new Exception("Error al obtener la Provincia");
             }
 
         }
         public async Task<UpdateProvinciaDTO> PutAsync(UpdateProvinciaDTO Provincia, long id)
         {
-            if (_context.Provincias.SingleAsync(x => x.IdProvincia == id).Result == null)
+            if (await _context.Provincias.FindAsync(id) == null)
             {
-                throw new Exception("La provincia con id" + " " + id + " " + ",no existe");
+                throw new EmptyCollectionException("Error al actualizar la Provincia, la Provincia con id" + " " + id + " " + "no existe");
             }
-            var provincia = await _context.Provincias.SingleAsync(x => x.IdProvincia == id);
+            var provincia = await _context.Provincias.FindAsync(id);
             provincia.Provincia = Provincia.Provincia;
 
             await _context.SaveChangesAsync();
@@ -82,17 +86,17 @@ namespace Service.Queries
             try
             {
                 var provincia = await _context.Provincias.SingleAsync(x => x.IdProvincia == id);
+                if (provincia == null)
+                {
+                    throw new EmptyCollectionException("Error al eliminar la Provincia, la Provincia con id" + " " + id + " " + "no existe");
+                }
                 _context.Provincias.Remove(provincia);
                 await _context.SaveChangesAsync();
                 return provincia.MapTo<ProvinciasDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.Provincias.SingleAsync(x => x.IdProvincia == id) == null)
-                {
-                    throw new Exception("Error al eliminar la provincia, el modelo con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al eliminar la provincia");
+                throw new Exception("Error al eliminar la Provincia");
             }
 
         }

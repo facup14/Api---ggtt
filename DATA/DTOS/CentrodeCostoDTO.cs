@@ -2,7 +2,7 @@
 {
     public class CentrodeCostoDTO
     {
-        public long IdCentrodeCosto { get; set; }
+        public long idCentrodeCosto { get; set; }
         public string CentrodeCosto { get; set; }
         public string Obs { get; set; }
         public int Tipo { get; set; }

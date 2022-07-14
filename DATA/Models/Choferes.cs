@@ -11,7 +11,7 @@ namespace DATA.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdChofer { get; set; }
         [MaxLength(50)]
-        public string ApellidoyNombre { get; set; }
+        public string ApellidoyNombres { get; set; }
         [MaxLength(20)]
         public string Legajo { get; set; }
         
@@ -54,8 +54,8 @@ namespace DATA.Models
         public virtual Especialidades IdEspecialidad { get; set; }
         [ForeignKey("idTitulo")]
         public string Titulo { get; set; }
-        public int idTitulo { get; set; }
+        public int IdTitulo { get; set; }
         [MaxLength(50)]
-        public virtual Titulos IdTitulo { get; set; }
+        public virtual Titulos idTitulo { get; set; }
     }
 }

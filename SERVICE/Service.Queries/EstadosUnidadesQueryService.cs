@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -37,12 +38,15 @@ namespace Service.Queries
                 .Where(x => estadosunidades == null || estadosunidades.Contains(x.IdEstadoUnidad))
                 .OrderByDescending(x => x.IdEstadoUnidad)
                 .GetPagedAsync(page, take);
-
+                if (!collection.HasItems)
+                {
+                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                }
                 return collection.MapTo<DataCollection<EstadosUnidadesDTO>>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener los estados");
+                throw new Exception("Error al obtener los Estados");
             }
 
         }
@@ -51,23 +55,23 @@ namespace Service.Queries
         {
             try
             {
-                return (await _context.EstadosUnidades.SingleAsync(x => x.IdEstadoUnidad == id)).MapTo<EstadosUnidadesDTO>();
+                if (await _context.EstadosUnidades.FindAsync(id) == null)
+                {
+                    throw new EmptyCollectionException("Error al obtener el Estado de la Unidad, el Estado con id" + " " + id + " " + "no existe");
+                }
+                return (await _context.EstadosUnidades.FindAsync(id)).MapTo<EstadosUnidadesDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.EstadosUnidades.SingleAsync(x => x.IdEstadoUnidad == id) == null)
-                {
-                    throw new Exception("Error al obtener el estados, la estado con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al obtener el estado");
+                throw new Exception("Error al obtener el Estado");
             }
 
         }
         public async Task<UpdateEstadoUnidadDTO> PutAsync(UpdateEstadoUnidadDTO EstadoUnidad, long id)
         {
-            if (_context.EstadosUnidades.SingleAsync(x => x.IdEstadoUnidad == id).Result == null)
+            if (await _context.EstadosUnidades.FindAsync(id) == null)
             {
-                throw new Exception("El estado con id" + " " + id + " " + ",no existe");
+                throw new EmptyCollectionException("Error al actualizar el Estado de la Unidad, el Estado con id" + " " + id + " " + "no existe");
             }
             var estadounidad = await _context.EstadosUnidades.SingleAsync(x => x.IdEstadoUnidad == id);
             estadounidad.Estado = EstadoUnidad.Estado;
@@ -82,17 +86,17 @@ namespace Service.Queries
             try
             {
                 var estadounidad = await _context.EstadosUnidades.SingleAsync(x => x.IdEstadoUnidad == id);
+                if (estadounidad == null)
+                {
+                    throw new EmptyCollectionException("Error al eliminar el Estado de la Unidad, el Estado con id" + " " + id + " " + "no existe");
+                }
                 _context.EstadosUnidades.Remove(estadounidad);
                 await _context.SaveChangesAsync();
                 return estadounidad.MapTo<EstadosUnidadesDTO>();
             }
             catch (Exception ex)
             {
-                if (_context.EstadosUnidades.SingleAsync(x => x.IdEstadoUnidad == id) == null)
-                {
-                    throw new Exception("Error al eliminar estado, el estado con id" + " " + id + " " + "no existe");
-                }
-                throw new Exception("Error al eliminar el estado");
+                throw new Exception("Error al eliminar el Estado");
             }
 
         }

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Service.EventHandlers.Command;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -33,7 +34,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<AgrupacionesSindicalesDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -43,41 +44,112 @@ namespace API.Controllers
                     agrupaciones = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                return await _agrupacionesQueryService.GetAllAsync(page, take, agrupaciones);
+                var listAgrupaciones = await _agrupacionesQueryService.GetAllAsync(page, take, agrupaciones);
+                
+                var result = new GetResponse()
+                {
+                   StatusCode = (int)HttpStatusCode.OK,
+                   Message = "success",
+                   Result = listAgrupaciones
+                };
+                
+                return Ok(result);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener las agrupaciones sindicales");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<AgrupacionesSindicalesDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return await _agrupacionesQueryService.GetAsync(id);
+                var agrupacion = await _agrupacionesQueryService.GetAsync(id);
+                
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = agrupacion
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener la unidad, la agrupacion sindical con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = "Server error",
+                    Result = null
+                });
 
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateAgrupacionSindicalDTO> Put(UpdateAgrupacionSindicalDTO agrupacion, int id)
+        public async Task<IActionResult> Put(UpdateAgrupacionSindicalDTO agrupacion, int id)
         {
             try
             {
-                return await _agrupacionesQueryService.PutAsync(agrupacion, id);
+                var updateAgrupacion = await _agrupacionesQueryService.PutAsync(agrupacion, id);
+
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateAgrupacion
+                };
+                return Ok(updateAgrupacion);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar la unidad, la agrupacion sindical con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = "server error",
+                    Result = null
+                });
             }
 
         }
@@ -89,25 +161,69 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear la agrupacion sindical");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<AgrupacionesSindicalesDTO> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                return await _agrupacionesQueryService.DeleteAsync(id);
+                var deleteAgrupacion = await _agrupacionesQueryService.DeleteAsync(id);
+                
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = deleteAgrupacion
+                };
+                return Ok(result);
+            }
+            catch(EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la unidad, la agrupacion sindical con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }

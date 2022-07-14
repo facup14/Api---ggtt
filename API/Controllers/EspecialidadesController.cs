@@ -15,6 +15,7 @@ using Service.EventHandlers.Command;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -34,7 +35,7 @@ namespace API.Controllers
         }
         //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<DataCollection<EspecialidadesDTO>> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
@@ -44,41 +45,109 @@ namespace API.Controllers
                     especialidades = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                return await _especialidadesQueryService.GetAllAsync(page, take, especialidades);
+                var listEspecialidades =  await _especialidadesQueryService.GetAllAsync(page, take, especialidades);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = listEspecialidades
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener las especialidades");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<EspecialidadesDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                return await _especialidadesQueryService.GetAsync(id);
+                var especialidad =  await _especialidadesQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = especialidad
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                throw new Exception("Error al obtener especialidades, la especialidad con id" + " " + id + " " + "no existe");
 
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<UpdateEspecialidadesDTO> Put(UpdateEspecialidadesDTO especialidad, int id)
+        public async Task<IActionResult> Put(UpdateEspecialidadesDTO especialidad, int id)
         {
             try
             {
-                return await _especialidadesQueryService.PutAsync(especialidad, id);
+                var updateEspecialidad = await _especialidadesQueryService.PutAsync(especialidad, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateEspecialidad
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al actualizar la especialidad, la especialidad con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }
@@ -90,25 +159,70 @@ namespace API.Controllers
             try
             {
                 await _mediator.Publish(command);
-                return Ok();
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = command
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al crear la especialidad");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<EspecialidadesDTO> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                return await _especialidadesQueryService.DeleteAsync(id);
+                var deleteEspecialidad = await _especialidadesQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = deleteEspecialidad
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
-                throw new Exception("Error al eliminar la especialidad, la especialidad  con id" + " " + id + " " + "no existe");
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
             }
 
         }
