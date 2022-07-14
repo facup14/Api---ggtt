@@ -2,7 +2,6 @@
 using DATA.Errors;
 using DATA.Extensions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.EventHandlers.Command;
