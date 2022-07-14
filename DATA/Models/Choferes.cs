@@ -13,15 +13,15 @@ namespace DATA.Models
         [MaxLength(50)]
         public string ApellidoyNombres { get; set; }
         [MaxLength(20)]
-        public string Legajo { get; set; }
+        public string? Legajo { get; set; }
         
-        public DateTime CarnetVence { get; set; }
+        public DateTime? CarnetVence { get; set; }
         
-        public string Obs { get; set; }
+        public string? Obs { get; set; }
         
-        public string Foto { get; set; }
+        public string? Foto { get; set; }
 
-        public bool Activo { get; set; }
+        public bool? Activo { get; set; }
         public string NroDocumento { get; set; }
         
         public DateTime FechaNacimiento { get; set; }
@@ -31,30 +31,30 @@ namespace DATA.Models
         //[ForeignKey("IdTaller")]
         //public int? IdTaller { get; set; }
         //public Talleres Taller { get; set; }
-        [ForeignKey("idEmpresa")]
+        [ForeignKey("IdEmpresa")]
         public string Empresa { get; set; }
-        public int idEmpresa { get; set; }
-        public virtual Empresas IdEmpresa { get; set; }
-        [ForeignKey("idAgrupacionSindical")]
+        public int IdEmpresa { get; set; }
+        public virtual Empresas idEmpresa { get; set; }
+        [ForeignKey("IdAgrupacionSindical")]
         public string AgrupacionSindical { get; set; }
-        public int idAgrupacionSindical { get; set; }
-        public virtual AgrupacionesSindicales IdAgrupacionSindical { get; set; }        
-        [ForeignKey("idConvenio")]
+        public int? IdAgrupacionSindical { get; set; }
+        public virtual AgrupacionesSindicales idAgrupacionSindical { get; set; }        
+        [ForeignKey("IdConvenio")]
         public string Convenio { get; set; }
-        public int idConvenio { get; set; }
-        public virtual Convenios IdConvenio { get; set; }
-        [ForeignKey("idFuncion")]
+        public int? IdConvenio { get; set; }
+        public virtual Convenios idConvenio { get; set; }
+        [ForeignKey("IdFuncion")]
         public string Funcion { get; set; }
-        public int idFuncion { get; set; }
-        public virtual Funciones IdFuncion { get; set; }
-        [ForeignKey("idEspecialidad")]
+        public int? IdFuncion { get; set; }
+        public virtual Funciones idFuncion { get; set; }
+        [ForeignKey("IdEspecialidad")]
         public string Especialidad { get; set; }
-        public int idEspecialidad { get; set; }
+        public int? IdEspecialidad { get; set; }
         [MaxLength(50)]
-        public virtual Especialidades IdEspecialidad { get; set; }
-        [ForeignKey("idTitulo")]
+        public virtual Especialidades idEspecialidad { get; set; }
+        [ForeignKey("IdTitulo")]
         public string Titulo { get; set; }
-        public int IdTitulo { get; set; }
+        public int? IdTitulo { get; set; }
         [MaxLength(50)]
         public virtual Titulos idTitulo { get; set; }
     }

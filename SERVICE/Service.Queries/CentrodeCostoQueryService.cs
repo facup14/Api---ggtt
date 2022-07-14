@@ -73,7 +73,7 @@ namespace Service.Queries
             {
                 throw new EmptyCollectionException("Error al actualizar el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
             }
-            var centro = await _context.CentrodeCosto.SingleAsync(x => x.idCentrodeCosto == id);
+            var centro = await _context.CentrodeCosto.FindAsync(id);
             centro.CentroDeCosto = CentrodeCosto.CentrodeCosto;
             centro.Tipo = CentrodeCosto.Tipo;
             centro.CodigoBas = CentrodeCosto.CodigoBas;

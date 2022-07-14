@@ -45,29 +45,29 @@ namespace PERSISTENCE.Configuration
 
             entity.Property(e => e.Titulo).HasMaxLength(50);
 
-            entity.HasOne(d => d.IdAgrupacionSindical)
+            entity.HasOne(d => d.idAgrupacionSindical)
                 .WithMany(p=>p.Choferes)
-                .HasForeignKey(d => d.idAgrupacionSindical)
+                .HasForeignKey(d => d.IdAgrupacionSindical)
                 .HasConstraintName("FK_Choferes_AgrupacionesSindicales");
 
-            entity.HasOne(d => d.IdConvenio)
+            entity.HasOne(d => d.idConvenio)
                 .WithMany(p => p.Choferes)
-                .HasForeignKey(d => d.idConvenio)
+                .HasForeignKey(d => d.IdConvenio)
                 .HasConstraintName("FK_Choferes_Convenios");
 
-            entity.HasOne(d => d.IdEmpresa)
+            entity.HasOne(d => d.idEmpresa)
                 .WithMany(p => p.Choferes)
-                .HasForeignKey(d => d.idEmpresa)
+                .HasForeignKey(d => d.IdEmpresa)
                 .HasConstraintName("FK_Choferes_Empresas");
 
-            entity.HasOne(d => d.IdEspecialidad)
+            entity.HasOne(d => d.idEspecialidad)
                 .WithMany(p => p.Choferes)
-                .HasForeignKey(d => d.idEspecialidad)
+                .HasForeignKey(d => d.IdEspecialidad)
                 .HasConstraintName("FK_Choferes_Especialidades");
 
-            entity.HasOne(d => d.IdFuncion)
+            entity.HasOne(d => d.idFuncion)
                 .WithMany(p => p.Choferes)
-                .HasForeignKey(d => d.idFuncion)
+                .HasForeignKey(d => d.IdFuncion)
                 .HasConstraintName("FK_Choferes_Funciones");
 
             entity.HasOne(d => d.idTitulo)

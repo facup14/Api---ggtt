@@ -48,10 +48,10 @@ namespace API
             services.AddTransient<IMarcasQueryService, MarcasQueryService>();
             services.AddTransient<IModelosQueryService, ModelosQueryService>();
             services.AddTransient<IProvinciasQueryService, ProvinciasQueryService>();
-
             services.AddTransient<IFuncionesQueryService, FuncionesQueryService>();
             services.AddTransient<IGruposQueryService, GruposQueryService>();
             services.AddTransient<ILocalidadQueryService, LocalidadesQueryService>();
+            services.AddTransient<IChoferesQueryService, ChoferesQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
