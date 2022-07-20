@@ -10,6 +10,7 @@ namespace DATA.Models
         public Talleres()
         {
             Choferes = new HashSet<Choferes>();
+            Mecanicos = new HashSet<Mecanicos>();
         }
 
         public long IdTaller { get; set; }
@@ -40,5 +41,6 @@ namespace DATA.Models
         public long? IdLocalidad { get; set; }
         public virtual Localidades idLocalidad { get; set; }
         public virtual ICollection<Choferes> Choferes { get; set; }
+        public virtual ICollection<Mecanicos> Mecanicos { get; set; }
     }
 }

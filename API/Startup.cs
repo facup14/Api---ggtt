@@ -67,6 +67,7 @@ namespace API
             services.AddTransient<IDomiciliosQueryService, DomiciliosQueryService>();
             services.AddTransient<IBarriosQueryService, BarriosQueryService>();
             services.AddTransient<ICallesQueryService, CallesQueryService>();
+            services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);

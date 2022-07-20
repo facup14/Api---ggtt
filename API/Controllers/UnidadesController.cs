@@ -7,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
 using DATA.Models;
 using System.Net;
 using DATA.Extensions;
 using DATA.Errors;
+using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -29,7 +29,6 @@ namespace API.Controllers
             _unidadesQueryService = productQueryService;
             _mediator = mediator;
         }
-        //products Trae todas las Unidades
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
@@ -73,7 +72,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la unidad con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -100,7 +98,6 @@ namespace API.Controllers
                 
             }
         }
-        //products/id Actualiza una Unidad por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateUnidadDTO unidad, long id)            
         {
@@ -137,8 +134,6 @@ namespace API.Controllers
             }
             
         }
-
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
         public async Task<IActionResult> Create(CreateUnidadCommand command)
         {

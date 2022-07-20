@@ -1,10 +1,9 @@
-﻿using DATA.DTOS;
-using DATA.Models;
+﻿using DATA.Errors;
 using MediatR;
 
 namespace Service.EventHandlers.Command
 {
-    public class UpdateTallerCommand : IRequest<UpdateTallerCommand>
+    public class UpdateTallerCommand : IRequest<GetResponse>
     {
         public UpdateTallerCommand()
         {

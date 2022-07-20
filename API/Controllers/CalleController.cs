@@ -4,7 +4,7 @@ using DATA.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
+using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -71,7 +71,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -109,7 +108,6 @@ namespace API.Controllers
 
             }
         }
-        //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateCallesDTO calle, int id)
         {
@@ -148,7 +146,6 @@ namespace API.Controllers
 
         }
 
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
         public async Task<IActionResult> Create(CreateCallesCommand command)
         {

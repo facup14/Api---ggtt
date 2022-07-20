@@ -11,11 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.DTOS;
 using System.Net;
+using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -33,7 +33,6 @@ namespace API.Controllers
             _empresasQueryService = productQueryService;
             _mediator = mediator;
         }
-        //products Trae todas las agurpaciónes
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
@@ -75,7 +74,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -111,7 +109,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateEmpresaDTO empresa, int id)
         {
@@ -148,8 +145,6 @@ namespace API.Controllers
             }
 
         }
-
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
         public async Task<IActionResult> Create(CreateEmpresaCommand command)
         {
