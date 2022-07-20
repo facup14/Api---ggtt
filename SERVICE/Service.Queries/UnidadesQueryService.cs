@@ -18,7 +18,7 @@ namespace Service.Queries
     public interface IUnidadesQueryService
     {
         Task<DataCollection<UnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidades = null);
-        Task<UnidadesDTO> GetAsync(long id);
+        Task<UnidadesByIdDTO> GetAsync(long id);
         Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, long it);
         Task<UnidadesDTO> DeleteAsync(long id);
     }
@@ -50,7 +50,7 @@ namespace Service.Queries
             }
             
         }
-        public async Task<UnidadesDTO> GetAsync(long id)
+        public async Task<UnidadesByIdDTO> GetAsync(long id)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Service.Queries
                 {
                     throw new EmptyCollectionException("Error al obtener la unidad, la unidad con id" + " " + id + " " + "no existe");
                 }
-                return unidad.MapTo<UnidadesDTO>();
+                return unidad.MapTo<UnidadesByIdDTO>();
             }
             catch(Exception ex)
             {

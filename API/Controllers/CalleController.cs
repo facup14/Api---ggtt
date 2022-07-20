@@ -1,61 +1,55 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Service.EventHandlers.Command;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Service.EventHandlers.Command;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("agrupacionessindicales")]
-    public class AgrupacionesSindicalesController : ControllerBase
+    [Route("calle")]
+    public class CalleController : ControllerBase
     {
-
-        private readonly ILogger<AgrupacionesSindicalesController> _logger;
-        private readonly IAgrupacionesSindicalesQueryService _agrupacionesQueryService;
+        private readonly ILogger<CalleController> _logger;
+        private readonly ICallesQueryService _callesQueryService;
         private readonly IMediator _mediator;
-        public AgrupacionesSindicalesController(ILogger<AgrupacionesSindicalesController> logger, IAgrupacionesSindicalesQueryService productQueryService, IMediator mediator)
+        public CalleController(ILogger<CalleController> logger, ICallesQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _agrupacionesQueryService = productQueryService;
+            _callesQueryService = productQueryService;
             _mediator = mediator;
         }
-        //products Trae todas las agurpaciónes
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
-                IEnumerable<int> agrupaciones = null;
+                IEnumerable<int> calles = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    agrupaciones = ids.Split(',').Select(x => Convert.ToInt32(x));
+                    calles = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listAgrupaciones = await _agrupacionesQueryService.GetAllAsync(page, take, agrupaciones);
-                
+                var listCalles = await _callesQueryService.GetAllAsync(page, take, calles);
+
                 var result = new GetResponse()
                 {
-                   StatusCode = (int)HttpStatusCode.OK,
-                   Message = "success",
-                   Result = listAgrupaciones
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = listCalles
                 };
-                
+
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
@@ -83,13 +77,13 @@ namespace API.Controllers
         {
             try
             {
-                var agrupacion = await _agrupacionesQueryService.GetAsync(id);
-                
+                var calle = await _callesQueryService.GetAsync(id);
+
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = agrupacion
+                    Result = calle
                 };
                 return Ok(result);
             }
@@ -117,21 +111,21 @@ namespace API.Controllers
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateAgrupacionSindicalDTO agrupacion, int id)
+        public async Task<IActionResult> Put(UpdateCallesDTO calle, int id)
         {
             try
             {
-                var updateAgrupacion = await _agrupacionesQueryService.PutAsync(agrupacion, id);
+                var updateCalle = await _callesQueryService.PutAsync(calle, id);
 
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = updateAgrupacion
+                    Result = updateCalle
                 };
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
@@ -156,7 +150,7 @@ namespace API.Controllers
 
         //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateAgrupacionSindicalCommand command)
+        public async Task<IActionResult> Create(CreateCallesCommand command)
         {
             try
             {
@@ -169,7 +163,7 @@ namespace API.Controllers
                 };
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
@@ -195,17 +189,17 @@ namespace API.Controllers
         {
             try
             {
-                var deleteAgrupacion = await _agrupacionesQueryService.DeleteAsync(id);
-                
+                var deleteCalle = await _callesQueryService.DeleteAsync(id);
+
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = deleteAgrupacion
+                    Result = deleteCalle
                 };
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()

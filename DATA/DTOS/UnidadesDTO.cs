@@ -1,6 +1,4 @@
-﻿
-
-namespace DATA.DTOS
+﻿namespace DATA.DTOS
 {
     public class UnidadesDTO
     {
@@ -10,6 +8,5 @@ namespace DATA.DTOS
         public string Motor { get; set; }
         public string Chasis { get; set; }
         public string Titular { get; set; }
-        
     }
 }

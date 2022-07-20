@@ -1,95 +1,116 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Service.EventHandlers.Command;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Service.EventHandlers.Command;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("agrupacionessindicales")]
-    public class AgrupacionesSindicalesController : ControllerBase
+    [Route("taller")]
+    public class TallerController : ControllerBase
     {
-
-        private readonly ILogger<AgrupacionesSindicalesController> _logger;
-        private readonly IAgrupacionesSindicalesQueryService _agrupacionesQueryService;
+        private readonly ILogger<TallerController> _logger;
+        private readonly ITalleresQueryService _talleresQueryService;
         private readonly IMediator _mediator;
-        public AgrupacionesSindicalesController(ILogger<AgrupacionesSindicalesController> logger, IAgrupacionesSindicalesQueryService productQueryService, IMediator mediator)
+        public TallerController(ILogger<TallerController> logger, ITalleresQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _agrupacionesQueryService = productQueryService;
+            _talleresQueryService = productQueryService;
             _mediator = mediator;
         }
-        //products Trae todas las agurpaciónes
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
-                IEnumerable<int> agrupaciones = null;
+                IEnumerable<long> unidades = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    agrupaciones = ids.Split(',').Select(x => Convert.ToInt32(x));
+                    unidades = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listAgrupaciones = await _agrupacionesQueryService.GetAllAsync(page, take, agrupaciones);
-                
+                var listUnidades = await _talleresQueryService.GetAllAsync(page, take, unidades);
+
                 var result = new GetResponse()
                 {
-                   StatusCode = (int)HttpStatusCode.OK,
-                   Message = "success",
-                   Result = listAgrupaciones
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = listUnidades
                 };
-                
                 return Ok(result);
+
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
                     Message = ex.Message,
                     Result = null
                 });
+            }
+            catch (Exception ex)
+            {
 
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
+        }
+        //products/1 Trae la unidad con el id colocado
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
+        {
+            try
+            {
+                var unidad = await _talleresQueryService.GetAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = unidad,
+                };
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = "Server error",
+                    StatusCode = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message,
                     Result = null
                 });
+
             }
         }
-        //products/1 Trae la agurpación con el id colocado
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        //products/id Actualiza una Unidad por el id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(UpdateTalleresDTO taller, long id)
         {
             try
             {
-                var agrupacion = await _agrupacionesQueryService.GetAsync(id);
-                
+                var newTaller = await _talleresQueryService.PutAsync(taller, id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = agrupacion
+                    Message = "Success",
+                    Result = newTaller
                 };
                 return Ok(result);
             }
@@ -108,46 +129,8 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = "Server error",
-                    Result = null
-                });
-
-            }
-        }
-        //products/id Actualiza una agurpación por el id
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateAgrupacionSindicalDTO agrupacion, int id)
-        {
-            try
-            {
-                var updateAgrupacion = await _agrupacionesQueryService.PutAsync(agrupacion, id);
-
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = updateAgrupacion
-                };
-                return Ok(result);
-            }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
                     StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = "server error",
+                    Message = "Server error",
                     Result = null
                 });
             }
@@ -156,7 +139,7 @@ namespace API.Controllers
 
         //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateAgrupacionSindicalCommand command)
+        public async Task<IActionResult> Create(CreateTallerCommand command)
         {
             try
             {
@@ -164,12 +147,12 @@ namespace API.Controllers
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
+                    Message = "Success",
                     Result = command
                 };
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
@@ -191,21 +174,20 @@ namespace API.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                var deleteAgrupacion = await _agrupacionesQueryService.DeleteAsync(id);
-                
+                var deleteList = await _talleresQueryService.DeleteAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = deleteAgrupacion
+                    Message = "Success",
+                    Result = deleteList
                 };
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
