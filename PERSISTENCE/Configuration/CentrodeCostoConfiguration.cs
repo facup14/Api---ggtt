@@ -6,7 +6,7 @@ namespace PERSISTENCE.Configuration
 {
     public class CentrodeCostoConfiguration
     {
-        public CentrodeCostoConfiguration(EntityTypeBuilder<CentrodeCosto> entity)
+        public CentrodeCostoConfiguration(EntityTypeBuilder<CentroDeCosto> entity)
         {
             entity.HasKey(e => e.idCentrodeCosto)
                     .HasName("PK_CentroCosto");

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -19,6 +20,7 @@ namespace Service.Queries
         Task<CentrodeCostoDTO> GetAsync(long id);
         Task<UpdateCentrodeCostoDTO> PutAsync(UpdateCentrodeCostoDTO CentrodeCosto, long it);
         Task<CentrodeCostoDTO> DeleteAsync(long id);
+        Task<UpdateCentrodeCostoDTO> CreateAsync(UpdateCentrodeCostoDTO centroDeCosto);
     }
     public class CentrodeCostoQueryService : ICentrodeCostoQueryService
     {
@@ -34,7 +36,7 @@ namespace Service.Queries
         {
             try
             {
-                var collection = await _context.CentrodeCosto
+                var collection = await _context.CentroDeCosto
                 .Where(x => centros == null || centros.Contains(x.idCentrodeCosto))
                 .OrderByDescending(x => x.idCentrodeCosto)
                 .GetPagedAsync(page, take);
@@ -55,11 +57,11 @@ namespace Service.Queries
         {
             try
             {
-                if (await _context.CentrodeCosto.FindAsync(id) == null)
+                if (await _context.CentroDeCosto.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
                 }
-                return (await _context.CentrodeCosto.FindAsync(id)).MapTo<CentrodeCostoDTO>();
+                return (await _context.CentroDeCosto.FindAsync(id)).MapTo<CentrodeCostoDTO>();
             }
             catch(Exception ex)
             {
@@ -69,12 +71,12 @@ namespace Service.Queries
         }
         public async Task<UpdateCentrodeCostoDTO> PutAsync(UpdateCentrodeCostoDTO CentrodeCosto, long id)
         {
-            if (await _context.CentrodeCosto.FindAsync(id) == null)
+            if (await _context.CentroDeCosto.FindAsync(id) == null)
             {
                 throw new EmptyCollectionException("Error al actualizar el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
             }
-            var centro = await _context.CentrodeCosto.FindAsync(id);
-            centro.CentroDeCosto = CentrodeCosto.CentrodeCosto;
+            var centro = await _context.CentroDeCosto.FindAsync(id);
+            centro.CentrodeCosto = CentrodeCosto.CentrodeCosto;
             centro.Tipo = CentrodeCosto.Tipo;
             centro.CodigoBas = CentrodeCosto.CodigoBas;
             centro.Obs = CentrodeCosto.Obs;
@@ -88,18 +90,41 @@ namespace Service.Queries
         {
             try
             {
-                var centro = await _context.CentrodeCosto.FindAsync(id);
+                var centro = await _context.CentroDeCosto.FindAsync(id);
                 if (centro == null)
                 {
                     throw new EmptyCollectionException("Error al eliminar el Centro de Costo, el Centro de Costo con id" + " " + id + " " + "no existe");
                 }
-                _context.CentrodeCosto.Remove(centro);
+                _context.CentroDeCosto.Remove(centro);
                 await _context.SaveChangesAsync();
                 return centro.MapTo<CentrodeCostoDTO>();
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el centro de costo");
+            }
+
+        }
+        public async Task<UpdateCentrodeCostoDTO> CreateAsync(UpdateCentrodeCostoDTO centroDeCosto)
+        {
+            try
+            {
+                var newCentrodeCosto = new CentroDeCosto()
+                {
+                    CentrodeCosto = centroDeCosto.CentrodeCosto,
+                    Obs = centroDeCosto.Obs,
+                    Tipo = centroDeCosto.Tipo,
+                    idEstadoUnidad = centroDeCosto.idEstadoUnidad,
+                    CodigoBas = centroDeCosto.CodigoBas
+                };
+                await _context.CentroDeCosto.AddAsync(newCentrodeCosto);
+
+                await _context.SaveChangesAsync();
+                return newCentrodeCosto.MapTo<UpdateCentrodeCostoDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Agrupación");
             }
 
         }

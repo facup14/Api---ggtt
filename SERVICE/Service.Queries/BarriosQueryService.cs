@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -19,6 +20,7 @@ namespace Service.Queries
         Task<BarriosDTO> GetAsync(int id);
         Task<UpdateBarrioDTO> PutAsync(UpdateBarrioDTO Barrio, int it);
         Task<BarriosDTO> DeleteAsync(int id);
+        Task<UpdateBarrioDTO> CreateAsync(UpdateBarrioDTO barrio);
     }
     public class BarriosQueryService : IBarriosQueryService
     {
@@ -102,6 +104,28 @@ namespace Service.Queries
             {
 
                 throw ex;
+            }
+
+        }
+        public async Task<UpdateBarrioDTO> CreateAsync(UpdateBarrioDTO barrio)
+        {
+            try
+            {
+                var newBarrio = new Barrios()
+                {
+                    Barrio = barrio.Barrio,
+                    Obs = barrio.Obs,
+                    IdLocalidad = barrio.IdLocalidad,
+                    
+                };
+                await _context.Barrios.AddAsync(newBarrio);
+
+                await _context.SaveChangesAsync();
+                return newBarrio.MapTo<UpdateBarrioDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Agrupación");
             }
 
         }

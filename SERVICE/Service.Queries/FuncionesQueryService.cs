@@ -4,6 +4,7 @@ using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<FuncionesDTO> GetAsync(int id);
         Task<UpdateFuncionesDTO> PutAsync(UpdateFuncionesDTO funcion, int id);
         Task<FuncionesDTO> DeleteAsync(int id);
+        Task<UpdateFuncionesDTO> CreateAsync(UpdateFuncionesDTO funcion);
     }
     public class FuncionesQueryService : IFuncionesQueryService
     {
@@ -99,6 +101,26 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return funcion.MapTo<FuncionesDTO>();
+        }
+        public async Task<UpdateFuncionesDTO> CreateAsync(UpdateFuncionesDTO funcion)
+        {
+            try
+            {
+                var newFuncion = new Funciones()
+                {
+                    Descripcion = funcion.Descripcion,
+                    Obs = funcion.Obs,
+                };
+                await _context.Funciones.AddAsync(newFuncion);
+
+                await _context.SaveChangesAsync();
+                return newFuncion.MapTo<UpdateFuncionesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Función");
+            }
+
         }
     }
 }

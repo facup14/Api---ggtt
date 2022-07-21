@@ -4,7 +4,6 @@ using DATA.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -134,16 +133,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateChoferesCommand command)
+        public async Task<IActionResult> Create(UpdateChoferesDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newChofer = await _choferesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newChofer
                 };
                 return Ok(result);
             }

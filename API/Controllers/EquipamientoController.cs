@@ -180,16 +180,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEquipamientoCommand command)
+        public async Task<IActionResult> Create(UpdateEquipamientoDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newEquipamiento = await _equipamientosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newEquipamiento
                 };
                 return Ok(result);
             }

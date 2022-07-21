@@ -13,15 +13,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
+using DATA.Models;
 
 namespace Service.Queries
 {
     public interface IEmpresasQueryService
     {
-        Task<DataCollection<EmpresasDTO>> GetAllAsync(int page, int take, IEnumerable<int> Empresas = null);
+        Task<DataCollection<EmpresasDTO>> GetAllAsync(int page, int take, IEnumerable<int> Empresas = null, bool order = false);
         Task<EmpresasDTO> GetAsync(int id);
         Task<UpdateEmpresaDTO> PutAsync(UpdateEmpresaDTO Empresa, int it);
         Task<EmpresasDTO> DeleteAsync(int id);
+        Task<UpdateEmpresaDTO> CreateAsync(UpdateEmpresaDTO empresa);
     }
 
     public class EmpresasQueryService : IEmpresasQueryService
@@ -33,19 +35,28 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<EmpresasDTO>> GetAllAsync(int page, int take, IEnumerable<int> empresas = null)
+        public async Task<DataCollection<EmpresasDTO>> GetAllAsync(int page, int take, IEnumerable<int> empresas = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var Ascend = await _context.Empresas
+                                        .Where(x => empresas == null || empresas.Contains(x.IdEmpresa))
+                                        .OrderBy(x => x.Descripcion)
+                                        .GetPagedAsync(page, take);
+                    return Ascend.MapTo<DataCollection<EmpresasDTO>>();
+                }
                 var collection = await _context.Empresas
-                .Where(x => empresas == null || empresas.Contains(x.IdEmpresa))
-                .OrderByDescending(x => x.IdEmpresa)
-                .GetPagedAsync(page, take);
+                                        .Where(x => empresas == null || empresas.Contains(x.IdEmpresa))
+                                        .OrderByDescending(x => x.Descripcion)
+                                        .GetPagedAsync(page, take);
+                return collection.MapTo<DataCollection<EmpresasDTO>>();
                 if (!collection.HasItems)
                 {
-                    throw new EmptyCollectionException("No se encontró ningun Item en la Base de Datos");
+                    throw new EmptyCollectionException("No se encontraron Items en la Base de Datos");
                 }
-                return collection.MapTo<DataCollection<EmpresasDTO>>();
+
             }
             catch (Exception ex)
             {
@@ -100,6 +111,26 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar la Empresa");
+            }
+
+        }
+        public async Task<UpdateEmpresaDTO> CreateAsync(UpdateEmpresaDTO empresa)
+        {
+            try
+            {
+                var newEmpresa = new Empresas()
+                {
+                    Descripcion = empresa.Descripcion,
+                    Obs = empresa.Obs,
+                };
+                await _context.Empresas.AddAsync(newEmpresa);
+
+                await _context.SaveChangesAsync();
+                return newEmpresa.MapTo<UpdateEmpresaDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Empresa");
             }
 
         }

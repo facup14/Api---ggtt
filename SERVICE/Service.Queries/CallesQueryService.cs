@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -19,6 +20,7 @@ namespace Service.Queries
         Task<CallesDTO> GetAsync(int id);
         Task<UpdateCallesDTO> PutAsync(UpdateCallesDTO Calle, int it);
         Task<CallesDTO> DeleteAsync(int id);
+        Task<UpdateCallesDTO> CreateAsync(UpdateCallesDTO calle);
     }
     public class CallesQueryService : ICallesQueryService
     {
@@ -101,6 +103,27 @@ namespace Service.Queries
             {
 
                 throw ex;
+            }
+
+        }
+        public async Task<UpdateCallesDTO> CreateAsync(UpdateCallesDTO calle)
+        {
+            try
+            {
+                var newCalle = new Calles()
+                {
+                    Calle = calle.Calle,
+                    Obs = calle.Obs,
+                    
+                };
+                await _context.Calles.AddAsync(newCalle);
+
+                await _context.SaveChangesAsync();
+                return newCalle.MapTo<UpdateCallesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Calle");
             }
 
         }

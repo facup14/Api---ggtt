@@ -146,16 +146,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateBarriosCommand command)
+        public async Task<IActionResult> Create(UpdateBarrioDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newBarrio = await _barriosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newBarrio
                 };
                 return Ok(result);
             }

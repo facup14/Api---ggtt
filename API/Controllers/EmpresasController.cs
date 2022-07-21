@@ -6,14 +6,10 @@ using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
 using Service.EventHandlers.Command.CreateCommands;
 
@@ -34,7 +30,7 @@ namespace API.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -44,7 +40,7 @@ namespace API.Controllers
                     empresas = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listEmpresas = await _empresasQueryService.GetAllAsync(page, take, empresas);
+                var listEmpresas = await _empresasQueryService.GetAllAsync(page, take, empresas, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -146,16 +142,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEmpresaCommand command)
+        public async Task<IActionResult> Create(UpdateEmpresaDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newEmpresa = await _empresasQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newEmpresa
                 };
                 return Ok(result);
             }

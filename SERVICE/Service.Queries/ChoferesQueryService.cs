@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<ChoferesDTO> GetAsync(long id);
         Task<UpdateChoferesDTO> PutAsync(UpdateChoferesDTO choferDto, long id);
         Task<UnidadesDTO> DeleteAsync(long id);
+        Task<UpdateChoferesDTO> CreateAsync(UpdateChoferesDTO chofer);
     }
     public class ChoferesQueryService : IChoferesQueryService
     {
@@ -114,6 +116,38 @@ namespace Service.Queries
 
             await _context.SaveChangesAsync();
             return choferes.MapTo<UnidadesDTO>();
+        }
+        public async Task<UpdateChoferesDTO> CreateAsync(UpdateChoferesDTO chofer)
+        {
+            try
+            {
+                var newChofer = new Choferes()
+                {
+                    ApellidoyNombres = chofer.ApellidoyNombres,
+                    Legajo = chofer.Legajo,
+                    CarnetVence = chofer.CarnetVence,
+                    Obs = chofer.Obs,
+                    Foto = chofer.Foto,
+                    Activo = chofer.Activo,
+                    NroDocumento = chofer.NroDocumento,
+                    FechaNacimiento = chofer.FechaNacimiento,
+                    IdEmpresa = chofer.IdEmpresa,
+                    IdAgrupacionSindical = chofer.IdAgrupacionSindical,
+                    IdConvenio = chofer.IdConvenio,
+                    IdFuncion = chofer.IdFuncion,
+                    IdEspecialidad = chofer.IdEspecialidad,
+                    IdTitulo = chofer.IdTitulo,
+            };
+                await _context.Choferes.AddAsync(newChofer);
+
+                await _context.SaveChangesAsync();
+                return newChofer.MapTo<UpdateChoferesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Agrupación");
+            }
+
         }
     }
 }

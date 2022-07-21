@@ -11,11 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -149,16 +145,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEstadoUnidadCommand command)
+        public async Task<IActionResult> Create(UpdateEstadoUnidadDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newEstadoUnidad = await _estadosunidadesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newEstadoUnidad
                 };
                 return Ok(result);
             }

@@ -145,16 +145,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateConvenioCommand command)
+        public async Task<IActionResult> Create(UpdateConvenioDTO convenio)
         {
             try
             {
-                await _mediator.Publish(command);
+                var convenioCreate = await _conveniosQueryService.CreateAsync(convenio);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = command
+                    Message = "Success",
+                    Result = convenioCreate
                 };
                 return Ok(result);
             }

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -19,6 +20,7 @@ namespace Service.Queries
         Task<EstadosUnidadesDTO> GetAsync(long id);
         Task<UpdateEstadoUnidadDTO> PutAsync(UpdateEstadoUnidadDTO EstadosUnidades, long it);
         Task<EstadosUnidadesDTO> DeleteAsync(long id);
+        Task<UpdateEstadoUnidadDTO> CreateAsync(UpdateEstadoUnidadDTO estadoUnidad);
     }
 
     public class EstadosUnidadesQueryService : IEstadosUnidadesQueryService
@@ -97,6 +99,26 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el Estado");
+            }
+
+        }
+        public async Task<UpdateEstadoUnidadDTO> CreateAsync(UpdateEstadoUnidadDTO estadoUnidad)
+        {
+            try
+            {
+                var newEstadoUnidad = new EstadosUnidades()
+                {
+                    Estado = estadoUnidad.Estado,
+                    Obs = estadoUnidad.Obs,
+                };
+                await _context.EstadosUnidades.AddAsync(newEstadoUnidad);
+
+                await _context.SaveChangesAsync();
+                return newEstadoUnidad.MapTo<UpdateEstadoUnidadDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Estado de la Unidad");
             }
 
         }

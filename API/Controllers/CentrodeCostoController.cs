@@ -146,16 +146,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCentrodeCostoCommand command)
+        public async Task<IActionResult> Create(UpdateCentrodeCostoDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newCentroCosto = await _centrosdecostoQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newCentroCosto
                 };
                 return Ok(result);
             }

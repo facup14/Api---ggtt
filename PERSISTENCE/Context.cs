@@ -19,7 +19,7 @@ namespace PERSISTENCE
         public DbSet<Modelos> Modelos { get; set; }
         public DbSet<Grupos> Grupos { get; set; }
         public DbSet<AgrupacionesSindicales> AgrupacionesSindicales { get; set; }
-        public DbSet<CentrodeCosto> CentrodeCosto { get; set; }
+        public DbSet<CentroDeCosto> CentroDeCosto { get; set; }
         public DbSet<Choferes> Choferes { get; set; }
         public DbSet<Convenios> Convenios { get; set; }
         public DbSet<Empresas> Empresas { get; set; }
@@ -56,7 +56,7 @@ namespace PERSISTENCE
             new MarcasConfiguration(modelBuilder.Entity<Marcas>());
             new GruposConfiguration(modelBuilder.Entity<Grupos>());
             new AgrupacionesSindicalesConfiguration(modelBuilder.Entity<AgrupacionesSindicales>());
-            new CentrodeCostoConfiguration(modelBuilder.Entity<CentrodeCosto>());
+            new CentrodeCostoConfiguration(modelBuilder.Entity<CentroDeCosto>());
             new ChoferesConfiguration(modelBuilder.Entity<Choferes>());
             new ConveniosConfiguration(modelBuilder.Entity<Convenios>());
             new EmpresasConfiguration(modelBuilder.Entity<Empresas>());

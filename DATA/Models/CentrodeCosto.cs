@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DATA.Models
 {
-    public class CentrodeCosto
+    public class CentroDeCosto
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long idCentrodeCosto { get; set; }
         [MaxLength(50)]
-        public string CentroDeCosto { get; set; }
+        public string CentrodeCosto { get; set; }
         public string Obs { get; set; }
         public int Tipo { get; set; }
         [ForeignKey("idEstadoUnidad")]

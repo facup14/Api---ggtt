@@ -29,7 +29,7 @@ namespace API.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool orderByName = false)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace API.Controllers
                     convenios = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listDomicilios = await _domiciliosQueryService.GetAllAsync(page, take, convenios); ;
+                var listDomicilios = await _domiciliosQueryService.GetAllAsync(page, take, convenios, orderByName); ;
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -141,16 +141,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateDomiciliosCommand command)
+        public async Task<IActionResult> Create(UpdateDomiciliosDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newDomicilio = await _domiciliosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newDomicilio
                 };
                 return Ok(result);
             }

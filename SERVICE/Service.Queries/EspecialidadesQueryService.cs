@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -19,6 +20,7 @@ namespace Service.Queries
         Task<EspecialidadesDTO> GetAsync(int id);
         Task<UpdateEspecialidadesDTO> PutAsync(UpdateEspecialidadesDTO Especialidad, int it);
         Task<EspecialidadesDTO> DeleteAsync(int id);
+        Task<UpdateEspecialidadesDTO> CreateAsync(UpdateEspecialidadesDTO especialidad);
     }
 
     public class EspecialidadesQueryService : IEspecialidadesQueryService
@@ -97,6 +99,26 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar la Especialidad");
+            }
+            
+        }
+        public async Task<UpdateEspecialidadesDTO> CreateAsync(UpdateEspecialidadesDTO especialidad)
+        {
+            try
+            {
+                var newEspecialidad = new Especialidades()
+                {
+                    Descripcion = especialidad.Descripcion,
+                    Obs = especialidad.Obs,
+                };
+                await _context.Especialidades.AddAsync(newEspecialidad);
+
+                await _context.SaveChangesAsync();
+                return newEspecialidad.MapTo<UpdateEspecialidadesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Especialidad");
             }
 
         }

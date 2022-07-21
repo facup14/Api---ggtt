@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DATA.Models;
 
 namespace Service.Queries
 {
@@ -22,6 +23,7 @@ namespace Service.Queries
         Task<AgrupacionesSindicalesDTO> GetAsync(int id);
         Task<UpdateAgrupacionSindicalDTO> PutAsync(UpdateAgrupacionSindicalDTO AgrupacionSindical, int it);
         Task<AgrupacionesSindicalesDTO> DeleteAsync(int id);
+        Task<UpdateAgrupacionSindicalDTO> CreateAsync(UpdateAgrupacionSindicalDTO agrupacion);
     }
 
     public class AgrupacionesSindicalesQueryService : IAgrupacionesSindicalesQueryService
@@ -104,6 +106,26 @@ namespace Service.Queries
             {
 
                 throw ex;
+            }
+
+        }
+        public async Task<UpdateAgrupacionSindicalDTO> CreateAsync(UpdateAgrupacionSindicalDTO agrupacion)
+        {
+            try
+            {
+                var newAgrupacion = new AgrupacionesSindicales()
+                {
+                    Descripcion = agrupacion.Descripcion,
+                    Obs = agrupacion.Obs,
+                };
+                await _context.AgrupacionesSindicales.AddAsync(newAgrupacion);
+
+                await _context.SaveChangesAsync();
+                return newAgrupacion.MapTo<UpdateAgrupacionSindicalDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Agrupación");
             }
 
         }

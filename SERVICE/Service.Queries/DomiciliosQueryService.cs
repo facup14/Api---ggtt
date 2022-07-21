@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -15,10 +16,11 @@ namespace Service.Queries
 {
     public interface IDomiciliosQueryService
     {
-        Task<DataCollection<DomiciliosDTO>> GetAllAsync(int page, int take, IEnumerable<int> domicilios = null);
+        Task<DataCollection<DomiciliosDTO>> GetAllAsync(int page, int take, IEnumerable<int> domicilios = null, bool orderNume = false);
         Task<DomiciliosDTO> GetAsync(int id);
         Task<UpdateDomiciliosDTO> PutAsync(UpdateDomiciliosDTO Domicilio, int id);
         Task<DomiciliosDTO> DeleteAsync(int id);
+        Task<UpdateDomiciliosDTO> CreateAsync(UpdateDomiciliosDTO domicilio);
     }
     public class DomiciliosQueryService : IDomiciliosQueryService
     {
@@ -29,10 +31,17 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<DomiciliosDTO>> GetAllAsync(int page, int take, IEnumerable<int> domicilios = null)
+        public async Task<DataCollection<DomiciliosDTO>> GetAllAsync(int page, int take, IEnumerable<int> domicilios = null, bool orderNume = false)
         {
             try
             {
+                if (orderNume)
+                {
+                    var collectionByNum = await _context.Domicilios
+                    .Where(x => domicilios == null || domicilios.Contains(x.IdDomicilio))
+                    .OrderByDescending(x => x.IdDomicilio)
+                    .GetPagedAsync(page, take);
+                }
                 var collection = await _context.Domicilios
                 .Where(x => domicilios == null || domicilios.Contains(x.IdDomicilio))
                 .OrderByDescending(x => x.IdDomicilio)
@@ -101,6 +110,31 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el Domicilio");
+            }
+
+        }
+        public async Task<UpdateDomiciliosDTO> CreateAsync(UpdateDomiciliosDTO domicilio)
+        {
+            try
+            {
+                var newDomicilio = new Domicilios()
+                {
+                    Predeterminado = domicilio.Predeterminado,
+                    IdProveedor = domicilio.IdProveedor,
+                    IdCalle = domicilio.IdCalle,
+                    Numero = domicilio.Numero,
+                    IdBarrio = domicilio.IdBarrio,
+                    Dpto = domicilio.Dpto,
+                    IdCliente = domicilio.IdCliente,
+                };
+                await _context.Domicilios.AddAsync(newDomicilio);
+
+                await _context.SaveChangesAsync();
+                return newDomicilio.MapTo<UpdateDomiciliosDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Agrupación");
             }
 
         }

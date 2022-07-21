@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -19,6 +20,7 @@ namespace Service.Queries
         Task<ConveniosDTO> GetAsync(int id);
         Task<UpdateConvenioDTO> PutAsync(UpdateConvenioDTO Convenio, int it);
         Task<ConveniosDTO> DeleteAsync(int id);
+        Task<UpdateConvenioDTO> CreateAsync(UpdateConvenioDTO convenio);
     }
 
     public class ConveniosQueryService : IConveniosQueryService
@@ -94,6 +96,26 @@ namespace Service.Queries
                 await _context.SaveChangesAsync();
                 return convenio.MapTo<ConveniosDTO>();
             }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al eliminar el Convenio");
+            }
+
+        }
+        public async Task<UpdateConvenioDTO> CreateAsync(UpdateConvenioDTO convenio)
+        {
+            try
+            {
+                var newConvenio = new Convenios()
+                {
+                    Descripcion = convenio.Descripcion,
+                    Obs = convenio.Obs,
+                };
+                await _context.Convenios.AddAsync(newConvenio);
+                
+                await _context.SaveChangesAsync();
+                return newConvenio.MapTo<UpdateConvenioDTO>();
+            }     
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el Convenio");
