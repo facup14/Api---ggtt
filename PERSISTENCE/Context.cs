@@ -37,6 +37,8 @@ namespace PERSISTENCE
         public DbSet<Barrios> Barrios { get; set; }
         public DbSet<Domicilios> Domicilios { get; set; }
         public DbSet<Mecanicos> Mecanicos { get; set; }
+        public DbSet<Repuestos> Repuestos { get; set; }
+        public DbSet<Articulos> Articulos { get; set; }
 
         #endregion
 
@@ -74,6 +76,8 @@ namespace PERSISTENCE
             new BarriosConfiguration(modelBuilder.Entity<Barrios>());
             new DomiciliosConfiguration(modelBuilder.Entity<Domicilios>());
             new MecanicosConfiguration(modelBuilder.Entity<Mecanicos>());
+            new RepuestosConfiguration(modelBuilder.Entity<Repuestos>());
+            new ArticulosConfiguration(modelBuilder.Entity<Articulos>());
         }
     }
 }

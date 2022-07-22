@@ -66,6 +66,8 @@ namespace API
             services.AddTransient<IBarriosQueryService, BarriosQueryService>();
             services.AddTransient<ICallesQueryService, CallesQueryService>();
             services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
+            services.AddTransient<IRepuestosQueryService, RepuestosQueryService>();
+            services.AddTransient<IArticulosQueryService, ArticulosQueryService>();
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
 
