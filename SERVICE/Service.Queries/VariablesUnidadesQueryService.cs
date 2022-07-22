@@ -15,7 +15,7 @@ namespace Service.Queries
 {
     public interface IVariablesUnidadesQueryService
     {
-        Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null);
+        Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null, bool order = false);
         Task<VariablesUnidadesDTO> GetAsync(int id);
         Task<UpdateVariableUnidadDTO> PutAsync(UpdateVariableUnidadDTO titulo, int id);
         Task<VariablesUnidadesDTO> DeleteAsync(int id);
@@ -28,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null)
+        public async Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.VariablesUnidades
+                    .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdVariableUnidad))
+                    .OrderByDescending(x => x.IdVariableUnidad)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<VariablesUnidadesDTO>>();
+                }
                 var collection = await _context.VariablesUnidades
                 .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdVariableUnidad))
                 .OrderByDescending(x => x.IdVariableUnidad)

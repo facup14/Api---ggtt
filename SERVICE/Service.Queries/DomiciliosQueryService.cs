@@ -37,10 +37,11 @@ namespace Service.Queries
             {
                 if (orderNume)
                 {
-                    var collectionByNum = await _context.Domicilios
+                    var orderBy = await _context.Domicilios
                     .Where(x => domicilios == null || domicilios.Contains(x.IdDomicilio))
-                    .OrderByDescending(x => x.IdDomicilio)
+                    .OrderBy(x => x.IdDomicilio)
                     .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<DomiciliosDTO>>();
                 }
                 var collection = await _context.Domicilios
                 .Where(x => domicilios == null || domicilios.Contains(x.IdDomicilio))

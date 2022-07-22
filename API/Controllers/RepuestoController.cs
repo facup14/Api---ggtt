@@ -24,7 +24,7 @@ namespace API.Controllers
             _repuestosQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace API.Controllers
                     repuestos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listRepuestos = await _repuestosQueryService.GetAllAsync(page, take, repuestos);
+                var listRepuestos = await _repuestosQueryService.GetAllAsync(page, take, repuestos, order);
 
                 var result = new GetResponse()
                 {

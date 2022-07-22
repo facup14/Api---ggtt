@@ -16,7 +16,7 @@ namespace Service.Queries
 {
     public interface ICentrodeCostoQueryService
     {
-        Task<DataCollection<CentrodeCostoDTO>> GetAllAsync(int page, int take, IEnumerable<long> CentrodeCosto = null);
+        Task<DataCollection<CentrodeCostoDTO>> GetAllAsync(int page, int take, IEnumerable<long> CentrodeCosto = null, bool order = false);
         Task<CentrodeCostoDTO> GetAsync(long id);
         Task<UpdateCentrodeCostoDTO> PutAsync(UpdateCentrodeCostoDTO CentrodeCosto, long it);
         Task<CentrodeCostoDTO> DeleteAsync(long id);
@@ -32,11 +32,19 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<CentrodeCostoDTO>> GetAllAsync(int page, int take, IEnumerable<long> centros = null)
+        public async Task<DataCollection<CentrodeCostoDTO>> GetAllAsync(int page, int take, IEnumerable<long> centros = null, bool order = false)
         {
             try
             {
-                var collection = await _context.CentroDeCosto
+                if (!order)
+                {
+                    var orderBy = await _context.CentroDeCosto
+                    .Where(x => centros == null || centros.Contains(x.idCentrodeCosto))
+                    .OrderBy(x => x.idCentrodeCosto)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<CentrodeCostoDTO>>();
+                }
+                                    var collection = await _context.CentroDeCosto
                 .Where(x => centros == null || centros.Contains(x.idCentrodeCosto))
                 .OrderByDescending(x => x.idCentrodeCosto)
                 .GetPagedAsync(page, take);

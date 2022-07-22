@@ -17,7 +17,7 @@ namespace Service.Queries
 {
     public interface IModelosQueryService
     {
-        Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> Modelos = null);
+        Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> Modelos = null, bool order = false);
         Task<ModelosDTO> GetAsync(long id);
         Task<UpdateModeloDTO> PutAsync(UpdateModeloDTO Modelos, long it);
         Task<ModelosDTO> DeleteAsync(long id);
@@ -33,10 +33,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> modelos = null)
+        public async Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> modelos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Modelos
+                    .Where(x => modelos == null || modelos.Contains(x.IdModelo))
+                    .OrderBy(x => x.IdModelo)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ModelosDTO>>();
+                }
                 var collection = await _context.Modelos
                 .Where(x => modelos == null || modelos.Contains(x.IdModelo))
                 .OrderByDescending(x => x.IdModelo)

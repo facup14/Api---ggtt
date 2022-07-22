@@ -26,7 +26,7 @@ namespace API.Controllers
             _provinciasQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace API.Controllers
                     provincias = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listProvincias = await _provinciasQueryService.GetAllAsync(page, take, provincias);
+                var listProvincias = await _provinciasQueryService.GetAllAsync(page, take, provincias, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,

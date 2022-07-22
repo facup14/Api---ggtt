@@ -15,7 +15,7 @@ namespace Service.Queries
 {
     public interface ITrazasQueryService
     {
-        Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null);
+        Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null, bool order = false);
         Task<TrazasDTO> GetAsync(long id);
         Task<UpdateTrazasDTO> PutAsync(UpdateTrazasDTO traza, long id);
         Task<TrazasDTO> DeleteAsync(long id);
@@ -28,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null)
+        public async Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Trazas
+                    .Where(x => trazas == null || trazas.Contains(x.IdTraza))
+                    .OrderByDescending(x => x.IdTraza)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<TrazasDTO>>();
+                }
                 var collection = await _context.Trazas
                 .Where(x => trazas == null || trazas.Contains(x.IdTraza))
                 .OrderByDescending(x => x.IdTraza)

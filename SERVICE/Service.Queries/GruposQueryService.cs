@@ -15,7 +15,7 @@ namespace Service.Queries
 {
     public interface IGruposQueryService
     {
-        Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null);
+        Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null, bool order = false);
         Task<GruposDTO> GetAsync(long id);
         Task<UpdateGruposDTO> PutAsync(UpdateGruposDTO grupo, long id);
         Task<GruposDTO> DeleteAsync(long id);
@@ -28,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null)
+        public async Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Grupos
+                    .Where(x => grupos == null || grupos.Contains(x.IdGrupo))
+                    .OrderBy(x => x.IdGrupo)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<GruposDTO>>();
+                }
                 var collection = await _context.Grupos
                 .Where(x => grupos == null || grupos.Contains(x.IdGrupo))
                 .OrderByDescending(x => x.IdGrupo)

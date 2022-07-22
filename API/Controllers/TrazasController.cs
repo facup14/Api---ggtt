@@ -24,7 +24,7 @@ namespace API.Controllers
             _trazasQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace API.Controllers
                     trazas = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listTrazas = await _trazasQueryService.GetAllAsync(page, take, trazas);
+                var listTrazas = await _trazasQueryService.GetAllAsync(page, take, trazas,order);
 
                 var result = new GetResponse()
                 {

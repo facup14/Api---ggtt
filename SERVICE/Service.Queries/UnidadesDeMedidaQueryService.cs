@@ -15,7 +15,7 @@ namespace Service.Queries
 {
     public interface IUnidadesDeMedidaQueryService
     {
-        Task<DataCollection<UnidadesDeMedidaDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidadesMedida = null);
+        Task<DataCollection<UnidadesDeMedidaDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidadesMedida = null, bool order = false);
         Task<UnidadesDeMedidaDTO> GetAsync(long id);
         Task<UpdateUnidadDeMedidaDTO> PutAsync(UpdateUnidadDeMedidaDTO titulo, long id);
         Task<UnidadesDeMedidaDTO> DeleteAsync(long id);
@@ -28,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<UnidadesDeMedidaDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidadesMedida = null)
+        public async Task<DataCollection<UnidadesDeMedidaDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidadesMedida = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.UnidadesDeMedida
+                    .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdUnidadDeMedida))
+                    .OrderByDescending(x => x.IdUnidadDeMedida)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<UnidadesDeMedidaDTO>>();
+                }
                 var collection = await _context.UnidadesDeMedida
                 .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdUnidadDeMedida))
                 .OrderByDescending(x => x.IdUnidadDeMedida)

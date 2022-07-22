@@ -17,7 +17,7 @@ namespace Service.Queries
 {
     public interface IProvinciasQueryService
     {
-        Task<DataCollection<ProvinciasDTO>> GetAllAsync(int page, int take, IEnumerable<long> Provincias = null);
+        Task<DataCollection<ProvinciasDTO>> GetAllAsync(int page, int take, IEnumerable<long> Provincias = null, bool order = false);
         Task<ProvinciasDTO> GetAsync(long id);
         Task<UpdateProvinciaDTO> PutAsync(UpdateProvinciaDTO Provincias, long it);
         Task<ProvinciasDTO> DeleteAsync(long id);
@@ -33,10 +33,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<ProvinciasDTO>> GetAllAsync(int page, int take, IEnumerable<long> provincias = null)
+        public async Task<DataCollection<ProvinciasDTO>> GetAllAsync(int page, int take, IEnumerable<long> provincias = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Provincias
+                    .Where(x => provincias == null || provincias.Contains(x.IdProvincia))
+                    .OrderBy(x => x.IdProvincia)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ProvinciasDTO>>();
+                }
                 var collection = await _context.Provincias
                 .Where(x => provincias == null || provincias.Contains(x.IdProvincia))
                 .OrderByDescending(x => x.IdProvincia)

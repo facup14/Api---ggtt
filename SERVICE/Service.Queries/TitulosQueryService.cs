@@ -17,7 +17,7 @@ namespace Service.Queries
 {
     public interface ITitulosQueryService
     {
-        Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null);
+        Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null, bool order = false);
         Task<TitulosDTO> GetAsync(int id);
         Task<UpdateTitulosDTO> PutAsync(UpdateTitulosDTO titulo, int id);
         Task<TitulosDTO> DeleteAsync(int id);
@@ -30,10 +30,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null)
+        public async Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Titulos
+                    .Where(x => titulos == null || titulos.Contains(x.IdTitulo))
+                    .OrderByDescending(x => x.IdTitulo)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<TitulosDTO>>();                    
+                }
                 var collection = await _context.Titulos
                 .Where(x => titulos == null || titulos.Contains(x.IdTitulo))
                 .OrderByDescending(x => x.IdTitulo)

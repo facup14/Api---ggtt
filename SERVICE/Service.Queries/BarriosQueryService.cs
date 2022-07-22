@@ -16,7 +16,7 @@ namespace Service.Queries
 {
     public interface IBarriosQueryService
     {
-        Task<DataCollection<BarriosDTO>> GetAllAsync(int page, int take, IEnumerable<int> Barrio = null);
+        Task<DataCollection<BarriosDTO>> GetAllAsync(int page, int take, IEnumerable<int> Barrio = null, bool order = false);
         Task<BarriosDTO> GetAsync(int id);
         Task<UpdateBarrioDTO> PutAsync(UpdateBarrioDTO Barrio, int it);
         Task<BarriosDTO> DeleteAsync(int id);
@@ -31,10 +31,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<BarriosDTO>> GetAllAsync(int page, int take, IEnumerable<int> Barrio = null)
+        public async Task<DataCollection<BarriosDTO>> GetAllAsync(int page, int take, IEnumerable<int> Barrio = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Barrios
+                    .Where(x => Barrio == null || Barrio.Contains(x.IdBarrio))
+                    .OrderBy(x => x.IdBarrio)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<BarriosDTO>>();
+                }
                 var collection = await _context.Barrios
                 .Where(x => Barrio == null || Barrio.Contains(x.IdBarrio))
                 .OrderByDescending(x => x.IdBarrio)

@@ -17,7 +17,7 @@ namespace Service.Queries
 {
     public interface IChoferesQueryService
     {
-        Task<DataCollection<ChoferesDTO>> GetAllAsync(int page, int take, IEnumerable<long> choferes = null);
+        Task<DataCollection<ChoferesDTO>> GetAllAsync(int page, int take, IEnumerable<long> choferes = null, bool order = false);
         Task<ChoferesDTO> GetAsync(long id);
         Task<UpdateChoferesDTO> PutAsync(UpdateChoferesDTO choferDto, long id);
         Task<UnidadesDTO> DeleteAsync(long id);
@@ -32,10 +32,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<ChoferesDTO>> GetAllAsync(int page, int take, IEnumerable<long> choferes = null)
+        public async Task<DataCollection<ChoferesDTO>> GetAllAsync(int page, int take, IEnumerable<long> choferes = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Choferes
+                    .Where(x => choferes == null || choferes.Contains(x.IdChofer))
+                    .OrderBy(x => x.IdChofer)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ChoferesDTO>>();
+                }
                 var collection = await _context.Choferes
                 .Where(x => choferes == null || choferes.Contains(x.IdChofer))
                 .OrderByDescending(x => x.IdChofer)

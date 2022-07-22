@@ -24,7 +24,7 @@ namespace API.Controllers
             _variablesQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace API.Controllers
                     titulos = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listVariables = await _variablesQueryService.GetAllAsync(page, take, titulos);
+                var listVariables = await _variablesQueryService.GetAllAsync(page, take, titulos, order);
 
                 var result = new GetResponse()
                 {

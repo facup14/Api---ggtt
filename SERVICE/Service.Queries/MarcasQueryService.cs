@@ -17,7 +17,7 @@ namespace Service.Queries
 {
     public interface IMarcasQueryService
     {
-        Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> Marcas = null);
+        Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> Marcas = null, bool order = false);
         Task<MarcasDTO> GetAsync(long id);
         Task<UpdateMarcaDTO> PutAsync(UpdateMarcaDTO Convenio, long it);
         Task<MarcasDTO> DeleteAsync(long id);
@@ -33,10 +33,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> marcas = null)
+        public async Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> marcas = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Marcas
+                    .Where(x => marcas == null || marcas.Contains(x.IdMarca))
+                    .OrderBy(x => x.IdMarca)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<MarcasDTO>>();
+                }
                 var collection = await _context.Marcas
                 .Where(x => marcas == null || marcas.Contains(x.IdMarca))
                 .OrderByDescending(x => x.IdMarca)

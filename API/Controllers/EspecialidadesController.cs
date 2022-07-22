@@ -25,7 +25,7 @@ namespace API.Controllers
             _especialidadesQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace API.Controllers
                     especialidades = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listEspecialidades =  await _especialidadesQueryService.GetAllAsync(page, take, especialidades);
+                var listEspecialidades =  await _especialidadesQueryService.GetAllAsync(page, take, especialidades,order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,

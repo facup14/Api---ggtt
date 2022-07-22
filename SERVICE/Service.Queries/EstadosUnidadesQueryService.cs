@@ -16,7 +16,7 @@ namespace Service.Queries
 {
     public interface IEstadosUnidadesQueryService
     {
-        Task<DataCollection<EstadosUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> EstadosUnidades = null);
+        Task<DataCollection<EstadosUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> EstadosUnidades = null, bool order = false);
         Task<EstadosUnidadesDTO> GetAsync(long id);
         Task<UpdateEstadoUnidadDTO> PutAsync(UpdateEstadoUnidadDTO EstadosUnidades, long it);
         Task<EstadosUnidadesDTO> DeleteAsync(long id);
@@ -32,10 +32,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<EstadosUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> estadosunidades = null)
+        public async Task<DataCollection<EstadosUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> estadosunidades = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.EstadosUnidades
+                    .Where(x => estadosunidades == null || estadosunidades.Contains(x.IdEstadoUnidad))
+                    .OrderBy(x => x.IdEstadoUnidad)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<EstadosUnidadesDTO>>();
+                }
                 var collection = await _context.EstadosUnidades
                 .Where(x => estadosunidades == null || estadosunidades.Contains(x.IdEstadoUnidad))
                 .OrderByDescending(x => x.IdEstadoUnidad)

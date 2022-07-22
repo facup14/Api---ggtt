@@ -25,7 +25,7 @@ namespace API.Controllers
             _centrosdecostoQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -34,8 +34,8 @@ namespace API.Controllers
                 {
                     centrosdecosto = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
-
-                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto);
+                
+                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,

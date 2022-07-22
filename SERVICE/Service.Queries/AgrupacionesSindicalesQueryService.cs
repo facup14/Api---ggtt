@@ -19,7 +19,7 @@ namespace Service.Queries
 {
     public interface IAgrupacionesSindicalesQueryService
     {
-        Task<DataCollection<AgrupacionesSindicalesDTO>> GetAllAsync(int page, int take, IEnumerable<int> AgrupacionesSindicales = null);
+        Task<DataCollection<AgrupacionesSindicalesDTO>> GetAllAsync(int page, int take, IEnumerable<int> AgrupacionesSindicales = null, bool order = false);
         Task<AgrupacionesSindicalesDTO> GetAsync(int id);
         Task<UpdateAgrupacionSindicalDTO> PutAsync(UpdateAgrupacionSindicalDTO AgrupacionSindical, int it);
         Task<AgrupacionesSindicalesDTO> DeleteAsync(int id);
@@ -35,10 +35,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<AgrupacionesSindicalesDTO>> GetAllAsync(int page, int take, IEnumerable<int> agrupaciones = null)
+        public async Task<DataCollection<AgrupacionesSindicalesDTO>> GetAllAsync(int page, int take, IEnumerable<int> agrupaciones = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.AgrupacionesSindicales
+                    .Where(x => agrupaciones == null || agrupaciones.Contains(x.IdAgrupacionSindical))
+                    .OrderBy(x => x.IdAgrupacionSindical)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<AgrupacionesSindicalesDTO>>();
+                }
                 var collection = await _context.AgrupacionesSindicales
                 .Where(x => agrupaciones == null || agrupaciones.Contains(x.IdAgrupacionSindical))
                 .OrderByDescending(x => x.IdAgrupacionSindical)

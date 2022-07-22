@@ -25,7 +25,7 @@ namespace API.Controllers
             _marcasQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace API.Controllers
                     marcas = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listMarcas = await _marcasQueryService.GetAllAsync(page, take, marcas);
+                var listMarcas = await _marcasQueryService.GetAllAsync(page, take, marcas, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,

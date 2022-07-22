@@ -24,7 +24,7 @@ namespace API.Controllers
             _domiciliosQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool orderByName = false)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace API.Controllers
                     convenios = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listDomicilios = await _domiciliosQueryService.GetAllAsync(page, take, convenios, orderByName); ;
+                var listDomicilios = await _domiciliosQueryService.GetAllAsync(page, take, convenios, order); ;
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,

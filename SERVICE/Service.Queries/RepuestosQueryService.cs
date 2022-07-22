@@ -16,7 +16,7 @@ namespace Service.Queries
 {
     public interface IRepuestosQueryService
     {
-        Task<DataCollection<RepuestosDTO>> GetAllAsync(int page, int take, IEnumerable<long> repuestos = null);
+        Task<DataCollection<RepuestosDTO>> GetAllAsync(int page, int take, IEnumerable<long> repuestos = null, bool order = false);
         Task<RepuestosByIdDTO> GetAsync(long id);
         Task<UpdateRepuestosDTO> PutAsync(UpdateRepuestosDTO repuesto, long id);
         Task<RepuestosDTO> DeleteAsync(long id);
@@ -31,10 +31,18 @@ namespace Service.Queries
             _context = context;
         }
         
-        public async Task<DataCollection<RepuestosDTO>> GetAllAsync(int page, int take, IEnumerable<long> repuestos = null)
+        public async Task<DataCollection<RepuestosDTO>> GetAllAsync(int page, int take, IEnumerable<long> repuestos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Repuestos
+                    .Where(x => repuestos == null || repuestos.Contains(x.IdRepuesto))
+                    .OrderByDescending(x => x.IdRepuesto)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<RepuestosDTO>>();
+                }
                 var collection = await _context.Repuestos
                 .Where(x => repuestos == null || repuestos.Contains(x.IdRepuesto))
                 .OrderByDescending(x => x.IdRepuesto)
