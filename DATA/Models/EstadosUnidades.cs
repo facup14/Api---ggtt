@@ -9,7 +9,7 @@ namespace DATA.Models
         public EstadosUnidades()
         {
             Unidades = new HashSet<Unidades>();
-            CentrodeCosto = new HashSet<CentrodeCosto>();
+            CentrodeCosto = new HashSet<CentroDeCosto>();
         }
         
         [Key]
@@ -17,7 +17,7 @@ namespace DATA.Models
         public long IdEstadoUnidad { get; set; }
         public string Estado { get; set; }
         public string Obs { get; set; }
-        public virtual ICollection<CentrodeCosto> CentrodeCosto { get; set; }
+        public virtual ICollection<CentroDeCosto> CentrodeCosto { get; set; }
         public virtual ICollection<Unidades> Unidades { get; set; }
     }
 }

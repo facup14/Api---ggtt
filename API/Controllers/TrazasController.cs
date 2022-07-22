@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<TrazasController> _logger;
         private readonly ITrazasQueryService _trazasQueryService;
-        private readonly IMediator _mediator;
-        public TrazasController(ILogger<TrazasController> logger, ITrazasQueryService productQueryService, IMediator mediator)
+        public TrazasController(ILogger<TrazasController> logger, ITrazasQueryService productQueryService)
         {
             _logger = logger;
             _trazasQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -171,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTrazasCommand command)
+        public async Task<IActionResult> Create(UpdateTrazasDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newTraza = await _trazasQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newTraza
                 };
                 return Ok(result);
             }

@@ -29,7 +29,7 @@ namespace PERSISTENCE
         public DbSet<Provincias> Provincias { get; set; }
         public DbSet<Titulos> Titulos { get; set; }
         public DbSet<Trazas> Trazas { get; set; }
-        public DbSet<UnidadesMedida> UnidadesDeMedida { get; set; }
+        public DbSet<UnidadesDeMedida> UnidadesDeMedida { get; set; }
         public DbSet<VariablesUnidades> VariablesUnidades { get; set; }
         public DbSet<Equipamientos> Equipamientos { get; set; }
         public DbSet<Talleres> Talleres { get; set; }
@@ -66,7 +66,7 @@ namespace PERSISTENCE
             new ProvinciasConfiguration(modelBuilder.Entity<Provincias>());
             new TitulosConfiguration(modelBuilder.Entity<Titulos>());
             new TrazasConfiguration(modelBuilder.Entity<Trazas>());
-            new UnidadesDeMedidaConfiguration(modelBuilder.Entity<UnidadesMedida>());
+            new UnidadesDeMedidaConfiguration(modelBuilder.Entity<UnidadesDeMedida>());
             new VariablesUnidadesConfiguration(modelBuilder.Entity<VariablesUnidades>());
             new EquipamientosConfiguration(modelBuilder.Entity<Equipamientos>());
             new TalleresConfiguration(modelBuilder.Entity<Talleres>());

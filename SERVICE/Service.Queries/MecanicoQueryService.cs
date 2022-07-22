@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -9,7 +10,6 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,6 +20,7 @@ namespace Service.Queries
         Task<MecanicosDTO> GetAsync(long id);
         Task<UpdateMecanicoDTO> PutAsync(UpdateMecanicoDTO mecanico, long it);
         Task<MecanicosDTO> DeleteAsync(long id);
+        Task<UpdateMecanicoDTO> CreateAsync(UpdateMecanicoDTO mecanico);
     }
     public class MecanicoQueryService : IMecanicoQueryService
     {
@@ -152,6 +153,45 @@ namespace Service.Queries
 
             await _context.SaveChangesAsync();
             return mecaninco.MapTo<MecanicosDTO>();
+        }
+        public async Task<UpdateMecanicoDTO> CreateAsync(UpdateMecanicoDTO mecanico)
+        {
+            try
+            {
+                var newMecanico = new Mecanicos()
+                {
+                    ApellidoyNombres = mecanico.ApellidoyNombres,
+                    Legajo = mecanico.Legajo,
+                    Especialidad = mecanico.Especialidad,
+                    Obs = mecanico.Obs,
+                    Foto = mecanico.Foto,
+                    Activo = mecanico.Activo,
+                    NroDocumento = mecanico.NroDocumento,
+                    FechaNacimiento = mecanico.FechaNacimiento,
+                    Empresa = mecanico.Empresa,
+                    Funcion = mecanico.Funcion,
+                    AgrupacionSindical = mecanico.AgrupacionSindical,
+                    Convenio = mecanico.Convenio,
+                    CostoHora = mecanico.CostoHora,
+                    ValorHoraInterno = mecanico.ValorHoraInterno,
+                    IdTaller = mecanico.IdTaller,
+                    IdEmpresa = mecanico.IdEmpresa,
+                    IdFuncion = mecanico.IdFuncion,
+                    IdTitulo = mecanico.IdTitulo,
+                    IdEspecialidad = mecanico.IdEspecialidad,
+                    IdAgrupacionSindical = mecanico.IdAgrupacionSindical,
+                    IdConvenio = mecanico.IdConvenio,
+            };
+                await _context.Mecanicos.AddAsync(newMecanico);
+
+                await _context.SaveChangesAsync();
+                return newMecanico.MapTo<UpdateMecanicoDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Mecanico");
+            }
+
         }
     }
 }

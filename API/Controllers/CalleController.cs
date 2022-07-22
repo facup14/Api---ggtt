@@ -1,10 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -20,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<CalleController> _logger;
         private readonly ICallesQueryService _callesQueryService;
-        private readonly IMediator _mediator;
-        public CalleController(ILogger<CalleController> logger, ICallesQueryService productQueryService, IMediator mediator)
+        public CalleController(ILogger<CalleController> logger, ICallesQueryService productQueryService)
         {
             _logger = logger;
             _callesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

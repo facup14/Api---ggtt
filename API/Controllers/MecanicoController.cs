@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<MecanicoController> _logger;
         private readonly IMecanicoQueryService _mecanicosQueryService;
-        private readonly IMediator _mediator;
-        public MecanicoController(ILogger<MecanicoController> logger, IMecanicoQueryService productQueryService, IMediator mediator)
+        public MecanicoController(ILogger<MecanicoController> logger, IMecanicoQueryService productQueryService)
         {
             _logger = logger;
             _mecanicosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -135,11 +130,11 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateMecanicoCommand command)
+        public async Task<IActionResult> Create(UpdateMecanicoDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newMecanico = await _mecanicosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,

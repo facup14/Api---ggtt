@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
 using Service.Queries.DTOS;
@@ -7,11 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.Models;
 using System.Net;
 using DATA.Extensions;
 using DATA.Errors;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -22,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<UnidadesController> _logger;
         private readonly IUnidadesQueryService _unidadesQueryService;
-        private readonly IMediator _mediator;
-        public UnidadesController(ILogger<UnidadesController> logger, IUnidadesQueryService productQueryService, IMediator mediator)
+        public UnidadesController(ILogger<UnidadesController> logger, IUnidadesQueryService productQueryService)
         {
             _logger = logger;
             _unidadesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -135,16 +130,16 @@ namespace API.Controllers
             
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUnidadCommand command)
+        public async Task<IActionResult> Create(UpdateUnidadDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newUnidad = await _unidadesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newUnidad
                 };
                 return Ok(result);
             }catch(EmptyCollectionException ex)

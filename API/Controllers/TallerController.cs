@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<TallerController> _logger;
         private readonly ITalleresQueryService _talleresQueryService;
-        private readonly IMediator _mediator;
-        public TallerController(ILogger<TallerController> logger, ITalleresQueryService productQueryService, IMediator mediator)
+        public TallerController(ILogger<TallerController> logger, ITalleresQueryService productQueryService)
         {
             _logger = logger;
             _talleresQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -135,16 +130,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTallerCommand command)
+        public async Task<IActionResult> Create(UpdateTalleresDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newTaller = await _talleresQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newTaller
                 };
                 return Ok(result);
             }

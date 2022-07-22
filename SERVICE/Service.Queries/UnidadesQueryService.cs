@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Service.Queries.DTOS;
@@ -21,6 +22,7 @@ namespace Service.Queries
         Task<UnidadesByIdDTO> GetAsync(long id);
         Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, long it);
         Task<UnidadesDTO> DeleteAsync(long id);
+        Task<UpdateUnidadDTO> CreateAsync(UpdateUnidadDTO unidad);
     }
     public class UnidadesQueryService : IUnidadesQueryService
     {
@@ -92,14 +94,44 @@ namespace Service.Queries
             }
             var unidade = await _context.Unidades.FindAsync(id);
 
-            unidade.NroUnidad = unidad.NroUnidad ?? unidade.NroUnidad;
-            unidade.Dominio = unidad.Dominio ?? unidade.Dominio;
-            unidade.Motor = unidad.Motor ?? unidade.Motor;
-            unidade.Chasis = unidad.Chasis ?? unidade.Chasis;
-            unidade.Titular = unidad.Titular ?? unidade.Titular;
-            unidade.idEstadoUnidad = unidad.idEstadoUnidad;
-            unidade.idModelo = unidad.idModelo;
-            unidade.idSituacionUnidad = unidad.idSituacionUnidad;
+                unidade.NroUnidad = unidad.NroUnidad;
+                unidade.Dominio = unidad.Dominio;
+                unidade.IntExt = unidad.IntExt;
+                unidade.KmAceptadosDesfazados = unidad.KmAceptadosDesfazados;
+                unidade.HsAceptadasDesfazadas = unidad.HsAceptadasDesfazadas;
+                unidade.Motor = unidad.Motor;
+                unidade.Chasis = unidad.Chasis;
+                unidade.AñoModelo = unidad.AñoModelo;
+                unidade.Descripcion = unidad.Descripcion;
+                unidade.Foto = unidad.Foto;
+                unidade.PromedioConsumo = unidad.PromedioConsumo;
+                unidade.UnidadMedida = unidad.UnidadMedida;
+                unidade.IdTipoCombustible = unidad.IdTipoCombustible;
+                unidade.UnidadMedTrabajo = unidad.UnidadMedTrabajo;
+                unidade.Capacidad = unidad.Capacidad;
+                unidade.IdUnidadDeMedida = unidad.IdUnidadDeMedida;
+                unidade.Obs = unidad.Obs;
+                unidade.Tacografo = unidad.Tacografo;
+                unidade.Radicacion = unidad.Radicacion;
+                unidade.Titular = unidad.Titular;
+                unidade.AcreedorPrendario = unidad.AcreedorPrendario;
+                unidade.MarcaTacografo = unidad.MarcaTacografo;
+                unidade.CodigoRadio = unidad.CodigoRadio;
+                unidade.CodigoLlave = unidad.CodigoLlave;
+                unidade.IdModeloChasis = unidad.IdModeloChasis;
+                unidade.IdTraza = unidad.IdTraza;
+                unidade.IdEsquema = unidad.IdEsquema;
+                unidade.TieneConceptosSinRealizar = unidad.TieneConceptosSinRealizar;
+                unidade.IdTipoLlanta = unidad.IdTipoLlanta;
+                unidade.Potencia = unidad.Potencia;
+                unidade.HsKmsDiaTrabajo = unidad.HsKmsDiaTrabajo;
+                unidade.LtsDiaTrabajo = unidad.LtsDiaTrabajo;
+                unidade.LitrosxTraza = unidad.LitrosxTraza;
+                unidade.idNombreEquipamiento = unidad.idNombreEquipamiento;
+                unidade.HabilitaOtraUnidadMedida = unidad.HabilitaOtraUnidadMedida;
+                unidade.idEstadoUnidad = unidad.idEstadoUnidad;
+                unidade.idModelo = unidad.idModelo;
+                unidade.idSituacionUnidad = unidad.idSituacionUnidad;
 
 
                 await _context.SaveChangesAsync();
@@ -119,7 +151,63 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return unidade.MapTo<UnidadesDTO>();                        
         }
-        
+        public async Task<UpdateUnidadDTO> CreateAsync(UpdateUnidadDTO unidad)
+        {
+            try
+            {
+                var newUnidad = new Unidades()
+                {
+                    NroUnidad = unidad.NroUnidad,
+                    Dominio = unidad.Dominio,
+                    IntExt = unidad.IntExt,
+                    KmAceptadosDesfazados = unidad.KmAceptadosDesfazados,
+                    HsAceptadasDesfazadas = unidad.HsAceptadasDesfazadas,
+                    Motor = unidad.Motor,
+                    Chasis = unidad.Chasis,
+                    AñoModelo = unidad.AñoModelo,
+                    Descripcion = unidad.Descripcion,
+                    Foto = unidad.Foto,
+                    PromedioConsumo = unidad.PromedioConsumo,
+                    UnidadMedida = unidad.UnidadMedida,
+                    IdTipoCombustible = unidad.IdTipoCombustible,
+                    UnidadMedTrabajo = unidad.UnidadMedTrabajo,
+                    Capacidad = unidad.Capacidad,
+                    IdUnidadDeMedida = unidad.IdUnidadDeMedida,
+                    Obs = unidad.Obs,
+                    Tacografo = unidad.Tacografo,
+                    Radicacion = unidad.Radicacion,
+                    Titular = unidad.Titular,
+                    AcreedorPrendario = unidad.AcreedorPrendario,
+                    MarcaTacografo = unidad.MarcaTacografo,
+                    CodigoRadio = unidad.CodigoRadio,
+                    CodigoLlave = unidad.CodigoLlave,
+                    IdModeloChasis = unidad.IdModeloChasis,
+                    IdTraza = unidad.IdTraza,
+                    IdEsquema = unidad.IdEsquema,
+                    TieneConceptosSinRealizar = unidad.TieneConceptosSinRealizar,
+                    IdTipoLlanta = unidad.IdTipoLlanta,
+                    Potencia = unidad.Potencia,
+                    HsKmsDiaTrabajo = unidad.HsKmsDiaTrabajo,
+                    LtsDiaTrabajo = unidad.LtsDiaTrabajo,
+                    LitrosxTraza = unidad.LitrosxTraza,
+                    idNombreEquipamiento = unidad.idNombreEquipamiento,
+                    HabilitaOtraUnidadMedida = unidad.HabilitaOtraUnidadMedida,
+                    idEstadoUnidad = unidad.idEstadoUnidad,
+                    idModelo = unidad.idModelo,
+                    idSituacionUnidad = unidad.idSituacionUnidad,
+                };
+                await _context.Unidades.AddAsync(newUnidad);
+
+                await _context.SaveChangesAsync();
+                return newUnidad.MapTo<UpdateUnidadDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Unidad");
+            }
+
+        }
+
     }
     
 }

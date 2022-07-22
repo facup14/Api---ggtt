@@ -1,11 +1,8 @@
-﻿using DATA.DTOS;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<TitulosController> _logger;
         private readonly ITitulosQueryService _titulosQueryService;
-        private readonly IMediator _mediator;
-        public TitulosController(ILogger<TitulosController> logger, ITitulosQueryService productQueryService, IMediator mediator)
+        public TitulosController(ILogger<TitulosController> logger, ITitulosQueryService productQueryService)
         {
             _logger = logger;
             _titulosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -171,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTituloCommand command)
+        public async Task<IActionResult> Create(UpdateTitulosDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newTitulo = await _titulosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newTitulo
                 };
                 return Ok(result);
             }

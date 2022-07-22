@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -18,6 +19,7 @@ namespace Service.Queries
         Task<TalleresDTO> GetAsync(long id);
         Task<UpdateTalleresDTO> PutAsync(UpdateTalleresDTO taller, long id);
         Task<TalleresDTO> DeleteAsync(long id);
+        Task<UpdateTalleresDTO> CreateAsync(UpdateTalleresDTO taller);
     }
     public class TalleresQueryService : ITalleresQueryService
     {
@@ -118,6 +120,48 @@ namespace Service.Queries
 
             await _context.SaveChangesAsync();
             return taller.MapTo<TalleresDTO>();
+        }
+        public async Task<UpdateTalleresDTO> CreateAsync(UpdateTalleresDTO taller)
+        {
+            try
+            {
+                var newTaller = new Talleres()
+                {
+                      NombreTaller = taller.NombreTaller,
+                      Obs = taller.Obs,
+                      Direccion = taller.Direccion,
+                      Mail = taller.Mail,
+                      JefeAsignado = taller.JefeAsignado,
+                      Telefonos = taller.Telefonos,
+                      NombreRecibe = taller.NombreRecibe,
+                      RutaLogo = taller.RutaLogo,
+                      RutaInstalador = taller.RutaInstalador,
+                      IdLugarAbastecimiento = taller.IdLugarAbastecimiento,
+                      RutaIcono = taller.RutaIcono,
+                      FondoPantalla = taller.FondoPantalla,
+                      NombreEmpresa = taller.NombreEmpresa,
+                      NombreProvincia = taller.NombreProvincia,
+                      Slogan = taller.Slogan,
+                      IdRecibidoPor = taller.IdRecibidoPor,
+                      IdSolicitadoPor = taller.IdSolicitadoPor,
+                      RecibePersona = taller.RecibePersona,
+                      SolicitaPersona = taller.SolicitaPersona,
+                      CargaAutomaticaCombustible = taller.CargaAutomaticaCombustible,
+                      RutaCargaAutomatica = taller.RutaCargaAutomatica,
+                      UserIdCombustible = taller.UserIdCombustible,
+                      PasswordCombustible = taller.PasswordCombustible,
+                      IdLocalidad = taller.IdLocalidad,
+                };
+                await _context.Talleres.AddAsync(newTaller);
+
+                await _context.SaveChangesAsync();
+                return newTaller.MapTo<UpdateTalleresDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Taller");
+            }
+
         }
     }
 }

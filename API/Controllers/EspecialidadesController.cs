@@ -1,21 +1,14 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -26,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<EspecialidadesController> _logger;
         private readonly IEspecialidadesQueryService _especialidadesQueryService;
-        private readonly IMediator _mediator;
-        public EspecialidadesController(ILogger<EspecialidadesController> logger, IEspecialidadesQueryService productQueryService, IMediator mediator)
+        public EspecialidadesController(ILogger<EspecialidadesController> logger, IEspecialidadesQueryService productQueryService)
         {
             _logger = logger;
             _especialidadesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

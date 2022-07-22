@@ -9,8 +9,6 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.2" />
     <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="3.1.2" />
     <PackageReference Include="EfCore3.SqlServer2008Query" Version="1.0.0" />
-    <PackageReference Include="MediatR" Version="10.0.1" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.26" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.26">
       <PrivateAssets>all</PrivateAssets>

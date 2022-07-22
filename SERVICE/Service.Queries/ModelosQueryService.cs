@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
+using DATA.Models;
 
 namespace Service.Queries
 {
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<ModelosDTO> GetAsync(long id);
         Task<UpdateModeloDTO> PutAsync(UpdateModeloDTO Modelos, long it);
         Task<ModelosDTO> DeleteAsync(long id);
+        Task<UpdateModeloDTO> CreateAsync(UpdateModeloDTO modelo);
     }
 
     public class ModelosQueryService : IModelosQueryService
@@ -98,6 +100,28 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el Modelo");
+            }
+
+        }
+        public async Task<UpdateModeloDTO> CreateAsync(UpdateModeloDTO modelo)
+        {
+            try
+            {
+                var newModelo = new Modelos()
+                {
+                    Modelo = modelo.Modelo,
+                    Obs = modelo.Obs,
+                    idMarca = modelo.idMarca,
+                    IdGrupo = modelo.IdGrupo,
+                };
+                await _context.Modelos.AddAsync(newModelo);
+
+                await _context.SaveChangesAsync();
+                return newModelo.MapTo<UpdateModeloDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Modelo");
             }
 
         }

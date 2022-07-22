@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<TitulosDTO> GetAsync(int id);
         Task<UpdateTitulosDTO> PutAsync(UpdateTitulosDTO titulo, int id);
         Task<TitulosDTO> DeleteAsync(int id);
+        Task<UpdateTitulosDTO> CreateAsync(UpdateTitulosDTO titulo);
     }
     public class TitulosQueryService : ITitulosQueryService
     {
@@ -106,6 +108,26 @@ namespace Service.Queries
             return titulo.MapTo<TitulosDTO>();
             
             
+        }
+        public async Task<UpdateTitulosDTO> CreateAsync(UpdateTitulosDTO titulo)
+        {
+            try
+            {
+                var newTitulo = new Titulos()
+                {
+                    Descripcion = titulo.Descripcion,
+                    Obs = titulo.Obs
+                };
+                await _context.Titulos.AddAsync(newTitulo);
+
+                await _context.SaveChangesAsync();
+                return newTitulo.MapTo<UpdateTitulosDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Titulo");
+            }
+
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
+using DATA.Models;
 
 namespace Service.Queries
 {
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<ProvinciasDTO> GetAsync(long id);
         Task<UpdateProvinciaDTO> PutAsync(UpdateProvinciaDTO Provincias, long it);
         Task<ProvinciasDTO> DeleteAsync(long id);
+        Task<UpdateProvinciaDTO> CreateAsync(UpdateProvinciaDTO provincia);
     }
 
     public class ProvinciasQueryService : IProvinciasQueryService
@@ -97,6 +99,25 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar la Provincia");
+            }
+
+        }
+        public async Task<UpdateProvinciaDTO> CreateAsync(UpdateProvinciaDTO provincia)
+        {
+            try
+            {
+                var newProvincia = new Provincias()
+                {
+                    Provincia = provincia.Provincia,
+                };
+                await _context.Provincias.AddAsync(newProvincia);
+
+                await _context.SaveChangesAsync();
+                return newProvincia.MapTo<UpdateProvinciaDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Provincia");
             }
 
         }

@@ -1,5 +1,4 @@
 using HealthChecks.UI.Client;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +12,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PERSISTENCE;
 using Service.Queries;
-using System.Reflection;
 
 namespace API
 {
@@ -68,7 +66,6 @@ namespace API
             services.AddTransient<IBarriosQueryService, BarriosQueryService>();
             services.AddTransient<ICallesQueryService, CallesQueryService>();
             services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
-            services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
 

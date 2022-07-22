@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<DomicilioController> _logger;
         private readonly IDomiciliosQueryService _domiciliosQueryService;
-        private readonly IMediator _mediator;
-        public DomicilioController(ILogger<DomicilioController> logger, IDomiciliosQueryService productQueryService, IMediator mediator)
+        public DomicilioController(ILogger<DomicilioController> logger, IDomiciliosQueryService productQueryService)
         {
             _logger = logger;
             _domiciliosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool orderByName = false)

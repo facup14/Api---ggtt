@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -18,6 +19,7 @@ namespace Service.Queries
         Task<GruposDTO> GetAsync(long id);
         Task<UpdateGruposDTO> PutAsync(UpdateGruposDTO grupo, long id);
         Task<GruposDTO> DeleteAsync(long id);
+        Task<UpdateGruposDTO> CreateAsync(UpdateGruposDTO grupo);
     }
     public class GruposQueryService : IGruposQueryService
     {
@@ -98,6 +100,27 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return grupos.MapTo<GruposDTO>();
+        }
+        public async Task<UpdateGruposDTO> CreateAsync(UpdateGruposDTO grupo)
+        {
+            try
+            {
+                var newGrupo = new Grupos()
+                {
+                    Descripcion = grupo.Descripcion,
+                    Obs = grupo.Obs,
+                    RutaImagen = grupo.RutaImagen,
+                };
+                await _context.Grupos.AddAsync(newGrupo);
+
+                await _context.SaveChangesAsync();
+                return newGrupo.MapTo<UpdateGruposDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Grupo");
+            }
+
         }
     }
 }

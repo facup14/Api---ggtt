@@ -1,5 +1,4 @@
-﻿using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<AgrupacionesSindicalesController> _logger;
         private readonly IAgrupacionesSindicalesQueryService _agrupacionesQueryService;
-        private readonly IMediator _mediator;
-        public AgrupacionesSindicalesController(ILogger<AgrupacionesSindicalesController> logger, IAgrupacionesSindicalesQueryService productQueryService, IMediator mediator)
+        public AgrupacionesSindicalesController(ILogger<AgrupacionesSindicalesController> logger, IAgrupacionesSindicalesQueryService productQueryService)
         {
             _logger = logger;
             _agrupacionesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -18,6 +19,7 @@ namespace Service.Queries
         Task<UnidadesDeMedidaDTO> GetAsync(long id);
         Task<UpdateUnidadDeMedidaDTO> PutAsync(UpdateUnidadDeMedidaDTO titulo, long id);
         Task<UnidadesDeMedidaDTO> DeleteAsync(long id);
+        Task<UpdateUnidadDeMedidaDTO> CreateAsync(UpdateUnidadDeMedidaDTO unidadesMedida);
     }
     public class UnidadesDeMedidaQueryService : IUnidadesDeMedidaQueryService
     {
@@ -92,6 +94,25 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return unidadMedida.MapTo<UnidadesDeMedidaDTO>();
+        }
+        public async Task<UpdateUnidadDeMedidaDTO> CreateAsync(UpdateUnidadDeMedidaDTO unidadesMedida)
+        {
+            try
+            {
+                var newUnidadesMedida = new UnidadesDeMedida()
+                {
+                    UnidadDeMedida = unidadesMedida.UnidadDeMedida,
+                };
+                await _context.UnidadesDeMedida.AddAsync(newUnidadesMedida);
+
+                await _context.SaveChangesAsync();
+                return newUnidadesMedida.MapTo<UpdateUnidadDeMedidaDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Unidad de Medida");
+            }
+
         }
     }
 }

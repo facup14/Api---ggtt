@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
+using DATA.Models;
 
 namespace Service.Queries
 {
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<MarcasDTO> GetAsync(long id);
         Task<UpdateMarcaDTO> PutAsync(UpdateMarcaDTO Convenio, long it);
         Task<MarcasDTO> DeleteAsync(long id);
+        Task<UpdateMarcaDTO> CreateAsync(UpdateMarcaDTO marcas);
     }
 
     public class MarcasQueryService : IMarcasQueryService
@@ -98,6 +100,26 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar la Marca");
+            }
+
+        }
+        public async Task<UpdateMarcaDTO> CreateAsync(UpdateMarcaDTO marcas)
+        {
+            try
+            {
+                var newMarcas = new Marcas()
+                {
+                    Marca = marcas.Marca,
+                    Obs = marcas.Obs,
+                };
+                await _context.Marcas.AddAsync(newMarcas);
+
+                await _context.SaveChangesAsync();
+                return newMarcas.MapTo<UpdateMarcaDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Grupo");
             }
 
         }

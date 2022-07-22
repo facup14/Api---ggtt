@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -20,6 +21,7 @@ namespace Service.Queries
         Task<SituacionesUnidadesDTO> GetAsync(long id);
         Task<UpdateSituacionesUnidadesDTO> PutAsync(UpdateSituacionesUnidadesDTO situacion, long id);
         Task<SituacionesUnidadesDTO> DeleteAsync(long id);
+        Task<UpdateSituacionesUnidadesDTO> CreateAsync(UpdateSituacionesUnidadesDTO situacion);
     }
     public class SituacionesUnidadesQueryService : ISituacionesUnidadesQueryService
     {
@@ -99,6 +101,26 @@ namespace Service.Queries
 
             await _context.SaveChangesAsync();
             return situacion.MapTo<SituacionesUnidadesDTO>();
+        }
+        public async Task<UpdateSituacionesUnidadesDTO> CreateAsync(UpdateSituacionesUnidadesDTO situacion)
+        {
+            try
+            {
+                var newSituacion = new SituacionesUnidades()
+                {
+                    Situacion = situacion.Situacion,
+                    Obs = situacion.Obs
+                };
+                await _context.SituacionesUnidades.AddAsync(newSituacion);
+
+                await _context.SaveChangesAsync();
+                return newSituacion.MapTo<UpdateSituacionesUnidadesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Situacion");
+            }
+
         }
     }
 }

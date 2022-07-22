@@ -1,10 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command.CreateCommands;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -20,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<BarrioController> _logger;
         private readonly IBarriosQueryService _barriosQueryService;
-        private readonly IMediator _mediator;
-        public BarrioController(ILogger<BarrioController> logger, IBarriosQueryService productQueryService, IMediator mediator)
+        public BarrioController(ILogger<BarrioController> logger, IBarriosQueryService productQueryService)
         {
             _logger = logger;
             _barriosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

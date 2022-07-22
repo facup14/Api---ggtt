@@ -1,12 +1,9 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<EstadosUnidadesController> _logger;
         private readonly IEstadosUnidadesQueryService _estadosunidadesQueryService;
-        private readonly IMediator _mediator;
-        public EstadosUnidadesController(ILogger<EstadosUnidadesController> logger, IEstadosUnidadesQueryService productQueryService, IMediator mediator)
+        public EstadosUnidadesController(ILogger<EstadosUnidadesController> logger, IEstadosUnidadesQueryService productQueryService)
         {
             _logger = logger;
             _estadosunidadesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

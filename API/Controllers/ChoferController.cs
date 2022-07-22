@@ -1,7 +1,6 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
@@ -19,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<ChoferController> _logger;
         private readonly IChoferesQueryService _choferesQueryService;
-        private readonly IMediator _mediator;
-        public ChoferController(ILogger<ChoferController> logger, IChoferesQueryService productQueryService, IMediator mediator)
+        public ChoferController(ILogger<ChoferController> logger, IChoferesQueryService productQueryService)
         {
             _logger = logger;
             _choferesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

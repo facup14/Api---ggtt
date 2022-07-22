@@ -1,6 +1,4 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DATA.DTOS;
 using System.Net;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -23,12 +20,10 @@ namespace API.Controllers
 
         private readonly ILogger<ProvinciasController> _logger;
         private readonly IProvinciasQueryService _provinciasQueryService;
-        private readonly IMediator _mediator;
-        public ProvinciasController(ILogger<ProvinciasController> logger, IProvinciasQueryService productQueryService, IMediator mediator)
+        public ProvinciasController(ILogger<ProvinciasController> logger, IProvinciasQueryService productQueryService)
         {
             _logger = logger;
             _provinciasQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -146,16 +141,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProvinciaCommand command)
+        public async Task<IActionResult> Create(UpdateProvinciaDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newProvincia = await _provinciasQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newProvincia
                 };
                 return Ok(result);
             }

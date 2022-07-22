@@ -1,19 +1,14 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.DTOS;
 using System.Net;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -24,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<MarcasController> _logger;
         private readonly IMarcasQueryService _marcasQueryService;
-        private readonly IMediator _mediator;
-        public MarcasController(ILogger<MarcasController> logger, IMarcasQueryService productQueryService, IMediator mediator)
+        public MarcasController(ILogger<MarcasController> logger, IMarcasQueryService productQueryService)
         {
             _logger = logger;
             _marcasQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -147,16 +140,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateMarcaCommand command)
+        public async Task<IActionResult> Create(UpdateMarcaDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newMarca = await _marcasQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newMarca
                 };
                 return Ok(result);
             }

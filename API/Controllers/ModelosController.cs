@@ -1,19 +1,14 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.DTOS;
 using System.Net;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -24,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<ModelosController> _logger;
         private readonly IModelosQueryService _modelosQueryService;
-        private readonly IMediator _mediator;
-        public ModelosController(ILogger<ModelosController> logger, IModelosQueryService productQueryService, IMediator mediator)
+        public ModelosController(ILogger<ModelosController> logger, IModelosQueryService productQueryService)
         {
             _logger = logger;
             _modelosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
@@ -147,16 +140,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateModeloCommand command)
+        public async Task<IActionResult> Create(UpdateModeloDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newModelo = await _modelosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newModelo
                 };
                 return Ok(result);
             }

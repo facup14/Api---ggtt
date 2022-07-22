@@ -1,20 +1,14 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
-using Service.EventHandlers.Command.CreateCommands;
 
 namespace API.Controllers
 {
@@ -25,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<ConveniosController> _logger;
         private readonly IConveniosQueryService _conveniosQueryService;
-        private readonly IMediator _mediator;
-        public ConveniosController(ILogger<ConveniosController> logger, IConveniosQueryService productQueryService, IMediator mediator)
+        public ConveniosController(ILogger<ConveniosController> logger, IConveniosQueryService productQueryService)
         {
             _logger = logger;
             _conveniosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

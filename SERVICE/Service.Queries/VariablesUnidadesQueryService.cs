@@ -1,9 +1,8 @@
-﻿
-
-using Common.Collection;
+﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -20,6 +19,7 @@ namespace Service.Queries
         Task<VariablesUnidadesDTO> GetAsync(int id);
         Task<UpdateVariableUnidadDTO> PutAsync(UpdateVariableUnidadDTO titulo, int id);
         Task<VariablesUnidadesDTO> DeleteAsync(int id);
+        Task<UpdateVariableUnidadDTO> CreateAsync(UpdateVariableUnidadDTO variables);
     }
     public class VariablesUnidadesQueryService : IVariablesUnidadesQueryService
     {
@@ -94,6 +94,25 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return variableUnidad.MapTo<VariablesUnidadesDTO>();
+        }
+        public async Task<UpdateVariableUnidadDTO> CreateAsync(UpdateVariableUnidadDTO variables)
+        {
+            try
+            {
+                var newVariables = new VariablesUnidades()
+                {
+                    Nombre = variables.Nombre,
+                };
+                await _context.VariablesUnidades.AddAsync(newVariables);
+
+                await _context.SaveChangesAsync();
+                return newVariables.MapTo<UpdateVariableUnidadDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Variable");
+            }
+
         }
     }
 }
