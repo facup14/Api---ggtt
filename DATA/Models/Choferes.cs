@@ -29,7 +29,7 @@ namespace DATA.Models
         
         [ForeignKey("IdTaller")]
         public long? IdTaller { get; set; }
-        public Talleres Taller { get; set; }
+        public virtual Talleres idTaller { get; set; }
         [ForeignKey("IdEmpresa")]
         public string Empresa { get; set; }
         public int IdEmpresa { get; set; }

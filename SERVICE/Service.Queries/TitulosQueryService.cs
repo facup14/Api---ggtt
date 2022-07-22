@@ -38,7 +38,7 @@ namespace Service.Queries
                 {
                     var orderBy = await _context.Titulos
                     .Where(x => titulos == null || titulos.Contains(x.IdTitulo))
-                    .OrderByDescending(x => x.IdTitulo)
+                    .OrderBy(x => x.IdTitulo)
                     .GetPagedAsync(page, take);
                     return orderBy.MapTo<DataCollection<TitulosDTO>>();                    
                 }

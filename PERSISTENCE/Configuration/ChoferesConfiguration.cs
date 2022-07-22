@@ -45,6 +45,11 @@ namespace PERSISTENCE.Configuration
 
             entity.Property(e => e.Titulo).HasMaxLength(50);
 
+            entity.HasOne(d=>d.idTaller)
+                .WithMany(m=>m.Choferes)
+                .HasForeignKey(d => d.IdTaller)
+                .HasConstraintName("FK_Choferes_Talleres");
+
             entity.HasOne(d => d.idAgrupacionSindical)
                 .WithMany(p=>p.Choferes)
                 .HasForeignKey(d => d.IdAgrupacionSindical)

@@ -36,7 +36,7 @@ namespace Service.Queries
                 {
                     var orderBy = await _context.Talleres
                     .Where(x => equipamiento == null || equipamiento.Contains(x.IdTaller))
-                    .OrderByDescending(x => x.IdTaller)
+                    .OrderBy(x => x.IdTaller)
                     .GetPagedAsync(page, take);
                     return orderBy.MapTo<DataCollection<TalleresDTO>>();
                 }

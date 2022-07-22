@@ -43,7 +43,7 @@ namespace Service.Queries
                 {
                     var Ascend = await _context.Empresas
                                         .Where(x => empresas == null || empresas.Contains(x.IdEmpresa))
-                                        .OrderBy(x => x.Descripcion)
+                                        .OrderBy(x => x.IdEmpresa)
                                         .GetPagedAsync(page, take);
                     return Ascend.MapTo<DataCollection<EmpresasDTO>>();
                 }

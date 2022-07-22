@@ -41,7 +41,7 @@ namespace Service.Queries
                 {
                     var orderBy = await _context.Unidades
                     .Where(x => unidades == null || unidades.Contains(x.IdUnidad))
-                    .OrderByDescending(x => x.IdUnidad)
+                    .OrderBy(x => x.IdUnidad)
                     .GetPagedAsync(page, take);
                     return orderBy.MapTo<DataCollection<UnidadesDTO>>();
                 }

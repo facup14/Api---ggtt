@@ -36,7 +36,7 @@ namespace Service.Queries
                 {
                     var orderBy = await _context.UnidadesDeMedida
                     .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdUnidadDeMedida))
-                    .OrderByDescending(x => x.IdUnidadDeMedida)
+                    .OrderBy(x => x.IdUnidadDeMedida)
                     .GetPagedAsync(page, take);
                     return orderBy.MapTo<DataCollection<UnidadesDeMedidaDTO>>();
                 }

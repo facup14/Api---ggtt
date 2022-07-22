@@ -36,7 +36,7 @@ namespace Service.Queries
                 {
                     var orderBy = await _context.Trazas
                     .Where(x => trazas == null || trazas.Contains(x.IdTraza))
-                    .OrderByDescending(x => x.IdTraza)
+                    .OrderBy(x => x.IdTraza)
                     .GetPagedAsync(page, take);
                     return orderBy.MapTo<DataCollection<TrazasDTO>>();
                 }
