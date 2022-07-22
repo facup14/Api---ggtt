@@ -1,67 +1,55 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Service.EventHandlers.Command;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Service.EventHandlers.Command;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("centrosdecosto")]
-    public class CentrodeCostoController : ControllerBase
+    [Route("Trabajos")]
+    public class TrabajosController : ControllerBase
     {
-
-        private readonly ILogger<CentrodeCostoController> _logger;
-        private readonly ICentrodeCostoQueryService _centrosdecostoQueryService;
+        private readonly ILogger<TrabajosController> _logger;
+        private readonly ITrabajosQueryService _trabajosQueryService;
         private readonly IMediator _mediator;
-        public CentrodeCostoController(ILogger<CentrodeCostoController> logger, ICentrodeCostoQueryService productQueryService, IMediator mediator)
+        public TrabajosController(ILogger<TrabajosController> logger, ITrabajosQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _centrosdecostoQueryService = productQueryService;
+            _trabajosQueryService = productQueryService;
             _mediator = mediator;
         }
-        //products Trae todas los centro de costo
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
-                IEnumerable<long> centrosdecosto = null;
+                IEnumerable<long> trabajos = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    centrosdecosto = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    trabajos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto);
+                var listTrabajos = await _trabajosQueryService.GetAllAsync(page, take, trabajos);
+
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = listCentros
+                    Result = listTrabajos
                 };
                 return Ok(result);
+
             }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
@@ -71,60 +59,60 @@ namespace API.Controllers
                     Result = null
                 });
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
         }
-        //products/1 Trae el centro de costo con el id colocado
+        //products/1 Trae la unidad con el id colocado
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                var centroCosto = await _centrosdecostoQueryService.GetAsync(id);
+                var trabajo = await _trabajosQueryService.GetAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = centroCosto
+                    Result = trabajo,
                 };
                 return Ok(result);
-            }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    StatusCode = (int)HttpStatusCode.NotFound,
                     Message = ex.Message,
                     Result = null
                 });
 
             }
         }
-        //products/id Actualiza una centro de costo por el id
+        //products/id Actualiza una Unidad por el id
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateCentrodeCostoDTO centrodecosto, int id)
+        public async Task<IActionResult> Put(UpdateTrabajoDTO unidad, long id)
         {
             try
             {
-                var centroCosto = await _centrosdecostoQueryService.PutAsync(centrodecosto, id);
+                var newTrabajo = await _trabajosQueryService.PutAsync(unidad, id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = centroCosto
+                    Result = newTrabajo
                 };
                 return Ok(result);
             }
-            catch(EmptyCollectionException ex)
+            catch (EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
@@ -139,17 +127,17 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
                     Result = null
                 });
             }
 
         }
 
-        //products Crea una nuevo centro de costo pasandole solo los parametros NO-NULL
+        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCentrodeCostoCommand command)
+        public async Task<IActionResult> Create(CreateTrabajoCommand command)
         {
             try
             {
@@ -157,7 +145,7 @@ namespace API.Controllers
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
+                    Message = "Success",
                     Result = command
                 };
                 return Ok(result);
@@ -177,23 +165,23 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
                     Result = null
                 });
             }
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                var centroCosto = await _centrosdecostoQueryService.DeleteAsync(id);
+                var deleteList = await _trabajosQueryService.DeleteAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = centroCosto
+                    Result = deleteList
                 };
                 return Ok(result);
             }
@@ -213,7 +201,7 @@ namespace API.Controllers
                 return Ok(new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
+                    Message = "Server error",
                     Result = null
                 });
             }

@@ -17,5 +17,6 @@ namespace DATA.Models
         public string Descripcion { get; set; }
         public string Obs { get; set; } //Entidad base
         public virtual ICollection<Choferes> Choferes { get; set; }
+        public virtual ICollection<Mecanicos> Mecanicos { get; set; }
     }
 }
