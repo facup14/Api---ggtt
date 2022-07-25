@@ -1,7 +1,6 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
-using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Queries
 {

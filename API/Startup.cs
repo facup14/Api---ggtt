@@ -55,7 +55,9 @@ namespace API
             services.AddTransient<IRubrosQueryService, RubrosQueryService>();
             services.AddTransient<ITrabajosQueryService, TrabajosQueryService>();
             services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
-
+            services.AddTransient<IValoresMedicionesQueryService, ValoresMedicionesQueryService>();
+            services.AddTransient<IAlicuotasIVAQueryService, AlicuotasIVAQueryService>();
+            services.AddTransient<ITareasQueryService, TareasQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
