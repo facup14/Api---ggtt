@@ -32,6 +32,10 @@ namespace PERSISTENCE
         public DbSet<UnidadesMedida> UnidadesDeMedida { get; set; }
         public DbSet<VariablesUnidades> VariablesUnidades { get; set; }
         public DbSet<Equipamientos> Equipamientos { get; set; }
+        public DbSet<AlicuotasIVA> AlicuotasIVA { get; set; }
+        public DbSet<ValoresMediciones> ValoresMediciones { get; set; }
+        public DbSet<Tareas> Tareas { get; set; }
+        public DbSet<Proveedores> Proveedores { get; set; }
 
         #endregion
 
@@ -64,6 +68,10 @@ namespace PERSISTENCE
             new UnidadesDeMedidaConfiguration(modelBuilder.Entity<UnidadesMedida>());
             new VariablesUnidadesConfiguration(modelBuilder.Entity<VariablesUnidades>());
             new EquipamientosConfiguration(modelBuilder.Entity<Equipamientos>());
+            new ValoresMedicionesConfiguration(modelBuilder.Entity<ValoresMediciones>());
+            new AlicuotasIVAConfiguration(modelBuilder.Entity<AlicuotasIVA>());
+            new TareasConfiguration(modelBuilder.Entity<Tareas>());
+            new ProveedoresConfiguration(modelBuilder.Entity<Proveedores>());
         }
     }
 }
