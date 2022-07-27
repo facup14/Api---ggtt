@@ -4,7 +4,7 @@ namespace DATA.DTOS
 {
     public class ProveedoresDTO
     {
-        public long IdProveedor { get; set; }
+        public int IdProveedor { get; set; }
         public string RazonSocial { get; set; }
         public string IdAlicuota { get; set; }
         public string NCuit { get; set; }

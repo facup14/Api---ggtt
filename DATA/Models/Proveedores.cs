@@ -8,7 +8,7 @@ namespace DATA.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long IdProveedor { get; set; }
+        public int IdProveedor { get; set; }
         [MaxLength(50)]
         public string RazonSocial { get; set; }
         public string IdAlicuota { get; set; }

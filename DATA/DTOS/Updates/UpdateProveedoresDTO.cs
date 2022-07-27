@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DATA.DTOS.Updates
 {
-    class UpdateProveedoresDTO
+    public class UpdateProveedoresDTO
     {
         public string RazonSocial { get; set; }
         public string IdAlicuota { get; set; }
