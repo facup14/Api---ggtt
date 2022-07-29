@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.27" />
   </ItemGroup>
 
@@ -29,12 +28,12 @@
     <Reference Include="PERSISTENCE">
       <HintPath>..\..\PERSISTENCE\bin\Debug\netcoreapp3.1\PERSISTENCE.dll</HintPath>
     </Reference>
-=======
+
     <ProjectReference Include="..\..\COMMON\Service.Collection\Common.Collection\Common.Collection.csproj" />
     <ProjectReference Include="..\..\COMMON\Service.Mapping\Common.Mapping\Common.Mapping.csproj" />
     <ProjectReference Include="..\..\COMMON\Service.Pagging\Common.Pagging\Common.Pagging.csproj" />
     <ProjectReference Include="..\..\PERSISTENCE\PERSISTENCE.csproj" />
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
   </ItemGroup>
 
 </Project>
