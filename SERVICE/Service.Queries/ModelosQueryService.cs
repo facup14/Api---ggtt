@@ -11,15 +11,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
+using DATA.Models;
 
 namespace Service.Queries
 {
     public interface IModelosQueryService
     {
-        Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> Modelos = null);
+        Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> Modelos = null, bool order = false);
         Task<ModelosDTO> GetAsync(long id);
         Task<UpdateModeloDTO> PutAsync(UpdateModeloDTO Modelos, long it);
         Task<ModelosDTO> DeleteAsync(long id);
+        Task<UpdateModeloDTO> CreateAsync(UpdateModeloDTO modelo);
     }
 
     public class ModelosQueryService : IModelosQueryService
@@ -31,10 +33,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> modelos = null)
+        public async Task<DataCollection<ModelosDTO>> GetAllAsync(int page, int take, IEnumerable<long> modelos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Modelos
+                    .Where(x => modelos == null || modelos.Contains(x.IdModelo))
+                    .OrderBy(x => x.IdModelo)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ModelosDTO>>();
+                }
                 var collection = await _context.Modelos
                 .Where(x => modelos == null || modelos.Contains(x.IdModelo))
                 .OrderByDescending(x => x.IdModelo)
@@ -98,6 +108,28 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el Modelo");
+            }
+
+        }
+        public async Task<UpdateModeloDTO> CreateAsync(UpdateModeloDTO modelo)
+        {
+            try
+            {
+                var newModelo = new Modelos()
+                {
+                    Modelo = modelo.Modelo,
+                    Obs = modelo.Obs,
+                    idMarca = modelo.idMarca,
+                    IdGrupo = modelo.IdGrupo,
+                };
+                await _context.Modelos.AddAsync(newModelo);
+
+                await _context.SaveChangesAsync();
+                return newModelo.MapTo<UpdateModeloDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Modelo");
             }
 
         }

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -16,10 +17,11 @@ namespace Service.Queries
 {
     public interface ISituacionesUnidadesQueryService
     {
-        Task<DataCollection<SituacionesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> situaciones = null);
+        Task<DataCollection<SituacionesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> situaciones = null, bool order = false);
         Task<SituacionesUnidadesDTO> GetAsync(long id);
         Task<UpdateSituacionesUnidadesDTO> PutAsync(UpdateSituacionesUnidadesDTO situacion, long id);
         Task<SituacionesUnidadesDTO> DeleteAsync(long id);
+        Task<UpdateSituacionesUnidadesDTO> CreateAsync(UpdateSituacionesUnidadesDTO situacion);
     }
     public class SituacionesUnidadesQueryService : ISituacionesUnidadesQueryService
     {
@@ -29,10 +31,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<SituacionesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> situaciones = null)
+        public async Task<DataCollection<SituacionesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> situaciones = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.SituacionesUnidades
+                    .Where(x => situaciones == null || situaciones.Contains(x.IdSituacionUnidad))
+                    .OrderBy(x => x.IdSituacionUnidad)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<SituacionesUnidadesDTO>>();
+                }
                 var collection = await _context.SituacionesUnidades
                 .Where(x => situaciones == null || situaciones.Contains(x.IdSituacionUnidad))
                 .OrderByDescending(x => x.IdSituacionUnidad)
@@ -99,6 +109,26 @@ namespace Service.Queries
 
             await _context.SaveChangesAsync();
             return situacion.MapTo<SituacionesUnidadesDTO>();
+        }
+        public async Task<UpdateSituacionesUnidadesDTO> CreateAsync(UpdateSituacionesUnidadesDTO situacion)
+        {
+            try
+            {
+                var newSituacion = new SituacionesUnidades()
+                {
+                    Situacion = situacion.Situacion,
+                    Obs = situacion.Obs
+                };
+                await _context.SituacionesUnidades.AddAsync(newSituacion);
+
+                await _context.SaveChangesAsync();
+                return newSituacion.MapTo<UpdateSituacionesUnidadesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Situacion");
+            }
+
         }
     }
 }

@@ -9,6 +9,7 @@ namespace DATA.Models
         public AgrupacionesSindicales()
         {
             Choferes = new HashSet<Choferes>();
+            Mecanicos = new HashSet<Mecanicos>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,6 +19,9 @@ namespace DATA.Models
         public string Obs { get; set; }
         public virtual ICollection<Choferes> Choferes { get; set; }
         public virtual ICollection<Mecanicos> Mecanicos { get; set; }
+<<<<<<< HEAD
 
+=======
+>>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
     }
 }

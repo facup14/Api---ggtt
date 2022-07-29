@@ -19,7 +19,7 @@ namespace PERSISTENCE
         public DbSet<Modelos> Modelos { get; set; }
         public DbSet<Grupos> Grupos { get; set; }
         public DbSet<AgrupacionesSindicales> AgrupacionesSindicales { get; set; }
-        public DbSet<CentrodeCosto> CentrodeCosto { get; set; }
+        public DbSet<CentroDeCosto> CentroDeCosto { get; set; }
         public DbSet<Choferes> Choferes { get; set; }
         public DbSet<Convenios> Convenios { get; set; }
         public DbSet<Empresas> Empresas { get; set; }
@@ -29,9 +29,10 @@ namespace PERSISTENCE
         public DbSet<Provincias> Provincias { get; set; }
         public DbSet<Titulos> Titulos { get; set; }
         public DbSet<Trazas> Trazas { get; set; }
-        public DbSet<UnidadesMedida> UnidadesDeMedida { get; set; }
+        public DbSet<UnidadesDeMedida> UnidadesDeMedida { get; set; }
         public DbSet<VariablesUnidades> VariablesUnidades { get; set; }
         public DbSet<Equipamientos> Equipamientos { get; set; }
+<<<<<<< HEAD
         public DbSet<Trabajos> Trabajos { get; set; }
         public DbSet<Mecanicos> Mecanicos { get; set; }
         public DbSet<Rubros> Rubros { get; set; }
@@ -41,6 +42,15 @@ namespace PERSISTENCE
         public DbSet<ValoresMediciones> ValoresMediciones { get; set; }
         public DbSet<Tareas> Tareas { get; set; }
         public DbSet<Proveedores> Proveedores { get; set; }
+=======
+        public DbSet<Talleres> Talleres { get; set; }
+        public DbSet<Calles> Calles { get; set; }
+        public DbSet<Barrios> Barrios { get; set; }
+        public DbSet<Domicilios> Domicilios { get; set; }
+        public DbSet<Mecanicos> Mecanicos { get; set; }
+        public DbSet<Repuestos> Repuestos { get; set; }
+        public DbSet<Articulos> Articulos { get; set; }
+>>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 
         #endregion
 
@@ -60,7 +70,7 @@ namespace PERSISTENCE
             new MarcasConfiguration(modelBuilder.Entity<Marcas>());
             new GruposConfiguration(modelBuilder.Entity<Grupos>());
             new AgrupacionesSindicalesConfiguration(modelBuilder.Entity<AgrupacionesSindicales>());
-            new CentrodeCostoConfiguration(modelBuilder.Entity<CentrodeCosto>());
+            new CentrodeCostoConfiguration(modelBuilder.Entity<CentroDeCosto>());
             new ChoferesConfiguration(modelBuilder.Entity<Choferes>());
             new ConveniosConfiguration(modelBuilder.Entity<Convenios>());
             new EmpresasConfiguration(modelBuilder.Entity<Empresas>());
@@ -70,9 +80,10 @@ namespace PERSISTENCE
             new ProvinciasConfiguration(modelBuilder.Entity<Provincias>());
             new TitulosConfiguration(modelBuilder.Entity<Titulos>());
             new TrazasConfiguration(modelBuilder.Entity<Trazas>());
-            new UnidadesDeMedidaConfiguration(modelBuilder.Entity<UnidadesMedida>());
+            new UnidadesDeMedidaConfiguration(modelBuilder.Entity<UnidadesDeMedida>());
             new VariablesUnidadesConfiguration(modelBuilder.Entity<VariablesUnidades>());
             new EquipamientosConfiguration(modelBuilder.Entity<Equipamientos>());
+<<<<<<< HEAD
             new TrabajosConfiguration(modelBuilder.Entity<Trabajos>());
             new RubrosConfiguration(modelBuilder.Entity<Rubros>());
             new MecanicosConfiguration(modelBuilder.Entity<Mecanicos>());
@@ -82,6 +93,15 @@ namespace PERSISTENCE
             new AlicuotasIVAConfiguration(modelBuilder.Entity<AlicuotasIVA>());
             new TareasConfiguration(modelBuilder.Entity<Tareas>());
             new ProveedoresConfiguration(modelBuilder.Entity<Proveedores>());
+=======
+            new TalleresConfiguration(modelBuilder.Entity<Talleres>());
+            new CallesConfiguration(modelBuilder.Entity<Calles>());
+            new BarriosConfiguration(modelBuilder.Entity<Barrios>());
+            new DomiciliosConfiguration(modelBuilder.Entity<Domicilios>());
+            new MecanicosConfiguration(modelBuilder.Entity<Mecanicos>());
+            new RepuestosConfiguration(modelBuilder.Entity<Repuestos>());
+            new ArticulosConfiguration(modelBuilder.Entity<Articulos>());
+>>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
         }
     }
 }

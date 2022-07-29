@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,15 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<GrupoController> _logger;
         private readonly IGruposQueryService _gruposQueryService;
-        private readonly IMediator _mediator;
-        public GrupoController(ILogger<GrupoController> logger, IGruposQueryService productQueryService, IMediator mediator)
+        public GrupoController(ILogger<GrupoController> logger, IGruposQueryService productQueryService)
         {
             _logger = logger;
             _gruposQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -39,7 +34,7 @@ namespace API.Controllers
                     gruupos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listGrupos = await _gruposQueryService.GetAllAsync(page, take, gruupos);
+                var listGrupos = await _gruposQueryService.GetAllAsync(page, take, gruupos, order);
 
                 var result = new GetResponse()
                 {
@@ -171,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateGrupoCommand command)
+        public async Task<IActionResult> Create(UpdateGruposDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newGrupo = await _gruposQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newGrupo
                 };
                 return Ok(result);
             }

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -15,10 +16,11 @@ namespace Service.Queries
 {
     public interface IEquipamientoQueryService
     {
-        Task<DataCollection<EquipamientoDTO>> GetAllAsync(int page, int take, IEnumerable<long> equipamiento = null);
+        Task<DataCollection<EquipamientoDTO>> GetAllAsync(int page, int take, IEnumerable<long> equipamiento = null, bool order = false);
         Task<EquipamientoDTO> GetAsync(long id);
         Task<UpdateEquipamientoDTO> PutAsync(UpdateEquipamientoDTO equipamiento, long id);
         Task<EquipamientoDTO> DeleteAsync(long id);
+        Task<UpdateEquipamientoDTO> CreateAsync(UpdateEquipamientoDTO equipamiento);
     }
     public class EquipamientoQueryService : IEquipamientoQueryService
     {
@@ -27,10 +29,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<EquipamientoDTO>> GetAllAsync(int page, int take, IEnumerable<long> equipamiento = null)
+        public async Task<DataCollection<EquipamientoDTO>> GetAllAsync(int page, int take, IEnumerable<long> equipamiento = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Equipamientos
+                    .Where(x => equipamiento == null || equipamiento.Contains(x.IdEquipamiento))
+                    .OrderBy(x => x.IdEquipamiento)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<EquipamientoDTO>>();
+                }
                 var collection = await _context.Equipamientos
                 .Where(x => equipamiento == null || equipamiento.Contains(x.IdEquipamiento))
                 .OrderByDescending(x => x.IdEquipamiento)
@@ -95,6 +105,27 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return equipamiento.MapTo<EquipamientoDTO>();
-        }        
+        }
+        public async Task<UpdateEquipamientoDTO> CreateAsync(UpdateEquipamientoDTO equipamiento)
+        {
+            try
+            {
+                var newEquipamiento = new Equipamientos()
+                {
+                    idNombreEquipamiento = equipamiento.idNombreEquipamiento,
+                    idArticulo = equipamiento.idArticulo,
+                    Cantidad = equipamiento.Cantidad,
+                };
+                await _context.Equipamientos.AddAsync(newEquipamiento);
+
+                await _context.SaveChangesAsync();
+                return newEquipamiento.MapTo<UpdateEquipamientoDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Equipamiento");
+            }
+
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace DATA.Models
         public Titulos()
         {
             Choferes = new HashSet<Choferes>();
+            Mecanicos = new HashSet<Mecanicos>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

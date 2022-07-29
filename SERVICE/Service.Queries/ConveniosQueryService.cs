@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -15,10 +16,11 @@ namespace Service.Queries
 {
     public interface IConveniosQueryService
     {
-        Task<DataCollection<ConveniosDTO>> GetAllAsync(int page, int take, IEnumerable<int> Convenios = null);
+        Task<DataCollection<ConveniosDTO>> GetAllAsync(int page, int take, IEnumerable<int> Convenios = null, bool order = false);
         Task<ConveniosDTO> GetAsync(int id);
         Task<UpdateConvenioDTO> PutAsync(UpdateConvenioDTO Convenio, int it);
         Task<ConveniosDTO> DeleteAsync(int id);
+        Task<UpdateConvenioDTO> CreateAsync(UpdateConvenioDTO convenio);
     }
 
     public class ConveniosQueryService : IConveniosQueryService
@@ -30,10 +32,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<ConveniosDTO>> GetAllAsync(int page, int take, IEnumerable<int> convenios = null)
+        public async Task<DataCollection<ConveniosDTO>> GetAllAsync(int page, int take, IEnumerable<int> convenios = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Convenios
+                    .Where(x => convenios == null || convenios.Contains(x.IdConvenio))
+                    .OrderBy(x => x.IdConvenio)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ConveniosDTO>>();
+                }
                 var collection = await _context.Convenios
                 .Where(x => convenios == null || convenios.Contains(x.IdConvenio))
                 .OrderByDescending(x => x.IdConvenio)
@@ -94,6 +104,26 @@ namespace Service.Queries
                 await _context.SaveChangesAsync();
                 return convenio.MapTo<ConveniosDTO>();
             }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al eliminar el Convenio");
+            }
+
+        }
+        public async Task<UpdateConvenioDTO> CreateAsync(UpdateConvenioDTO convenio)
+        {
+            try
+            {
+                var newConvenio = new Convenios()
+                {
+                    Descripcion = convenio.Descripcion,
+                    Obs = convenio.Obs,
+                };
+                await _context.Convenios.AddAsync(newConvenio);
+                
+                await _context.SaveChangesAsync();
+                return newConvenio.MapTo<UpdateConvenioDTO>();
+            }     
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar el Convenio");

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -14,10 +15,11 @@ namespace Service.Queries
 {
     public interface ITrazasQueryService
     {
-        Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null);
+        Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null, bool order = false);
         Task<TrazasDTO> GetAsync(long id);
         Task<UpdateTrazasDTO> PutAsync(UpdateTrazasDTO traza, long id);
         Task<TrazasDTO> DeleteAsync(long id);
+        Task<UpdateTrazasDTO> CreateAsync(UpdateTrazasDTO traza);
     }
     public class TrazasQueryService : ITrazasQueryService
     {
@@ -26,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null)
+        public async Task<DataCollection<TrazasDTO>> GetAllAsync(int page, int take, IEnumerable<long> trazas = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Trazas
+                    .Where(x => trazas == null || trazas.Contains(x.IdTraza))
+                    .OrderBy(x => x.IdTraza)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<TrazasDTO>>();
+                }
                 var collection = await _context.Trazas
                 .Where(x => trazas == null || trazas.Contains(x.IdTraza))
                 .OrderByDescending(x => x.IdTraza)
@@ -107,6 +117,29 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return traza.MapTo<TrazasDTO>();
+        }
+        public async Task<UpdateTrazasDTO> CreateAsync(UpdateTrazasDTO traza)
+        {
+            try
+            {
+                var newTraza = new Trazas()
+                {
+                    IdLocalidadDesde = traza.IdLocalidadDesde,
+                    IdLocalidadHasta = traza.IdLocalidadHasta,
+                    DistanciaKM = traza.DistanciaKm,
+                    Obs = traza.Obs,
+                    Litros = traza.Litros,
+                };
+                await _context.Trazas.AddAsync(newTraza);
+
+                await _context.SaveChangesAsync();
+                return newTraza.MapTo<UpdateTrazasDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Traza");
+            }
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -15,10 +16,11 @@ namespace Service.Queries
 {
     public interface IEspecialidadesQueryService
     {
-        Task<DataCollection<EspecialidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> Especialidades = null);
+        Task<DataCollection<EspecialidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> Especialidades = null, bool order = false);
         Task<EspecialidadesDTO> GetAsync(int id);
         Task<UpdateEspecialidadesDTO> PutAsync(UpdateEspecialidadesDTO Especialidad, int it);
         Task<EspecialidadesDTO> DeleteAsync(int id);
+        Task<UpdateEspecialidadesDTO> CreateAsync(UpdateEspecialidadesDTO especialidad);
     }
 
     public class EspecialidadesQueryService : IEspecialidadesQueryService
@@ -30,10 +32,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<EspecialidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> especialidades = null)
+        public async Task<DataCollection<EspecialidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> especialidades = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Especialidades
+                    .Where(x => especialidades == null || especialidades.Contains(x.IdEspecialidad))
+                    .OrderBy(x => x.IdEspecialidad)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<EspecialidadesDTO>>();                    
+                }
                 var collection = await _context.Especialidades
                 .Where(x => especialidades == null || especialidades.Contains(x.IdEspecialidad))
                 .OrderByDescending(x => x.IdEspecialidad)
@@ -97,6 +107,26 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar la Especialidad");
+            }
+            
+        }
+        public async Task<UpdateEspecialidadesDTO> CreateAsync(UpdateEspecialidadesDTO especialidad)
+        {
+            try
+            {
+                var newEspecialidad = new Especialidades()
+                {
+                    Descripcion = especialidad.Descripcion,
+                    Obs = especialidad.Obs,
+                };
+                await _context.Especialidades.AddAsync(newEspecialidad);
+
+                await _context.SaveChangesAsync();
+                return newEspecialidad.MapTo<UpdateEspecialidadesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Especialidad");
             }
 
         }

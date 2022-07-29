@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,15 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<FuncionController> _logger;
         private readonly IFuncionesQueryService _funcionesQueryService;
-        private readonly IMediator _mediator;
-        public FuncionController(ILogger<FuncionController> logger, IFuncionesQueryService productQueryService, IMediator mediator)
+        public FuncionController(ILogger<FuncionController> logger, IFuncionesQueryService productQueryService)
         {
             _logger = logger;
             _funcionesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -39,7 +34,7 @@ namespace API.Controllers
                     funciones = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listFunciones = await _funcionesQueryService.GetAllAsync(page, take, funciones);
+                var listFunciones = await _funcionesQueryService.GetAllAsync(page, take, funciones,order);
 
                 var result = new GetResponse()
                 {
@@ -171,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateFuncionCommand command)
+        public async Task<IActionResult> Create(UpdateFuncionesDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newFuncion = await _funcionesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newFuncion
                 };
                 return Ok(result);
             }

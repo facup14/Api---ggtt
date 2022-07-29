@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -14,10 +15,11 @@ namespace Service.Queries
 {
     public interface ILocalidadQueryService
     {
-        Task<DataCollection<LocalidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> titulos = null);
+        Task<DataCollection<LocalidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> titulos = null, bool order = false);
         Task<LocalidadesDTO> GetAsync(long id);
         Task<UpdateLocalidadesDTO> PutAsync(UpdateLocalidadesDTO localidad, long id);
         Task<LocalidadesDTO> DeleteAsync(long id);
+        Task<UpdateLocalidadesDTO> CreateAsync(UpdateLocalidadesDTO localidades);
     }
     public class LocalidadesQueryService : ILocalidadQueryService
     {
@@ -26,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<LocalidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> titulos = null)
+        public async Task<DataCollection<LocalidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> titulos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Localidades
+                    .Where(x => titulos == null || titulos.Contains(x.IdLocalidad))
+                    .OrderBy(x => x.IdLocalidad)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<LocalidadesDTO>>();
+                }
                 var collection = await _context.Localidades
                 .Where(x => titulos == null || titulos.Contains(x.IdLocalidad))
                 .OrderByDescending(x => x.IdLocalidad)
@@ -98,6 +108,27 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return localidad.MapTo<LocalidadesDTO>();
+        }
+        public async Task<UpdateLocalidadesDTO> CreateAsync(UpdateLocalidadesDTO localidades)
+        {
+            try
+            {
+                var newLocalidad = new Localidades()
+                {
+                    Localidad = localidades.Localidad,
+                    CodigoPostal = localidades.CodigoPostal,
+                    idProvincia = localidades.idProvincia,
+                };
+                await _context.Localidades.AddAsync(newLocalidad);
+
+                await _context.SaveChangesAsync();
+                return newLocalidad.MapTo<UpdateLocalidadesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Grupo");
+            }
+
         }
     }
 }

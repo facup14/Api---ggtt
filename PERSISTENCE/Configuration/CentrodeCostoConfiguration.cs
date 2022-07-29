@@ -6,18 +6,18 @@ namespace PERSISTENCE.Configuration
 {
     public class CentrodeCostoConfiguration
     {
-        public CentrodeCostoConfiguration(EntityTypeBuilder<CentrodeCosto> entity)
+        public CentrodeCostoConfiguration(EntityTypeBuilder<CentroDeCosto> entity)
         {
             entity.HasKey(e => e.idCentrodeCosto)
                     .HasName("PK_CentroCosto");
 
-            entity.HasIndex(e => e.CentroDeCosto)
+            entity.HasIndex(e => e.CentrodeCosto)
                 .HasName("det_centrodecostounico")
                 .IsUnique();
 
             entity.Property(e => e.idCentrodeCosto).HasColumnName("idCentrodeCosto");
 
-            entity.Property(e => e.CentroDeCosto)
+            entity.Property(e => e.CentrodeCosto)
                 .HasColumnName("CentrodeCosto")
                 .HasMaxLength(50)
                 .IsUnicode(false);

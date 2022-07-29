@@ -1,9 +1,8 @@
-﻿
-
-using Common.Collection;
+﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -16,10 +15,11 @@ namespace Service.Queries
 {
     public interface IVariablesUnidadesQueryService
     {
-        Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null);
+        Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null, bool order = false);
         Task<VariablesUnidadesDTO> GetAsync(int id);
         Task<UpdateVariableUnidadDTO> PutAsync(UpdateVariableUnidadDTO titulo, int id);
         Task<VariablesUnidadesDTO> DeleteAsync(int id);
+        Task<UpdateVariableUnidadDTO> CreateAsync(UpdateVariableUnidadDTO variables);
     }
     public class VariablesUnidadesQueryService : IVariablesUnidadesQueryService
     {
@@ -28,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null)
+        public async Task<DataCollection<VariablesUnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<int> unidadesMedida = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.VariablesUnidades
+                    .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdVariableUnidad))
+                    .OrderBy(x => x.IdVariableUnidad)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<VariablesUnidadesDTO>>();
+                }
                 var collection = await _context.VariablesUnidades
                 .Where(x => unidadesMedida == null || unidadesMedida.Contains(x.IdVariableUnidad))
                 .OrderByDescending(x => x.IdVariableUnidad)
@@ -94,6 +102,25 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return variableUnidad.MapTo<VariablesUnidadesDTO>();
+        }
+        public async Task<UpdateVariableUnidadDTO> CreateAsync(UpdateVariableUnidadDTO variables)
+        {
+            try
+            {
+                var newVariables = new VariablesUnidades()
+                {
+                    Nombre = variables.Nombre,
+                };
+                await _context.VariablesUnidades.AddAsync(newVariables);
+
+                await _context.SaveChangesAsync();
+                return newVariables.MapTo<UpdateVariableUnidadDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Variable");
+            }
+
         }
     }
 }

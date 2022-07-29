@@ -1,17 +1,17 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+<<<<<<< HEAD
 using Service.EventHandlers.Command;
+=======
+>>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 using System.Net;
 
 namespace API.Controllers
@@ -23,16 +23,13 @@ namespace API.Controllers
 
         private readonly ILogger<CentrodeCostoController> _logger;
         private readonly ICentrodeCostoQueryService _centrosdecostoQueryService;
-        private readonly IMediator _mediator;
-        public CentrodeCostoController(ILogger<CentrodeCostoController> logger, ICentrodeCostoQueryService productQueryService, IMediator mediator)
+        public CentrodeCostoController(ILogger<CentrodeCostoController> logger, ICentrodeCostoQueryService productQueryService)
         {
             _logger = logger;
             _centrosdecostoQueryService = productQueryService;
-            _mediator = mediator;
         }
-        //products Trae todas los centro de costo
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -41,8 +38,8 @@ namespace API.Controllers
                 {
                     centrosdecosto = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
-
-                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto);
+                
+                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -72,7 +69,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae el centro de costo con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -109,7 +105,6 @@ namespace API.Controllers
 
             }
         }
-        //products/id Actualiza una centro de costo por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateCentrodeCostoDTO centrodecosto, int id)
         {
@@ -146,19 +141,17 @@ namespace API.Controllers
             }
 
         }
-
-        //products Crea una nuevo centro de costo pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCentrodeCostoCommand command)
+        public async Task<IActionResult> Create(UpdateCentrodeCostoDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newCentroCosto = await _centrosdecostoQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newCentroCosto
                 };
                 return Ok(result);
             }

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PERSISTENCE\PERSISTENCE.csproj" />
+    <ProjectReference Include="..\Service.Queries\Service.Queries.csproj" />
   </ItemGroup>
 
 </Project>

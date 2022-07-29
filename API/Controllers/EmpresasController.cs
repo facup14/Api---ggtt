@@ -1,20 +1,13 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
 
 namespace API.Controllers
@@ -26,16 +19,13 @@ namespace API.Controllers
 
         private readonly ILogger<EmpresasController> _logger;
         private readonly IEmpresasQueryService _empresasQueryService;
-        private readonly IMediator _mediator;
-        public EmpresasController(ILogger<EmpresasController> logger, IEmpresasQueryService productQueryService, IMediator mediator)
+        public EmpresasController(ILogger<EmpresasController> logger, IEmpresasQueryService productQueryService)
         {
             _logger = logger;
             _empresasQueryService = productQueryService;
-            _mediator = mediator;
         }
-        //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -45,7 +35,7 @@ namespace API.Controllers
                     empresas = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listEmpresas = await _empresasQueryService.GetAllAsync(page, take, empresas);
+                var listEmpresas = await _empresasQueryService.GetAllAsync(page, take, empresas, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -75,7 +65,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -111,7 +100,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateEmpresaDTO empresa, int id)
         {
@@ -148,19 +136,17 @@ namespace API.Controllers
             }
 
         }
-
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEmpresaCommand command)
+        public async Task<IActionResult> Create(UpdateEmpresaDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newEmpresa = await _empresasQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newEmpresa
                 };
                 return Ok(result);
             }

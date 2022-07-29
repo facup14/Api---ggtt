@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,16 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<SituacionesUnidadesController> _logger;
         private readonly ISituacionesUnidadesQueryService _situacionesQueryService;
-        private readonly IMediator _mediator;
-        public SituacionesUnidadesController(ILogger<SituacionesUnidadesController> logger, ISituacionesUnidadesQueryService productQueryService, IMediator mediator)
+        public SituacionesUnidadesController(ILogger<SituacionesUnidadesController> logger, ISituacionesUnidadesQueryService productQueryService)
         {
             _logger = logger;
             _situacionesQueryService = productQueryService;
-            _mediator = mediator;
         }
-        //products Trae todas las Situaciones
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -40,7 +34,7 @@ namespace API.Controllers
                     unidades = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listUnidades = await _situacionesQueryService.GetAllAsync(page, take, unidades);
+                var listUnidades = await _situacionesQueryService.GetAllAsync(page, take, unidades, order);
 
                 var result = new GetResponse()
                 {
@@ -172,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateSituacionCommand command)
+        public async Task<IActionResult> Create(UpdateSituacionesUnidadesDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newSituacion = await _situacionesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newSituacion
                 };
                 return Ok(result);
             }

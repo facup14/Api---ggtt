@@ -4,6 +4,7 @@ using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -16,10 +17,11 @@ namespace Service.Queries
 {
     public interface IFuncionesQueryService
     {
-        Task<DataCollection<FuncionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null);
+        Task<DataCollection<FuncionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null, bool order = false);
         Task<FuncionesDTO> GetAsync(int id);
         Task<UpdateFuncionesDTO> PutAsync(UpdateFuncionesDTO funcion, int id);
         Task<FuncionesDTO> DeleteAsync(int id);
+        Task<UpdateFuncionesDTO> CreateAsync(UpdateFuncionesDTO funcion);
     }
     public class FuncionesQueryService : IFuncionesQueryService
     {
@@ -28,10 +30,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<FuncionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> funciones = null)
+        public async Task<DataCollection<FuncionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> funciones = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Funciones
+                    .Where(x => funciones == null || funciones.Contains(x.IdFuncion))
+                    .OrderBy(x => x.IdFuncion)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<FuncionesDTO>>();
+                }
                 var collection = await _context.Funciones
                 .Where(x => funciones == null || funciones.Contains(x.IdFuncion))
                 .OrderByDescending(x => x.IdFuncion)
@@ -99,6 +109,26 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return funcion.MapTo<FuncionesDTO>();
+        }
+        public async Task<UpdateFuncionesDTO> CreateAsync(UpdateFuncionesDTO funcion)
+        {
+            try
+            {
+                var newFuncion = new Funciones()
+                {
+                    Descripcion = funcion.Descripcion,
+                    Obs = funcion.Obs,
+                };
+                await _context.Funciones.AddAsync(newFuncion);
+
+                await _context.SaveChangesAsync();
+                return newFuncion.MapTo<UpdateFuncionesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Función");
+            }
+
         }
     }
 }

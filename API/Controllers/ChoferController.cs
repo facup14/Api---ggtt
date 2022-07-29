@@ -1,10 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -20,15 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<ChoferController> _logger;
         private readonly IChoferesQueryService _choferesQueryService;
-        private readonly IMediator _mediator;
-        public ChoferController(ILogger<ChoferController> logger, IChoferesQueryService productQueryService, IMediator mediator)
+        public ChoferController(ILogger<ChoferController> logger, IChoferesQueryService productQueryService)
         {
             _logger = logger;
             _choferesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -38,7 +34,7 @@ namespace API.Controllers
                     unidades = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listUnidades = await _choferesQueryService.GetAllAsync(page, take, unidades);
+                var listUnidades = await _choferesQueryService.GetAllAsync(page, take, unidades, order);
 
                 var result = new GetResponse()
                 {
@@ -71,7 +67,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la unidad con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
@@ -98,7 +93,6 @@ namespace API.Controllers
 
             }
         }
-        //products/id Actualiza una Unidad por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateChoferesDTO unidad, long id)
         {
@@ -135,19 +129,17 @@ namespace API.Controllers
             }
 
         }
-
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateChoferesCommand command)
+        public async Task<IActionResult> Create(UpdateChoferesDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newChofer = await _choferesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newChofer
                 };
                 return Ok(result);
             }

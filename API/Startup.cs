@@ -1,16 +1,17 @@
-using MediatR;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PERSISTENCE;
 using Service.Queries;
-using System.Reflection;
 
 namespace API
 {
@@ -28,6 +29,14 @@ namespace API
         {
             services.AddControllers();
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")).ReplaceService<IQueryTranslationPostprocessorFactory, SqlServer2008QueryTranslationPostprocessorFactory>());
+
+
+            services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy())
+                .AddDbContextCheck<Context>();
+
+            services.AddHealthChecksUI().AddInMemoryStorage();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -52,6 +61,7 @@ namespace API
             services.AddTransient<IGruposQueryService, GruposQueryService>();
             services.AddTransient<ILocalidadQueryService, LocalidadesQueryService>();
             services.AddTransient<IChoferesQueryService, ChoferesQueryService>();
+<<<<<<< HEAD
             services.AddTransient<IRubrosQueryService, RubrosQueryService>();
             services.AddTransient<ITrabajosQueryService, TrabajosQueryService>();
             services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
@@ -60,6 +70,15 @@ namespace API
             services.AddTransient<ITareasQueryService, TareasQueryService>();
             services.AddTransient<IProveedoresQueryService, ProveedoresQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
+=======
+            services.AddTransient<ITalleresQueryService, TalleresQueryService>();
+            services.AddTransient<IDomiciliosQueryService, DomiciliosQueryService>();
+            services.AddTransient<IBarriosQueryService, BarriosQueryService>();
+            services.AddTransient<ICallesQueryService, CallesQueryService>();
+            services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
+            services.AddTransient<IRepuestosQueryService, RepuestosQueryService>();
+            services.AddTransient<IArticulosQueryService, ArticulosQueryService>();
+>>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
 
@@ -82,7 +101,20 @@ namespace API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });            
+                
+                endpoints.MapHealthChecksUI();
+                
                 endpoints.MapControllers();
+            });
+            app.UseHealthChecksUI(options =>
+            {
+                options.UIPath = "/healthchecks-ui";
+                options.ApiPath = "/health";
             });
             app.UseSwagger();
             app.UseSwaggerUI(c =>

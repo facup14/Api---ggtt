@@ -1,10 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -20,15 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<EquipamientoController> _logger;
         private readonly IEquipamientoQueryService _equipamientosQueryService;
-        private readonly IMediator _mediator;
-        public EquipamientoController(ILogger<EquipamientoController> logger, IEquipamientoQueryService productQueryService, IMediator mediator)
+        public EquipamientoController(ILogger<EquipamientoController> logger, IEquipamientoQueryService productQueryService)
         {
             _logger = logger;
             _equipamientosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -38,7 +34,7 @@ namespace API.Controllers
                     equipamientos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listEquipamientos = await _equipamientosQueryService.GetAllAsync(page, take, equipamientos);
+                var listEquipamientos = await _equipamientosQueryService.GetAllAsync(page, take, equipamientos, order);
 
                 var result = new GetResponse()
                 {
@@ -180,16 +176,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEquipamientoCommand command)
+        public async Task<IActionResult> Create(UpdateEquipamientoDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newEquipamiento = await _equipamientosQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newEquipamiento
                 };
                 return Ok(result);
             }

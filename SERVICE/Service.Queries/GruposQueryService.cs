@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -14,10 +15,11 @@ namespace Service.Queries
 {
     public interface IGruposQueryService
     {
-        Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null);
+        Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null, bool order = false);
         Task<GruposDTO> GetAsync(long id);
         Task<UpdateGruposDTO> PutAsync(UpdateGruposDTO grupo, long id);
         Task<GruposDTO> DeleteAsync(long id);
+        Task<UpdateGruposDTO> CreateAsync(UpdateGruposDTO grupo);
     }
     public class GruposQueryService : IGruposQueryService
     {
@@ -26,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null)
+        public async Task<DataCollection<GruposDTO>> GetAllAsync(int page, int take, IEnumerable<long> grupos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Grupos
+                    .Where(x => grupos == null || grupos.Contains(x.IdGrupo))
+                    .OrderBy(x => x.IdGrupo)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<GruposDTO>>();
+                }
                 var collection = await _context.Grupos
                 .Where(x => grupos == null || grupos.Contains(x.IdGrupo))
                 .OrderByDescending(x => x.IdGrupo)
@@ -98,6 +108,27 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return grupos.MapTo<GruposDTO>();
+        }
+        public async Task<UpdateGruposDTO> CreateAsync(UpdateGruposDTO grupo)
+        {
+            try
+            {
+                var newGrupo = new Grupos()
+                {
+                    Descripcion = grupo.Descripcion,
+                    Obs = grupo.Obs,
+                    RutaImagen = grupo.RutaImagen,
+                };
+                await _context.Grupos.AddAsync(newGrupo);
+
+                await _context.SaveChangesAsync();
+                return newGrupo.MapTo<UpdateGruposDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Grupo");
+            }
+
         }
     }
 }

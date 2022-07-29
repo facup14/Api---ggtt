@@ -1,6 +1,4 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
 using DATA.DTOS;
 using System.Net;
 
@@ -23,16 +20,13 @@ namespace API.Controllers
 
         private readonly ILogger<ProvinciasController> _logger;
         private readonly IProvinciasQueryService _provinciasQueryService;
-        private readonly IMediator _mediator;
-        public ProvinciasController(ILogger<ProvinciasController> logger, IProvinciasQueryService productQueryService, IMediator mediator)
+        public ProvinciasController(ILogger<ProvinciasController> logger, IProvinciasQueryService productQueryService)
         {
             _logger = logger;
             _provinciasQueryService = productQueryService;
-            _mediator = mediator;
         }
-        //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -42,7 +36,7 @@ namespace API.Controllers
                     provincias = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listProvincias = await _provinciasQueryService.GetAllAsync(page, take, provincias);
+                var listProvincias = await _provinciasQueryService.GetAllAsync(page, take, provincias, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -73,7 +67,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
@@ -110,7 +103,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateProvinciaDTO provincia, long id)
         {
@@ -148,19 +140,17 @@ namespace API.Controllers
             }
 
         }
-
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProvinciaCommand command)
+        public async Task<IActionResult> Create(UpdateProvinciaDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newProvincia = await _provinciasQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newProvincia
                 };
                 return Ok(result);
             }

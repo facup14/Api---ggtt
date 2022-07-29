@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -16,10 +17,11 @@ namespace Service.Queries
 {
     public interface ITitulosQueryService
     {
-        Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null);
+        Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null, bool order = false);
         Task<TitulosDTO> GetAsync(int id);
         Task<UpdateTitulosDTO> PutAsync(UpdateTitulosDTO titulo, int id);
         Task<TitulosDTO> DeleteAsync(int id);
+        Task<UpdateTitulosDTO> CreateAsync(UpdateTitulosDTO titulo);
     }
     public class TitulosQueryService : ITitulosQueryService
     {
@@ -28,10 +30,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null)
+        public async Task<DataCollection<TitulosDTO>> GetAllAsync(int page, int take, IEnumerable<int> titulos = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Titulos
+                    .Where(x => titulos == null || titulos.Contains(x.IdTitulo))
+                    .OrderBy(x => x.IdTitulo)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<TitulosDTO>>();                    
+                }
                 var collection = await _context.Titulos
                 .Where(x => titulos == null || titulos.Contains(x.IdTitulo))
                 .OrderByDescending(x => x.IdTitulo)
@@ -106,6 +116,26 @@ namespace Service.Queries
             return titulo.MapTo<TitulosDTO>();
             
             
+        }
+        public async Task<UpdateTitulosDTO> CreateAsync(UpdateTitulosDTO titulo)
+        {
+            try
+            {
+                var newTitulo = new Titulos()
+                {
+                    Descripcion = titulo.Descripcion,
+                    Obs = titulo.Obs
+                };
+                await _context.Titulos.AddAsync(newTitulo);
+
+                await _context.SaveChangesAsync();
+                return newTitulo.MapTo<UpdateTitulosDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Titulo");
+            }
+
         }
     }
 }

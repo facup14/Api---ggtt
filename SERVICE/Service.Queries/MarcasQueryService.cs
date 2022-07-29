@@ -11,15 +11,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
+using DATA.Models;
 
 namespace Service.Queries
 {
     public interface IMarcasQueryService
     {
-        Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> Marcas = null);
+        Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> Marcas = null, bool order = false);
         Task<MarcasDTO> GetAsync(long id);
         Task<UpdateMarcaDTO> PutAsync(UpdateMarcaDTO Convenio, long it);
         Task<MarcasDTO> DeleteAsync(long id);
+        Task<UpdateMarcaDTO> CreateAsync(UpdateMarcaDTO marcas);
     }
 
     public class MarcasQueryService : IMarcasQueryService
@@ -31,10 +33,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> marcas = null)
+        public async Task<DataCollection<MarcasDTO>> GetAllAsync(int page, int take, IEnumerable<long> marcas = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Marcas
+                    .Where(x => marcas == null || marcas.Contains(x.IdMarca))
+                    .OrderBy(x => x.IdMarca)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<MarcasDTO>>();
+                }
                 var collection = await _context.Marcas
                 .Where(x => marcas == null || marcas.Contains(x.IdMarca))
                 .OrderByDescending(x => x.IdMarca)
@@ -98,6 +108,26 @@ namespace Service.Queries
             catch (Exception ex)
             {
                 throw new Exception("Error al eliminar la Marca");
+            }
+
+        }
+        public async Task<UpdateMarcaDTO> CreateAsync(UpdateMarcaDTO marcas)
+        {
+            try
+            {
+                var newMarcas = new Marcas()
+                {
+                    Marca = marcas.Marca,
+                    Obs = marcas.Obs,
+                };
+                await _context.Marcas.AddAsync(newMarcas);
+
+                await _context.SaveChangesAsync();
+                return newMarcas.MapTo<UpdateMarcaDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Grupo");
             }
 
         }

@@ -7,6 +7,7 @@ namespace DATA.Models
 {
     public class Choferes
     {
+        
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdChofer { get; set; }
@@ -26,11 +27,9 @@ namespace DATA.Models
         
         public DateTime FechaNacimiento { get; set; }
         
-        
-
-        //[ForeignKey("IdTaller")]
-        //public int? IdTaller { get; set; }
-        //public Talleres Taller { get; set; }
+        [ForeignKey("IdTaller")]
+        public long? IdTaller { get; set; }
+        public virtual Talleres idTaller { get; set; }
         [ForeignKey("IdEmpresa")]
         public string Empresa { get; set; }
         public int IdEmpresa { get; set; }

@@ -1,11 +1,8 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,15 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<VariableUnidadController> _logger;
         private readonly IVariablesUnidadesQueryService _variablesQueryService;
-        private readonly IMediator _mediator;
-        public VariableUnidadController(ILogger<VariableUnidadController> logger, IVariablesUnidadesQueryService productQueryService, IMediator mediator)
+        public VariableUnidadController(ILogger<VariableUnidadController> logger, IVariablesUnidadesQueryService productQueryService)
         {
             _logger = logger;
             _variablesQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -39,7 +34,7 @@ namespace API.Controllers
                     titulos = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listVariables = await _variablesQueryService.GetAllAsync(page, take, titulos);
+                var listVariables = await _variablesQueryService.GetAllAsync(page, take, titulos, order);
 
                 var result = new GetResponse()
                 {
@@ -171,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateVariableUnidadCommand command)
+        public async Task<IActionResult> Create(UpdateVariableUnidadDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newVariable = await _variablesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newVariable
                 };
                 return Ok(result);
             }

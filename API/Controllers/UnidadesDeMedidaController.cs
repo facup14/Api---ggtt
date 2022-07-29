@@ -1,11 +1,8 @@
-﻿using DATA.DTOS;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -21,15 +18,13 @@ namespace API.Controllers
     {
         private readonly ILogger<UnidadesDeMedidaController> _logger;
         private readonly IUnidadesDeMedidaQueryService _unidadesDeMedidaQueryService;
-        private readonly IMediator _mediator;
-        public UnidadesDeMedidaController(ILogger<UnidadesDeMedidaController> logger, IUnidadesDeMedidaQueryService productQueryService, IMediator mediator)
+        public UnidadesDeMedidaController(ILogger<UnidadesDeMedidaController> logger, IUnidadesDeMedidaQueryService productQueryService)
         {
             _logger = logger;
             _unidadesDeMedidaQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -39,7 +34,7 @@ namespace API.Controllers
                     unidadMedida = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listUnidadesDeMedida = await _unidadesDeMedidaQueryService.GetAllAsync(page, take, unidadMedida);
+                var listUnidadesDeMedida = await _unidadesDeMedidaQueryService.GetAllAsync(page, take, unidadMedida, order);
 
                 var result = new GetResponse()
                 {
@@ -171,16 +166,16 @@ namespace API.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUnidadesDeMedidaCommand command)
+        public async Task<IActionResult> Create(UpdateUnidadDeMedidaDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newUnidadMedida = await _unidadesDeMedidaQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newUnidadMedida
                 };
                 return Ok(result);
             }

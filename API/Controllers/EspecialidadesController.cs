@@ -1,20 +1,13 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
-using DATA.DTOS;
 using System.Net;
 
 namespace API.Controllers
@@ -26,16 +19,13 @@ namespace API.Controllers
 
         private readonly ILogger<EspecialidadesController> _logger;
         private readonly IEspecialidadesQueryService _especialidadesQueryService;
-        private readonly IMediator _mediator;
-        public EspecialidadesController(ILogger<EspecialidadesController> logger, IEspecialidadesQueryService productQueryService, IMediator mediator)
+        public EspecialidadesController(ILogger<EspecialidadesController> logger, IEspecialidadesQueryService productQueryService)
         {
             _logger = logger;
             _especialidadesQueryService = productQueryService;
-            _mediator = mediator;
         }
-        //products Trae todas las agurpaciónes
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -45,7 +35,7 @@ namespace API.Controllers
                     especialidades = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listEspecialidades =  await _especialidadesQueryService.GetAllAsync(page, take, especialidades);
+                var listEspecialidades =  await _especialidadesQueryService.GetAllAsync(page, take, especialidades,order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -76,7 +66,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -113,7 +102,6 @@ namespace API.Controllers
                 });
             }
         }
-        //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(UpdateEspecialidadesDTO especialidad, int id)
         {
@@ -151,19 +139,17 @@ namespace API.Controllers
             }
 
         }
-
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
         [HttpPost]
-        public async Task<IActionResult> Create(CreateEspecialidadCommand command)
+        public async Task<IActionResult> Create(UpdateEspecialidadesDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newEspecialidad = await _especialidadesQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "Success",
-                    Result = command
+                    Result = newEspecialidad
                 };
                 return Ok(result);
             }
