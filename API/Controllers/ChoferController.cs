@@ -129,6 +129,7 @@ namespace API.Controllers
             }
 
         }
+<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateChoferesDTO command)
         {
@@ -164,6 +165,10 @@ namespace API.Controllers
                 });
             }
         }
+=======
+
+       
+>>>>>>> REQ-24233
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {

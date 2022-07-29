@@ -165,6 +165,7 @@ namespace API.Controllers
             }
 
         }
+<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateLocalidadesDTO command)
         {
@@ -200,5 +201,8 @@ namespace API.Controllers
                 });
             }
         }
+=======
+        
+>>>>>>> REQ-24233
     }
 }

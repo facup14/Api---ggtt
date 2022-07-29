@@ -32,25 +32,20 @@ namespace PERSISTENCE
         public DbSet<UnidadesDeMedida> UnidadesDeMedida { get; set; }
         public DbSet<VariablesUnidades> VariablesUnidades { get; set; }
         public DbSet<Equipamientos> Equipamientos { get; set; }
-<<<<<<< HEAD
         public DbSet<Trabajos> Trabajos { get; set; }
         public DbSet<Mecanicos> Mecanicos { get; set; }
         public DbSet<Rubros> Rubros { get; set; }
-        //public DbSet<Repuestos> Repuestos { get; set; }
-        //public DbSet<Articulos> Articulos { get; set; }
         public DbSet<AlicuotasIVA> AlicuotasIVA { get; set; }
         public DbSet<ValoresMediciones> ValoresMediciones { get; set; }
         public DbSet<Tareas> Tareas { get; set; }
         public DbSet<Proveedores> Proveedores { get; set; }
-=======
         public DbSet<Talleres> Talleres { get; set; }
         public DbSet<Calles> Calles { get; set; }
         public DbSet<Barrios> Barrios { get; set; }
         public DbSet<Domicilios> Domicilios { get; set; }
-        public DbSet<Mecanicos> Mecanicos { get; set; }
         public DbSet<Repuestos> Repuestos { get; set; }
         public DbSet<Articulos> Articulos { get; set; }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
 
         #endregion
 
@@ -83,25 +78,21 @@ namespace PERSISTENCE
             new UnidadesDeMedidaConfiguration(modelBuilder.Entity<UnidadesDeMedida>());
             new VariablesUnidadesConfiguration(modelBuilder.Entity<VariablesUnidades>());
             new EquipamientosConfiguration(modelBuilder.Entity<Equipamientos>());
-<<<<<<< HEAD
             new TrabajosConfiguration(modelBuilder.Entity<Trabajos>());
             new RubrosConfiguration(modelBuilder.Entity<Rubros>());
             new MecanicosConfiguration(modelBuilder.Entity<Mecanicos>());
-            // new ArticulosConfiguration(modelBuilder.Entity<Articulos>());
-            // new RepuestosConfiguration(modelBuilder.Entity<Repuestos>());
+            new ArticulosConfiguration(modelBuilder.Entity<Articulos>());
+            new RepuestosConfiguration(modelBuilder.Entity<Repuestos>());
             new ValoresMedicionesConfiguration(modelBuilder.Entity<ValoresMediciones>());
             new AlicuotasIVAConfiguration(modelBuilder.Entity<AlicuotasIVA>());
             new TareasConfiguration(modelBuilder.Entity<Tareas>());
             new ProveedoresConfiguration(modelBuilder.Entity<Proveedores>());
-=======
             new TalleresConfiguration(modelBuilder.Entity<Talleres>());
             new CallesConfiguration(modelBuilder.Entity<Calles>());
             new BarriosConfiguration(modelBuilder.Entity<Barrios>());
             new DomiciliosConfiguration(modelBuilder.Entity<Domicilios>());
             new MecanicosConfiguration(modelBuilder.Entity<Mecanicos>());
-            new RepuestosConfiguration(modelBuilder.Entity<Repuestos>());
-            new ArticulosConfiguration(modelBuilder.Entity<Articulos>());
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
         }
     }
 }

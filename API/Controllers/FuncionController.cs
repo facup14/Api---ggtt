@@ -1,6 +1,10 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
+<<<<<<< HEAD
+=======
+using MediatR;
+>>>>>>> REQ-24233
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
@@ -165,6 +169,7 @@ namespace API.Controllers
             }
 
         }
+<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateFuncionesDTO command)
         {
@@ -200,5 +205,8 @@ namespace API.Controllers
                 });
             }
         }
+=======
+        
+>>>>>>> REQ-24233
     }
 }

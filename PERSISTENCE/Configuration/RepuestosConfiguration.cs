@@ -1,20 +1,14 @@
-<<<<<<< HEAD
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-=======
 ﻿using DATA.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
 
 namespace PERSISTENCE.Configuration
 {
     public class RepuestosConfiguration
     {
-<<<<<<< HEAD
-=======
+
         public RepuestosConfiguration(EntityTypeBuilder<Repuestos> entity)
         {
             entity.HasKey(e => e.IdRepuesto);
@@ -108,6 +102,6 @@ namespace PERSISTENCE.Configuration
                 .HasForeignKey(d => d.IdUnidadDeMedida)
                 .HasConstraintName("FK_Repuestos_UnidadesDeMedida");
         }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
     }
 }

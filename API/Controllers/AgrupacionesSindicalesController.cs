@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 ﻿using DATA.DTOS.Updates;
+=======
+﻿using MediatR;
+using DATA.DTOS.Updates;
+>>>>>>> REQ-24233
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -142,6 +147,7 @@ namespace API.Controllers
             }
 
         }
+<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateAgrupacionSindicalDTO command)
         {
@@ -178,6 +184,9 @@ namespace API.Controllers
                 });
             }
         }
+=======
+
+>>>>>>> REQ-24233
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

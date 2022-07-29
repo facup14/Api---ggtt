@@ -1,20 +1,15 @@
-<<<<<<< HEAD
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-=======
+
+
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
 
 namespace DATA.Models
 {
     public class Repuestos
     {
-<<<<<<< HEAD
 
-=======
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdRepuesto { get; set; }
@@ -51,6 +46,6 @@ namespace DATA.Models
         public bool? HabilitarEmailStock { get; set; }
         public string? CodigoBarras { get; set; }
         public int? TipoValorStock { get; set; }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
     }
 }
