@@ -1,173 +1,47 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-﻿using DATA.DTOS.Updates;
-=======
-=======
->>>>>>> ValoresMediciones
-﻿using MediatR;
-using DATA.DTOS.Updates;
->>>>>>> REQ-24233
-using DATA.Errors;
+﻿using DATA.Errors;
 using DATA.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-using Service.EventHandlers.Command;
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
-=======
->>>>>>> REQ-24233
-=======
->>>>>>> ValoresMediciones
 using System.Net;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("centrosdecosto")]
-    public class CentrodeCostoController : ControllerBase
+    [Route("proveedor")]
+    public class ProveedorController : ControllerBase
     {
-
-        private readonly ILogger<CentrodeCostoController> _logger;
-        private readonly ICentrodeCostoQueryService _centrosdecostoQueryService;
-        public CentrodeCostoController(ILogger<CentrodeCostoController> logger, ICentrodeCostoQueryService productQueryService)
+        private readonly ILogger<ProveedorController> _logger;
+        private readonly IProveedoresQueryService _proveedoresQueryService;
+        private readonly IMediator _mediator;
+        public ProveedorController(ILogger<ProveedorController> logger, IProveedoresQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _centrosdecostoQueryService = productQueryService;
+            _proveedoresQueryService = productQueryService;
+            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
         {
             try
             {
-                IEnumerable<long> centrosdecosto = null;
+                IEnumerable<long> proveedores = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    centrosdecosto = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    proveedores = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
-                
-                var listCentros =  await _centrosdecostoQueryService.GetAllAsync(page, take, centrosdecosto, order);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = listCentros
-                };
-                return Ok(result);
-            }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-        }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            try
-            {
-                var centroCosto = await _centrosdecostoQueryService.GetAsync(id);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = centroCosto
-                };
-                return Ok(result);
-            }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
-                    Result = null
-                });
 
-            }
-        }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateCentrodeCostoDTO centrodecosto, int id)
-        {
-            try
-            {
-                var centroCosto = await _centrosdecostoQueryService.PutAsync(centrodecosto, id);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = centroCosto
-                };
-                return Ok(result);
-            }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-
-        }
-<<<<<<< HEAD
-<<<<<<< HEAD
-        [HttpPost]
-        public async Task<IActionResult> Create(UpdateCentrodeCostoDTO command)
-        {
-            try
-            {
-                var newCentroCosto = await _centrosdecostoQueryService.CreateAsync(command);
+                var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, proveedores);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = newCentroCosto
+                    Result = listProveedores
                 };
                 return Ok(result);
             }
@@ -176,41 +50,149 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
                     Message = ex.Message,
                     Result = null
                 });
             }
             catch (Exception ex)
             {
+
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
                     Result = null
                 });
             }
         }
-=======
-
-       
->>>>>>> REQ-24233
-=======
-
-        
->>>>>>> ValoresMediciones
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        //products/1 Trae la agurpación con el id colocado
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
         {
             try
             {
-                var centroCosto = await _centrosdecostoQueryService.DeleteAsync(id);
+                var proveedor = await _proveedoresQueryService.GetAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = centroCosto
+                    Message = "success",
+                    Result = proveedor
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
+        }
+        //products/id Actualiza una agurpación por el id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(UpdateProveedoresDTO proveedor, long id)
+        {
+            try
+            {
+                var updateProveedor = await _proveedoresQueryService.PutAsync(proveedor, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateProveedor
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
+
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            try
+            {
+                var deleteProveedor = await _proveedoresQueryService.DeleteAsync(id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = deleteProveedor
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(UpdateProveedoresDTO proveedor)
+        {
+            try
+            {
+                var newProveedor = await _proveedoresQueryService.CreateAsync(proveedor);
+
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = newProveedor
                 };
                 return Ok(result);
             }
@@ -230,11 +212,10 @@ namespace API.Controllers
                 return Ok(new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.MultiStatus,
-                    Message = ex.Message,
+                    Message = "Server error",
                     Result = null
                 });
             }
-
         }
     }
 }

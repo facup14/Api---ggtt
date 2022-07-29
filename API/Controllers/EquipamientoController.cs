@@ -176,6 +176,7 @@ namespace API.Controllers
 
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateEquipamientoDTO command)
         {
@@ -214,5 +215,8 @@ namespace API.Controllers
 =======
        
 >>>>>>> REQ-24233
+=======
+       
+>>>>>>> ValoresMediciones
     }
 }

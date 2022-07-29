@@ -1,10 +1,7 @@
 ﻿using Common.Collection;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using DATA.Extensions;
-using Service.Queries.DTOS;
 using Services.Common.Mapping;
 using Services.Common.Paging;
 using System;
@@ -20,6 +17,7 @@ namespace Service.Queries
         Task<TareasDTO> GetAsync(long id);
         Task<UpdateTareasDTO> PutAsync(UpdateTareasDTO Tareas, long id);
         Task<TareasDTO> DeleteAsync(long id);
+        Task<UpdateTareasDTO> CreateAsync(UpdateTareasDTO tarea);
     }
     
     public class TareasQueryService : ITareasQueryService
@@ -103,6 +101,26 @@ namespace Service.Queries
             {
 
                 throw ex;
+            }
+
+        }
+        public async Task<UpdateTareasDTO> CreateAsync(UpdateTareasDTO tarea)
+        {
+            try
+            {
+                var newTarea = new Tareas()
+                {
+                    Descripcion = tarea.Descripcion,
+                    Obs = tarea.Obs,
+                };
+                await _context.Tareas.AddAsync(newTarea);
+
+                await _context.SaveChangesAsync();
+                return newTarea.MapTo<UpdateTareasDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Tarea");
             }
 
         }

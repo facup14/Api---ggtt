@@ -1,10 +1,7 @@
 ﻿using Common.Collection;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using DATA.Extensions;
-using Service.Queries.DTOS;
 using Services.Common.Mapping;
 using Services.Common.Paging;
 using System;
@@ -20,6 +17,7 @@ namespace Service.Queries
         Task<AlicuotasIVADTO> GetAsync(int id);
         Task<UpdateAlicuotasIVADTO> PutAsync(UpdateAlicuotasIVADTO AlicuotasIVA, int id);
         Task<AlicuotasIVADTO> DeleteAsync(int id);
+        Task<UpdateAlicuotasIVADTO> CreateAsync(UpdateAlicuotasIVADTO alicuotas);
     }
     
     public class AlicuotasIVAQueryService : IAlicuotasIVAQueryService
@@ -104,6 +102,28 @@ namespace Service.Queries
             {
 
                 throw ex;
+            }
+            
+        }
+        public async Task<UpdateAlicuotasIVADTO> CreateAsync(UpdateAlicuotasIVADTO alicuotas)
+        {
+            try
+            {
+                var newAlicuota = new AlicuotasIVA()
+                {
+                    Detalle = alicuotas.Detalle,
+                    Alicuota = alicuotas.Alicuota,
+                    NumeroCUIT = alicuotas.NumeroCUIT,
+                    AlicuotaRecargo = alicuotas.AlicuotaRecargo,
+                };
+                await _context.AlicuotasIVA.AddAsync(newAlicuota);
+
+                await _context.SaveChangesAsync();
+                return newAlicuota.MapTo<UpdateAlicuotasIVADTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear la Alicuota");
             }
 
         }

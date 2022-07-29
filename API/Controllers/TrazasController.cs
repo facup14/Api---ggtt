@@ -4,7 +4,10 @@ using DATA.Extensions;
 <<<<<<< HEAD
 =======
 using MediatR;
+<<<<<<< HEAD
 >>>>>>> REQ-24233
+=======
+>>>>>>> ValoresMediciones
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
@@ -170,6 +173,7 @@ namespace API.Controllers
 
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateTrazasDTO command)
         {
@@ -208,5 +212,8 @@ namespace API.Controllers
 =======
        
 >>>>>>> REQ-24233
+=======
+        
+>>>>>>> ValoresMediciones
     }
 }
