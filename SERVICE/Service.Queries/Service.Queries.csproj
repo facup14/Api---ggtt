@@ -9,7 +9,6 @@
     <ProjectReference Include="..\..\COMMON\Service.Mapping\Common.Mapping\Common.Mapping.csproj" />
     <ProjectReference Include="..\..\COMMON\Service.Pagging\Common.Pagging\Common.Pagging.csproj" />
     <ProjectReference Include="..\..\PERSISTENCE\PERSISTENCE.csproj" />
-    <ProjectReference Include="..\Service.EventHandlers\Service.EventHandlers.csproj" />
   </ItemGroup>
 
 </Project>

@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PERSISTENCE\PERSISTENCE.csproj" />
-    <ProjectReference Include="..\SERVICE\Service.EventHandlers\Service.EventHandlers.csproj" />
     <ProjectReference Include="..\SERVICE\Service.Queries\Service.Queries.csproj" />
   </ItemGroup>
 

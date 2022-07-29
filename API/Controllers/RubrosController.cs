@@ -4,7 +4,6 @@ using DATA.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Service.EventHandlers.Command;
 using Service.Queries;
 using System;
 using System.Collections.Generic;
@@ -135,42 +134,7 @@ namespace API.Controllers
 
         }
 
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateRubroCommand command)
-        {
-            try
-            {
-                await _mediator.Publish(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = command
-                };
-                return Ok(result);
-            }
-            catch (EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Server error",
-                    Result = null
-                });
-            }
-        }
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
