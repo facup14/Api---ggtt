@@ -55,6 +55,7 @@ namespace API
             services.AddTransient<IValoresMedicionesQueryService, ValoresMedicionesQueryService>();
             services.AddTransient<IAlicuotasIVAQueryService, AlicuotasIVAQueryService>();
             services.AddTransient<ITareasQueryService, TareasQueryService>();
+            services.AddTransient<IProveedoresQueryService, ProveedoresQueryService>();
             services.AddMediatR(Assembly.Load("Service.EventHandlers"));
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);

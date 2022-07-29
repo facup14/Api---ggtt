@@ -9,6 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DATA\DATA.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Common.Collection">
       <HintPath>..\..\COMMON\Service.Collection\Common.Collection\bin\Debug\netcoreapp3.1\Common.Collection.dll</HintPath>
     </Reference>

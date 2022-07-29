@@ -1,18 +1,14 @@
-﻿using Common.Collection;
-using MediatR;
+﻿using MediatR;
 using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
-using Service.Queries.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
-using DATA.DTOS;
 using System.Net;
 
 namespace API.Controllers
@@ -152,41 +148,7 @@ namespace API.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateAlicuotasIVACommand command)
-        {
-            try
-            {
-                await _mediator.Publish(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = command
-                };
-                return Ok(result);
-            }
-            catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Server error",
-                    Result = null
-                });
-            }
-        }
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -223,6 +185,42 @@ namespace API.Controllers
                 });
             }
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(UpdateAlicuotasIVADTO alicuota)
+        {
+            try
+            {
+                var newAlicuota = await _alicuotasQueryService.CreateAsync(alicuota);
+
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = newAlicuota
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Service.Queries
         Task<ProveedoresDTO> GetAsync(int id);
         Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, int id);
         Task<ProveedoresDTO> DeleteAsync(int id);
+        Task<UpdateProveedoresDTO> CreateAsync(UpdateProveedoresDTO proveedor);
     }
     public class ProveedoresQueryService : IProveedoresQueryService
     {
@@ -99,6 +100,33 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
 
             return Proveedor.MapTo<ProveedoresDTO>();
+        }
+        public async Task<UpdateProveedoresDTO> CreateAsync(UpdateProveedoresDTO proveedor)
+        {
+            try
+            {
+                var newProveedor = new Proveedores()
+                {
+                    RazonSocial = proveedor.RazonSocial,
+                    NCuit = proveedor.NCuit,
+                    Telefono = proveedor.Telefono,
+                    Celular = proveedor.Celular,
+                    Contacto = proveedor.Contacto,
+                    Email = proveedor.Email,
+                    ChequesA = proveedor.ChequesA,
+                    Web = proveedor.Web,
+                    Obs = proveedor.Obs,
+            };
+                await _context.Proveedores.AddAsync(newProveedor);
+
+                await _context.SaveChangesAsync();
+                return newProveedor.MapTo<UpdateProveedoresDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Proveedor");
+            }
+
         }
     }
 }

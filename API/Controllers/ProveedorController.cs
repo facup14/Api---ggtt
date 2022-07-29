@@ -1,5 +1,4 @@
-﻿using DATA.DTOS.Updates;
-using DATA.Errors;
+﻿using DATA.Errors;
 using DATA.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,16 +13,16 @@ using System.Threading.Tasks;
 namespace API.Controllers
 {
     [ApiController]
-    [Route("localidad")]
-    public class LocalidadController : ControllerBase
+    [Route("proveedor")]
+    public class ProveedorController : ControllerBase
     {
-        private readonly ILogger<LocalidadController> _logger;
-        private readonly ILocalidadQueryService _localidadesQueryService;
+        private readonly ILogger<ProveedorController> _logger;
+        private readonly IProveedoresQueryService _proveedoresQueryService;
         private readonly IMediator _mediator;
-        public LocalidadController(ILogger<LocalidadController> logger, ILocalidadQueryService productQueryService, IMediator mediator)
+        public ProveedorController(ILogger<ProveedorController> logger, IProveedoresQueryService productQueryService, IMediator mediator)
         {
             _logger = logger;
-            _localidadesQueryService = productQueryService;
+            _proveedoresQueryService = productQueryService;
             _mediator = mediator;
         }
         [HttpGet]
@@ -31,22 +30,20 @@ namespace API.Controllers
         {
             try
             {
-                IEnumerable<long> localidades = null;
+                IEnumerable<long> proveedores = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    localidades = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    proveedores = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listLocalidades = await _localidadesQueryService.GetAllAsync(page, take, localidades);
-
+                var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, proveedores);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = listLocalidades
+                    Message = "success",
+                    Result = listProveedores
                 };
                 return Ok(result);
-
             }
             catch (EmptyCollectionException ex)
             {
@@ -70,17 +67,18 @@ namespace API.Controllers
                 });
             }
         }
+        //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
             try
             {
-                var localidad = await _localidadesQueryService.GetAsync(id);
+                var proveedor = await _proveedoresQueryService.GetAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = localidad,
+                    Message = "success",
+                    Result = proveedor
                 };
                 return Ok(result);
             }
@@ -89,39 +87,51 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
-                    StatusCode = (int)HttpStatusCode.NotFound,
-                    Message = ex.Message,
-                    Result = null
-                });
-
-            }
-        }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateLocalidadesDTO titulo, long id)
-        {
-            try
-            {
-                var newLocalidad = await _localidadesQueryService.PutAsync(titulo, id);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newLocalidad
-                };
-                return Ok(result);
-            }
-            catch (EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.NotFound,
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
                     Message = ex.Message,
                     Result = null
                 });
             }
             catch (Exception ex)
             {
+
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
+        }
+        //products/id Actualiza una agurpación por el id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(UpdateProveedoresDTO proveedor, long id)
+        {
+            try
+            {
+                var updateProveedor = await _proveedoresQueryService.PutAsync(proveedor, id);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = updateProveedor
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+
                 _logger.LogError(ex.Message);
                 return Ok(new GetResponse()
                 {
@@ -132,17 +142,57 @@ namespace API.Controllers
             }
 
         }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                var deleteList = await _localidadesQueryService.DeleteAsync(id);
+                var deleteProveedor = await _proveedoresQueryService.DeleteAsync(id);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = deleteList
+                    Message = "success",
+                    Result = deleteProveedor
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.MultiStatus,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(UpdateProveedoresDTO proveedor)
+        {
+            try
+            {
+                var newProveedor = await _proveedoresQueryService.CreateAsync(proveedor);
+
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "success",
+                    Result = newProveedor
                 };
                 return Ok(result);
             }
@@ -166,8 +216,6 @@ namespace API.Controllers
                     Result = null
                 });
             }
-
         }
-        
     }
 }

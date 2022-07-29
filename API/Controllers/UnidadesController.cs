@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
-using DATA.Models;
 using System.Net;
 using DATA.Extensions;
 using DATA.Errors;
@@ -138,40 +136,7 @@ namespace API.Controllers
             
         }
 
-        //products Crea una nueva Unidad pasandole solo los parametros NO-NULL
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateUnidadCommand command)
-        {
-            try
-            {
-                await _mediator.Publish(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = command
-                };
-                return Ok(result);
-            }catch(EmptyCollectionException ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message,
-                    Result = null
-                });
-            }catch(Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Ok(new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.BadRequest,
-                    Message = "Server error",
-                    Result = null
-                });
-            }
-        }
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

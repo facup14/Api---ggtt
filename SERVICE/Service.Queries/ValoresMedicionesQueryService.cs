@@ -22,6 +22,7 @@ namespace Service.Queries
         Task<ValoresMedicionesDTO> GetAsync(int id);
         Task<UpdateValoresMedicionesDTO> PutAsync(UpdateValoresMedicionesDTO ValorMedicion, int it);
         Task<ValoresMedicionesDTO> DeleteAsync(int id);
+        Task<UpdateValoresMedicionesDTO> CreateAsync(UpdateValoresMedicionesDTO valores);
     }
 
     public class ValoresMedicionesQueryService : IValoresMedicionesQueryService
@@ -104,6 +105,26 @@ namespace Service.Queries
             {
 
                 throw ex;
+            }
+            
+        }
+        public async Task<UpdateValoresMedicionesDTO> CreateAsync(UpdateValoresMedicionesDTO valores)
+        {
+            try
+            {
+                var newValorM = new ValoresMediciones()
+                {
+                    ValorMedicion = valores.ValorMedicion,
+                    Obs = valores.Obs,
+                };
+                await _context.ValoresMediciones.AddAsync(newValorM);
+
+                await _context.SaveChangesAsync();
+                return newValorM.MapTo<UpdateValoresMedicionesDTO>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al crear el Valor Medicional");
             }
 
         }
