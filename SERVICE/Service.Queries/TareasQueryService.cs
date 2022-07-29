@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DATA.DTOS;
+using DATA.DTOS.Updates;
+using DATA.Models;
 
 namespace Service.Queries
 {

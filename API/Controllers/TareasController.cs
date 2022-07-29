@@ -1,5 +1,4 @@
-﻿using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<TareasController> _logger;
         private readonly ITareasQueryService _tareasQueryService;
-        private readonly IMediator _mediator;
-        public TareasController(ILogger<TareasController> logger, ITareasQueryService productQueryService, IMediator mediator)
+        public TareasController(ILogger<TareasController> logger, ITareasQueryService productQueryService)
         {
             _logger = logger;
             _tareasQueryService = productQueryService;
-            _mediator = mediator;
         }
 
        

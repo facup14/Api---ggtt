@@ -2,6 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
+using DATA.Models;
 using PERSISTENCE;
 using Services.Common.Mapping;
 using Services.Common.Paging;
@@ -14,10 +15,10 @@ namespace Service.Queries
 {
     public interface IProveedoresQueryService
     {
-        Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<int> Proveedores = null);
-        Task<ProveedoresDTO> GetAsync(int id);
-        Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, int id);
-        Task<ProveedoresDTO> DeleteAsync(int id);
+        Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<long> Proveedores = null);
+        Task<ProveedoresDTO> GetAsync(long id);
+        Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, long id);
+        Task<ProveedoresDTO> DeleteAsync(long id);
         Task<UpdateProveedoresDTO> CreateAsync(UpdateProveedoresDTO proveedor);
     }
     public class ProveedoresQueryService : IProveedoresQueryService
@@ -27,7 +28,7 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<int> Proveedores = null)
+        public async Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<long> Proveedores = null)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace Service.Queries
             }
 
         }
-        public async Task<ProveedoresDTO> GetAsync(int id)
+        public async Task<ProveedoresDTO> GetAsync(long id)
         {
             try
             {
@@ -65,7 +66,7 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, int id)
+        public async Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, long id)
         {
             if (await _context.Proveedores.FindAsync(id) == null)
             {
@@ -87,7 +88,7 @@ namespace Service.Queries
 
             return proveedores.MapTo<UpdateProveedoresDTO>();
         }
-        public async Task<ProveedoresDTO> DeleteAsync(int id)
+        public async Task<ProveedoresDTO> DeleteAsync(long id)
         {
             var Proveedor = await _context.Proveedores.FindAsync(id);
             if (Proveedor == null)

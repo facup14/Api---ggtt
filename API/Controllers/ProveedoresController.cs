@@ -1,7 +1,4 @@
-﻿using Common.Collection;
-using MediatR;
-using DATA.DTOS.Updates;
-using DATA.Errors;
+﻿using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,9 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Service.EventHandlers.Command;
 using DATA.DTOS;
 using System.Net;
+using DATA.DTOS.Updates;
 
 namespace API.Controllers
 {
@@ -24,12 +21,10 @@ namespace API.Controllers
 
         private readonly ILogger<ProveedoresController> _logger;
         private readonly IProveedoresQueryService _proveedoresQueryService;
-        private readonly IMediator _mediator;
-        public ProveedoresController(ILogger<ProveedoresController> logger, IProveedoresQueryService productQueryService, IMediator mediator)
+        public ProveedoresController(ILogger<ProveedoresController> logger, IProveedoresQueryService productQueryService)
         {
             _logger = logger;
             _proveedoresQueryService = productQueryService;
-            _mediator = mediator;
         }
        
         [HttpGet]
@@ -37,10 +32,10 @@ namespace API.Controllers
         {
             try
             {
-                IEnumerable<int> Proveedores = null;
+                IEnumerable<long> Proveedores = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    Proveedores = ids.Split(',').Select(x => Convert.ToInt32(x));
+                    Proveedores = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
                 var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, Proveedores);
@@ -118,16 +113,16 @@ namespace API.Controllers
        
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProveedoresCommand command)
+        public async Task<IActionResult> Create(UpdateProveedoresDTO command)
         {
             try
             {
-                await _mediator.Publish(command);
+                var newProveedor = _proveedoresQueryService.CreateAsync(command);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
                     Message = "success",
-                    Result = command
+                    Result = newProveedor
                 };
                 return Ok(result);
             }

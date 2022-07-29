@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-﻿using DATA.DTOS.Updates;
-=======
-=======
->>>>>>> ValoresMediciones
-﻿using MediatR;
+﻿
 using DATA.DTOS.Updates;
->>>>>>> REQ-24233
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-using Service.EventHandlers.Command;
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
-=======
->>>>>>> REQ-24233
-=======
->>>>>>> ValoresMediciones
 using System.Net;
 
 namespace API.Controllers
@@ -155,8 +138,6 @@ namespace API.Controllers
             }
 
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateCentrodeCostoDTO command)
         {
@@ -192,14 +173,6 @@ namespace API.Controllers
                 });
             }
         }
-=======
-
-       
->>>>>>> REQ-24233
-=======
-
-        
->>>>>>> ValoresMediciones
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -165,8 +165,6 @@ namespace API.Controllers
             }
 
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateUnidadDeMedidaDTO command)
         {
@@ -202,11 +200,5 @@ namespace API.Controllers
                 });
             }
         }
-=======
-       
->>>>>>> REQ-24233
-=======
-       
->>>>>>> ValoresMediciones
     }
 }

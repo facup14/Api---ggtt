@@ -1,7 +1,6 @@
 ﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
@@ -20,12 +19,10 @@ namespace API.Controllers
     {
         private readonly ILogger<RubrosController> _logger;
         private readonly IRubrosQueryService _rubrosQueryService;
-        private readonly IMediator _mediator;
-        public RubrosController(ILogger<RubrosController> logger, IRubrosQueryService productQueryService, IMediator mediator)
+        public RubrosController(ILogger<RubrosController> logger, IRubrosQueryService productQueryService)
         {
             _logger = logger;
             _rubrosQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)

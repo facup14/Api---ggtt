@@ -1,22 +1,11 @@
 ﻿using System;
-<<<<<<< HEAD
-using System.Collections.Generic;
-using System.Text;
-
-
 using System.ComponentModel.DataAnnotations;
-
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 
 namespace DATA.DTOS.Updates
 {
     public class UpdateMecanicoDTO
     {
-<<<<<<< HEAD
         [Required]
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
         public string ApellidoyNombres { get; set; }
         public string Legajo { get; set; }
         public string Especialidad { get; set; }

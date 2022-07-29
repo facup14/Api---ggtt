@@ -61,7 +61,6 @@ namespace API
             services.AddTransient<IGruposQueryService, GruposQueryService>();
             services.AddTransient<ILocalidadQueryService, LocalidadesQueryService>();
             services.AddTransient<IChoferesQueryService, ChoferesQueryService>();
-<<<<<<< HEAD
             services.AddTransient<IRubrosQueryService, RubrosQueryService>();
             services.AddTransient<ITrabajosQueryService, TrabajosQueryService>();
             services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
@@ -69,8 +68,6 @@ namespace API
             services.AddTransient<IAlicuotasIVAQueryService, AlicuotasIVAQueryService>();
             services.AddTransient<ITareasQueryService, TareasQueryService>();
             services.AddTransient<IProveedoresQueryService, ProveedoresQueryService>();
-            services.AddMediatR(Assembly.Load("Service.EventHandlers"));
-=======
             services.AddTransient<ITalleresQueryService, TalleresQueryService>();
             services.AddTransient<IDomiciliosQueryService, DomiciliosQueryService>();
             services.AddTransient<IBarriosQueryService, BarriosQueryService>();
@@ -78,7 +75,6 @@ namespace API
             services.AddTransient<IMecanicoQueryService, MecanicoQueryService>();
             services.AddTransient<IRepuestosQueryService, RepuestosQueryService>();
             services.AddTransient<IArticulosQueryService, ArticulosQueryService>();
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 
             services.AddRouting(r => r.SuppressCheckForUnhandledSecurityMetadata = true);
 

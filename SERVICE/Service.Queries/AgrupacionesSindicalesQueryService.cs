@@ -1,22 +1,16 @@
-﻿using Common.Collection;
-using DATA.DTOS;
+﻿using DATA.DTOS;
 using DATA.DTOS.Updates;
 using PERSISTENCE;
-using DATA.DTOS;
-using DATA.DTOS.Updates;
 using DATA.Extensions;
-using Service.Queries.DTOS;
 using Services.Common.Mapping;
 using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
-=======
 using DATA.Models;
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+using Common.Collection;
 
 namespace Service.Queries
 {

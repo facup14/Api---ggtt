@@ -70,17 +70,11 @@ namespace PERSISTENCE.Configuration
                 .HasForeignKey(d => d.IdFuncion)
                 .HasConstraintName("FK_Mecanicos_Funciones");
 
-<<<<<<< HEAD
-            //entity.HasOne(d => d.idTaller)
-            //    .WithMany(p => p.Mecanicos)
-            //    .HasForeignKey(d => d.IdTaller)
-            //    .HasConstraintName("FK_Mecanicos_Talleres");
-=======
             entity.HasOne(d => d.idTaller)
                 .WithMany(p => p.Mecanicos)
                 .HasForeignKey(d => d.IdTaller)
                 .HasConstraintName("FK_Mecanicos_Talleres");
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
 
             entity.HasOne(d => d.idTitulo)
                 .WithMany(p => p.Mecanicos)

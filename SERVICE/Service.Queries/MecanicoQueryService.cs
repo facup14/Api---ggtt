@@ -2,10 +2,7 @@
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Extensions;
-<<<<<<< HEAD
-=======
 using DATA.Models;
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 using Microsoft.EntityFrameworkCore;
 using PERSISTENCE;
 using Services.Common.Mapping;
@@ -13,28 +10,18 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-<<<<<<< HEAD
-using System.Text;
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 using System.Threading.Tasks;
 
 namespace Service.Queries
 {
     public interface IMecanicoQueryService
     {
-<<<<<<< HEAD
-        Task<DataCollection<MecanicosDTO>> GetAllAsync(int page, int take, IEnumerable<long> mecanicos = null);
-        Task<MecanicosDTO> GetAsync(long id);
-        Task<UpdateMecanicoDTO> PutAsync(UpdateMecanicoDTO mecanico, long it);
-        Task<MecanicosDTO> DeleteAsync(long id);
-=======
         Task<DataCollection<MecanicosDTO>> GetAllAsync(int page, int take, IEnumerable<long> mecanicos = null, bool order = false);
         Task<MecanicosDTO> GetAsync(long id);
         Task<UpdateMecanicoDTO> PutAsync(UpdateMecanicoDTO mecanico, long it);
         Task<MecanicosDTO> DeleteAsync(long id);
         Task<UpdateMecanicoDTO> CreateAsync(UpdateMecanicoDTO mecanico);
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
     }
     public class MecanicoQueryService : IMecanicoQueryService
     {
@@ -44,13 +31,6 @@ namespace Service.Queries
         {
             _context = context;
         }
-
-<<<<<<< HEAD
-        public async Task<DataCollection<MecanicosDTO>> GetAllAsync(int page, int take, IEnumerable<long> mecanicos = null)
-        {
-            try
-            {
-=======
         public async Task<DataCollection<MecanicosDTO>> GetAllAsync(int page, int take, IEnumerable<long> mecanicos = null, bool order = false)
         {
             try
@@ -61,9 +41,7 @@ namespace Service.Queries
                     .Where(x => mecanicos == null || mecanicos.Contains(x.IdMecanico))
                     .OrderBy(x => x.IdMecanico)
                     .GetPagedAsync(page, take);
-                    return orderBy.MapTo<DataCollection<MecanicosDTO>>();
                 }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
                 var collection = await _context.Mecanicos
                 .Where(x => mecanicos == null || mecanicos.Contains(x.IdMecanico))
                 .OrderByDescending(x => x.IdMecanico)
@@ -136,19 +114,7 @@ namespace Service.Queries
             {
                 throw new EmptyCollectionException("El Convenio es Obligatorio");
             }
-<<<<<<< HEAD
-            //var resultTaller = await _context.Talleres.FindAsync(mecanicoDto.IdTaller);
-            //if (resultTaller == null)
-            //{
-            //    throw new EmptyCollectionException("El Taller con id " + mecanicoDto.IdTaller + ", no existe");
-            //}
-=======
-            var resultTaller = await _context.Talleres.FindAsync(mecanicoDto.IdTaller);
-            if (resultTaller == null)
-            {
-                throw new EmptyCollectionException("El Taller con id " + mecanicoDto.IdTaller + ", no existe");
-            }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
             var mecanico = await _context.Mecanicos.FindAsync(id);
 
             mecanico.ApellidoyNombres = mecanicoDto.ApellidoyNombres;
@@ -191,8 +157,6 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return mecaninco.MapTo<MecanicosDTO>();
         }
-<<<<<<< HEAD
-=======
         public async Task<UpdateMecanicoDTO> CreateAsync(UpdateMecanicoDTO mecanico)
         {
             try
@@ -232,6 +196,5 @@ namespace Service.Queries
             }
 
         }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
     }
 }

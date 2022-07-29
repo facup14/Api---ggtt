@@ -19,7 +19,7 @@ namespace Service.Queries
     public interface IUnidadesQueryService
     {
         Task<DataCollection<UnidadesDTO>> GetAllAsync(int page, int take, IEnumerable<long> unidades = null, bool order = false);
-        Task<UnidadesByIdDTO> GetAsync(long id);
+        Task<DATA.DTOS.UnidadesByIdDTO> GetAsync(long id);
         Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, long it);
         Task<UnidadesDTO> DeleteAsync(long id);
         Task<UpdateUnidadDTO> CreateAsync(UpdateUnidadDTO unidad);

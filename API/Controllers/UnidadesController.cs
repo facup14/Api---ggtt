@@ -129,8 +129,6 @@ namespace API.Controllers
             }
             
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         [HttpPost]
         public async Task<IActionResult> Create(UpdateUnidadDTO command)
         {
@@ -164,14 +162,6 @@ namespace API.Controllers
                 });
             }
         }
-=======
-
-       
->>>>>>> REQ-24233
-=======
-
-       
->>>>>>> ValoresMediciones
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

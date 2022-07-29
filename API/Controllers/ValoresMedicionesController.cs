@@ -1,5 +1,4 @@
-﻿using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<ValoresMedicionesController> _logger;
         private readonly IValoresMedicionesQueryService _valoresQueryService;
-        private readonly IMediator _mediator;
-        public ValoresMedicionesController(ILogger<ValoresMedicionesController> logger, IValoresMedicionesQueryService productQueryService, IMediator mediator)
+        public ValoresMedicionesController(ILogger<ValoresMedicionesController> logger, IValoresMedicionesQueryService productQueryService)
         {
             _logger = logger;
             _valoresQueryService = productQueryService;
-            _mediator = mediator;
         }
         //products Trae todos los valores de medicion
         [HttpGet]

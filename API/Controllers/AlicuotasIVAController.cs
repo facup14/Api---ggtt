@@ -1,5 +1,4 @@
-﻿using MediatR;
-using DATA.DTOS.Updates;
+﻿using DATA.DTOS.Updates;
 using DATA.Errors;
 using DATA.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +19,10 @@ namespace API.Controllers
 
         private readonly ILogger<AlicuotasIVAController> _logger;
         private readonly IAlicuotasIVAQueryService _alicuotasQueryService;
-        private readonly IMediator _mediator;
-        public AlicuotasIVAController(ILogger<AlicuotasIVAController> logger, IAlicuotasIVAQueryService productQueryService, IMediator mediator)
+        public AlicuotasIVAController(ILogger<AlicuotasIVAController> logger, IAlicuotasIVAQueryService productQueryService)
         {
             _logger = logger;
             _alicuotasQueryService = productQueryService;
-            _mediator = mediator;
         }
        
         [HttpGet]

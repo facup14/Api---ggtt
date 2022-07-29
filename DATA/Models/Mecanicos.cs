@@ -1,22 +1,15 @@
 ﻿using System;
-<<<<<<< HEAD
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DATA.Models
 {
     public class Mecanicos
     {
-<<<<<<< HEAD
         public Mecanicos()
         {
             Rubros = new HashSet<Rubros>();
         }
-=======
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
         public long IdMecanico { get; set; }
         public string? ApellidoyNombres { get; set; }
         public string? Legajo { get; set; }
@@ -32,15 +25,10 @@ namespace DATA.Models
         public string? Convenio { get; set; }
         public decimal? CostoHora { get; set; }
         public decimal? ValorHoraInterno { get; set; }
-<<<<<<< HEAD
-        //[ForeignKey("IdTaller")]
-        public long? IdTaller { get; set; }
-        //public virtual Talleres idTaller { get; set; }
-=======
         [ForeignKey("IdTaller")]
         public long? IdTaller { get; set; }
         public virtual Talleres idTaller { get; set; }
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
+
         [ForeignKey("IdEmpresa")]
         public int? IdEmpresa { get; set; }
         public virtual Empresas idEmpresa { get; set; }
@@ -59,14 +47,6 @@ namespace DATA.Models
         [ForeignKey("IdConvenio")]
         public int? IdConvenio { get; set; }        
         public virtual Convenios idConvenio { get; set; }
-<<<<<<< HEAD
-
         public virtual ICollection<Rubros> Rubros { get; set; }
-
-
-=======
-        
-        
->>>>>>> REQ-24235-(Segunda-Tanda-Entidades)
     }
 }

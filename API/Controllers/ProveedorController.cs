@@ -1,6 +1,6 @@
-﻿using DATA.Errors;
+﻿using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Service.Queries;
@@ -18,12 +18,10 @@ namespace API.Controllers
     {
         private readonly ILogger<ProveedorController> _logger;
         private readonly IProveedoresQueryService _proveedoresQueryService;
-        private readonly IMediator _mediator;
-        public ProveedorController(ILogger<ProveedorController> logger, IProveedoresQueryService productQueryService, IMediator mediator)
+        public ProveedorController(ILogger<ProveedorController> logger, IProveedoresQueryService productQueryService)
         {
             _logger = logger;
             _proveedoresQueryService = productQueryService;
-            _mediator = mediator;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
