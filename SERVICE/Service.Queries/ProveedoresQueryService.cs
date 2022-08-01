@@ -15,10 +15,10 @@ namespace Service.Queries
 {
     public interface IProveedoresQueryService
     {
-        Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<long> Proveedores = null);
-        Task<ProveedoresDTO> GetAsync(long id);
-        Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, long id);
-        Task<ProveedoresDTO> DeleteAsync(long id);
+        Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<int> Proveedores = null, bool order = false);
+        Task<ProveedoresDTO> GetAsync(int id);
+        Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, int id);
+        Task<ProveedoresDTO> DeleteAsync(int id);
         Task<UpdateProveedoresDTO> CreateAsync(UpdateProveedoresDTO proveedor);
     }
     public class ProveedoresQueryService : IProveedoresQueryService
@@ -28,10 +28,18 @@ namespace Service.Queries
         {
             _context = context;
         }
-        public async Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<long> Proveedores = null)
+        public async Task<DataCollection<ProveedoresDTO>> GetAllAsync(int page, int take, IEnumerable<int> Proveedores = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Proveedores
+                    .Where(x => Proveedores == null || Proveedores.Contains(x.IdProveedor))
+                    .OrderBy(x => x.IdProveedor)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ProveedoresDTO>>();
+                }
                 var collection = await _context.Proveedores
                 .Where(x => Proveedores == null || Proveedores.Contains(x.IdProveedor))
                 .OrderByDescending(x => x.IdProveedor)
@@ -48,7 +56,7 @@ namespace Service.Queries
             }
 
         }
-        public async Task<ProveedoresDTO> GetAsync(long id)
+        public async Task<ProveedoresDTO> GetAsync(int id)
         {
             try
             {
@@ -66,7 +74,7 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, long id)
+        public async Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, int id)
         {
             if (await _context.Proveedores.FindAsync(id) == null)
             {
@@ -74,21 +82,28 @@ namespace Service.Queries
             }
             var updateProveedor = await _context.Proveedores.FindAsync(id);
 
-            updateProveedor.RazonSocial = proveedores.RazonSocial;
-            updateProveedor.NCuit = proveedores.NCuit;
-            updateProveedor.Telefono = proveedores.Telefono;
-            updateProveedor.Celular = proveedores.Celular;
-            updateProveedor.Contacto = proveedores.Contacto;
-            updateProveedor.Email = proveedores.Email;
-            updateProveedor.ChequesA = proveedores.ChequesA;
-            updateProveedor.Web = proveedores.Web;
-            updateProveedor.Obs = proveedores.Obs;
+                updateProveedor.RazonSocial = proveedores.RazonSocial;
+                updateProveedor.IdAlicuota = proveedores.IdAlicuota;
+                updateProveedor.Ncuit = proveedores.Ncuit;
+                updateProveedor.Telefono = proveedores.Telefono;
+                updateProveedor.Celular = proveedores.Celular;
+                updateProveedor.ConvMulti = proveedores.ConvMulti;
+                updateProveedor.Contacto = proveedores.Contacto;
+                updateProveedor.Email = proveedores.Email;
+                updateProveedor.ChequesA = proveedores.ChequesA;
+                updateProveedor.Web = proveedores.Web;
+                updateProveedor.NIb = proveedores.NIb;
+                updateProveedor.Obs = proveedores.Obs;
+                updateProveedor.RingBrutos = proveedores.RingBrutos;
+                updateProveedor.AutorizaTrabajos3ros = proveedores.AutorizaTrabajos3ros;
+                updateProveedor.NroTimbrado = proveedores.NroTimbrado;
+                updateProveedor.FechaVencimiento = proveedores.FechaVencimiento;
 
             await _context.SaveChangesAsync();
 
             return proveedores.MapTo<UpdateProveedoresDTO>();
         }
-        public async Task<ProveedoresDTO> DeleteAsync(long id)
+        public async Task<ProveedoresDTO> DeleteAsync(int id)
         {
             var Proveedor = await _context.Proveedores.FindAsync(id);
             if (Proveedor == null)
@@ -109,15 +124,22 @@ namespace Service.Queries
                 var newProveedor = new Proveedores()
                 {
                     RazonSocial = proveedor.RazonSocial,
-                    NCuit = proveedor.NCuit,
+                    IdAlicuota = proveedor.IdAlicuota,
+                    Ncuit = proveedor.Ncuit,
                     Telefono = proveedor.Telefono,
                     Celular = proveedor.Celular,
+                    ConvMulti = proveedor.ConvMulti,
                     Contacto = proveedor.Contacto,
                     Email = proveedor.Email,
                     ChequesA = proveedor.ChequesA,
                     Web = proveedor.Web,
+                    NIb = proveedor.NIb,
                     Obs = proveedor.Obs,
-            };
+                    RingBrutos = proveedor.RingBrutos,
+                    AutorizaTrabajos3ros = proveedor.AutorizaTrabajos3ros,
+                    NroTimbrado = proveedor.NroTimbrado,
+                    FechaVencimiento = proveedor.FechaVencimiento,
+                };
                 await _context.Proveedores.AddAsync(newProveedor);
 
                 await _context.SaveChangesAsync();

@@ -18,7 +18,7 @@ namespace Service.Queries
 {
     public interface IRubrosQueryService
     {
-        Task<DataCollection<RubrosDTO>> GetAllAsync(int page, int take, IEnumerable<long> rubros = null);
+        Task<DataCollection<RubrosDTO>> GetAllAsync(int page, int take, IEnumerable<long> rubros = null, bool order = false);
         Task<RubrosDTO> GetAsync(long id);
         Task<UpdateRubroDTO> PutAsync(UpdateRubroDTO choferDto, long id);
         Task<RubrosDTO> DeleteAsync(long id);
@@ -34,10 +34,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<RubrosDTO>> GetAllAsync(int page, int take, IEnumerable<long> rubros = null)
+        public async Task<DataCollection<RubrosDTO>> GetAllAsync(int page, int take, IEnumerable<long> rubros = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.Rubros
+                    .Where(x => rubros == null || rubros.Contains(x.IdRubro))
+                    .OrderBy(x => x.IdRubro)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<RubrosDTO>>();
+                }
                 var collection = await _context.Rubros
                 .Where(x => rubros == null || rubros.Contains(x.IdRubro))
                 .OrderByDescending(x => x.IdRubro)

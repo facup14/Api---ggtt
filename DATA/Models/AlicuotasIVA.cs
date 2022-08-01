@@ -7,6 +7,10 @@ namespace DATA.Models
     [Table("Alicuotas")]
     public class AlicuotasIVA
     {
+        public AlicuotasIVA()
+        {
+            Proveedores = new HashSet<Proveedores>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdAlicuota { get; set; }
@@ -15,6 +19,7 @@ namespace DATA.Models
         public decimal? Alicuota { get; set; }
         public bool? NumeroCUIT { get; set; }
         public decimal? AlicuotaRecargo { get; set; }
+        public virtual ICollection<Proveedores> Proveedores { get; set; }
 
     }
 }

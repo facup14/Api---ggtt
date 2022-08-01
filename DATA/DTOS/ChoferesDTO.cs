@@ -13,11 +13,11 @@ namespace DATA.DTOS
         public bool Activo { get; set; }
         public string NroDocumento { get; set; }
         public DateTime FechaNacimiento { get; set; }
-        public string Empresa { get; set; }
-        public string AgrupacionSindical { get; set; }
-        public string Convenio { get; set; }
-        public string Funcion { get; set; }
-        public string Especialidad { get; set; }
-        public string Titulo { get; set; }
+        public int IdEmpresa { get; set; }
+        public int IdAgrupacionSindical { get; set; }
+        public int IdConvenio { get; set; }
+        public int IdFuncion { get; set; }
+        public int IdEspecialidad { get; set; }
+        public int IdTitulo { get; set; }
     }
 }

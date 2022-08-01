@@ -66,15 +66,17 @@ namespace Service.Queries
         {
             try
             {
+                var marcas = await _context.Marcas.FindAsync(id);
+
                 if (await _context.Marcas.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener la Marca, la Marca con id" + " " + id + " " + "no existe");
                 }
-                return (await _context.Marcas.FindAsync(id)).MapTo<MarcasDTO>();
+                return marcas.MapTo<MarcasDTO>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener  la Marca");
+                throw ex;
             }
 
         }

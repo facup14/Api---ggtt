@@ -46,7 +46,7 @@ namespace Service.Queries
                 }
                 var collection = await _context.Empresas
                                         .Where(x => empresas == null || empresas.Contains(x.IdEmpresa))
-                                        .OrderByDescending(x => x.Descripcion)
+                                        .OrderByDescending(x => x.IdEmpresa)
                                         .GetPagedAsync(page, take);
                 return collection.MapTo<DataCollection<EmpresasDTO>>();
                 if (!collection.HasItems)
@@ -66,15 +66,17 @@ namespace Service.Queries
         {
             try
             {
+                var empresa = await _context.Empresas.FindAsync(id);
+
                 if (await _context.Empresas.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener la Empresa, la Empresa con id" + " " + id + " " + "no existe");
                 }
-                return (await _context.Empresas.FindAsync(id)).MapTo<EmpresasDTO>();
+                return empresa.MapTo<EmpresasDTO>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener la Empresa");
+                throw ex;
             }
 
         }

@@ -65,15 +65,17 @@ namespace Service.Queries
         {
             try
             {
+                var estadoUnidad = await _context.EstadosUnidades.FindAsync(id);
+
                 if (await _context.EstadosUnidades.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener el Estado de la Unidad, el Estado con id" + " " + id + " " + "no existe");
                 }
-                return (await _context.EstadosUnidades.FindAsync(id)).MapTo<EstadosUnidadesDTO>();
+                return estadoUnidad.MapTo<EstadosUnidadesDTO>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el Estado");
+                throw ex;
             }
 
         }

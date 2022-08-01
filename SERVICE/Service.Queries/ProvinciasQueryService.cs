@@ -66,15 +66,17 @@ namespace Service.Queries
         {
             try
             {
+                var provincia = await _context.Provincias.FindAsync(id);
+
                 if (await _context.Provincias.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener la Provincia, la Provincia con id" + " " + id + " " + "no existe");
                 }                
-                return (await _context.Provincias.FindAsync(id)).MapTo<ProvinciasDTO>();
+                return provincia.MapTo<ProvinciasDTO>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener la Provincia");
+                throw ex;
             }
 
         }

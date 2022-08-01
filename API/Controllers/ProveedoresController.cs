@@ -28,17 +28,17 @@ namespace API.Controllers
         }
        
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
-                IEnumerable<long> Proveedores = null;
+                IEnumerable<int> Proveedores = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    Proveedores = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    Proveedores = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, Proveedores);
+                var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, Proveedores, order);
                 
                 var result = new GetResponse()
                 {

@@ -24,17 +24,17 @@ namespace API.Controllers
             _proveedoresQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
-                IEnumerable<long> proveedores = null;
+                IEnumerable<int> proveedores = null;
                 if (!string.IsNullOrEmpty(ids))
                 {
-                    proveedores = ids.Split(',').Select(x => Convert.ToInt64(x));
+                    proveedores = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, proveedores);
+                var listProveedores = await _proveedoresQueryService.GetAllAsync(page, take, proveedores, order);
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -67,7 +67,7 @@ namespace API.Controllers
         }
         //products/1 Trae la agurpación con el id colocado
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace API.Controllers
         }
         //products/id Actualiza una agurpación por el id
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(UpdateProveedoresDTO proveedor, long id)
+        public async Task<IActionResult> Put(UpdateProveedoresDTO proveedor, int id)
         {
             try
             {
@@ -143,7 +143,7 @@ namespace API.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {

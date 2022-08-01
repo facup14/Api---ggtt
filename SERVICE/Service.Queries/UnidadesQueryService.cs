@@ -64,9 +64,9 @@ namespace Service.Queries
         {
             try
             {
-                var unidad = await _context.Unidades.SingleAsync(x => x.IdUnidad == id);
+                var unidad = await _context.Unidades.FindAsync(id);
                                 
-                if (await _context.Unidades.SingleAsync(x => x.IdUnidad == id) == null)
+                if (await _context.Unidades.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener la unidad, la unidad con id" + " " + id + " " + "no existe");
                 }

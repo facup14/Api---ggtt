@@ -27,7 +27,7 @@ namespace API.Controllers
 
        
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace API.Controllers
                     tareas = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listTareas = await _tareasQueryService.GetAllAsync(page, take, tareas);
+                var listTareas = await _tareasQueryService.GetAllAsync(page, take, tareas, order);
                 
                 var result = new GetResponse()
                 {

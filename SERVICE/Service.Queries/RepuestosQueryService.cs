@@ -63,13 +63,13 @@ namespace Service.Queries
         {
             try
             {
-                var unidad = await _context.Repuestos.SingleAsync(x => x.IdRepuesto == id);
+                var repuesto = await _context.Repuestos.FindAsync(id);
 
-                if (await _context.Repuestos.SingleAsync(x => x.IdRepuesto == id) == null)
+                if (await _context.Repuestos.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener el Repuesto, el Repuesto con id" + " " + id + " " + "no existe");
                 }
-                return unidad.MapTo<RepuestosByIdDTO>();
+                return repuesto.MapTo<RepuestosByIdDTO>();
             }
             catch (Exception ex)
             {

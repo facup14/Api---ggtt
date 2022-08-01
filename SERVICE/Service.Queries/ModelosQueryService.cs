@@ -66,15 +66,17 @@ namespace Service.Queries
         {
             try
             {
+                var modelo = await _context.Modelos.FindAsync(id);
+
                 if (await _context.Modelos.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener el Modelo, el Modelo con id" + " " + id + " " + "no existe");
                 }
-                return (await _context.Modelos.FindAsync(id)).MapTo<ModelosDTO>();
+                return modelo.MapTo<ModelosDTO>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el Modelo");
+                throw ex;
             }
 
         }
@@ -96,7 +98,7 @@ namespace Service.Queries
         {
             try
             {
-                var modelo = await _context.Modelos.SingleAsync(x => x.IdModelo == id);
+                var modelo = await _context.Modelos.FindAsync(id);
                 if (modelo == null)
                 {
                     throw new EmptyCollectionException("Error al eliminar el Modelo, el Modelo con id" + " " + id + " " + "no existe");

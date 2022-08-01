@@ -25,7 +25,7 @@ namespace API.Controllers
             _rubrosQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -35,8 +35,8 @@ namespace API.Controllers
                     rubros = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listRubros = await _rubrosQueryService.GetAllAsync(page, take, rubros);
-
+                var listRubros = await _rubrosQueryService.GetAllAsync(page, take, rubros, order);
+                
                 var result = new GetResponse()
                 {
                     StatusCode = (int)HttpStatusCode.OK,
@@ -167,6 +167,41 @@ namespace API.Controllers
                 });
             }
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(UpdateRubroDTO command)
+        {
+            try
+            {
+                var newRubro = await _rubrosQueryService.CreateAsync(command);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = newRubro
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
         }
     }
 

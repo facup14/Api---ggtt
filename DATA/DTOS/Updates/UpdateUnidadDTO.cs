@@ -53,6 +53,5 @@ namespace Service.Queries.DTOS
         public long idEstadoUnidad { get; set; }
         [Required]
         public long idSituacionUnidad { get; set; }
-        public string prueba { get; set; }
     }
 }

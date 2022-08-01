@@ -65,15 +65,17 @@ namespace Service.Queries
         {
             try
             {
+                var especialidad = await _context.Especialidades.FindAsync(id);
+
                 if (await _context.Especialidades.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener la Especialidad, la Especialidad con id" + " " + id + " " + "no existe");
                 }
-                return (await _context.Especialidades.FindAsync(id)).MapTo<EspecialidadesDTO>();
+                return especialidad.MapTo<EspecialidadesDTO>();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el especialidad");
+                throw ex;
             }
 
         }

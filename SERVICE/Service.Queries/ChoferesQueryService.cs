@@ -20,7 +20,7 @@ namespace Service.Queries
         Task<DataCollection<ChoferesDTO>> GetAllAsync(int page, int take, IEnumerable<long> choferes = null, bool order = false);
         Task<ChoferesDTO> GetAsync(long id);
         Task<UpdateChoferesDTO> PutAsync(UpdateChoferesDTO choferDto, long id);
-        Task<UnidadesDTO> DeleteAsync(long id);
+        Task<ChoferesDTO> DeleteAsync(long id);
         Task<UpdateChoferesDTO> CreateAsync(UpdateChoferesDTO chofer);
     }
     public class ChoferesQueryService : IChoferesQueryService
@@ -112,7 +112,7 @@ namespace Service.Queries
 
             return choferDto.MapTo<UpdateChoferesDTO>();
         }
-        public async Task<UnidadesDTO> DeleteAsync(long id)
+        public async Task<ChoferesDTO> DeleteAsync(long id)
         {
             var choferes = await _context.Choferes.FindAsync(id);
             if (choferes == null)
@@ -123,7 +123,7 @@ namespace Service.Queries
             _context.Choferes.Remove(choferes);
 
             await _context.SaveChangesAsync();
-            return choferes.MapTo<UnidadesDTO>();
+            return choferes.MapTo<ChoferesDTO>();
         }
         public async Task<UpdateChoferesDTO> CreateAsync(UpdateChoferesDTO chofer)
         {

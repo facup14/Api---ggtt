@@ -16,7 +16,7 @@ namespace Service.Queries
 {
     public interface IAlicuotasIVAQueryService
     {
-        Task<DataCollection<AlicuotasIVADTO>> GetAllAsync(int page, int take, IEnumerable<int> AlicuotasIVA = null);
+        Task<DataCollection<AlicuotasIVADTO>> GetAllAsync(int page, int take, IEnumerable<int> AlicuotasIVA = null, bool order = false);
         Task<AlicuotasIVADTO> GetAsync(int id);
         Task<UpdateAlicuotasIVADTO> PutAsync(UpdateAlicuotasIVADTO AlicuotasIVA, int id);
         Task<AlicuotasIVADTO> DeleteAsync(int id);
@@ -32,10 +32,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<AlicuotasIVADTO>> GetAllAsync(int page, int take, IEnumerable<int> AlicuotasIVA = null)
+        public async Task<DataCollection<AlicuotasIVADTO>> GetAllAsync(int page, int take, IEnumerable<int> AlicuotasIVA = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.AlicuotasIVA
+                    .Where(x => AlicuotasIVA == null || AlicuotasIVA.Contains(x.IdAlicuota))
+                    .OrderBy(x => x.IdAlicuota)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<AlicuotasIVADTO>>();
+                }
                 var collection = await _context.AlicuotasIVA
                 .Where(x => AlicuotasIVA == null || AlicuotasIVA.Contains(x.IdAlicuota))
                 .OrderByDescending(x => x.IdAlicuota)
@@ -59,7 +67,7 @@ namespace Service.Queries
             {
                 if (await _context.AlicuotasIVA.FindAsync(id) == null)
                 {
-                    throw new EmptyCollectionException("Error al obtener la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
+                    throw new EmptyCollectionException("Error al obtener la Alicuota, la Alicuota con id" + " " + id + " " + "no existe");
                 }
                 return (await _context.AlicuotasIVA.SingleAsync(x => x.IdAlicuota == id)).MapTo<AlicuotasIVADTO>();
             }
@@ -73,7 +81,7 @@ namespace Service.Queries
         {
             if (await _context.AlicuotasIVA.FindAsync(id) == null)
             {
-                throw new EmptyCollectionException("Error al actualizar la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
+                throw new EmptyCollectionException("Error al actualizar la Alicuota, la Alicuota con id" + " " + id + " " + "no existe");
             }
             var alicuotas = await _context.AlicuotasIVA.FindAsync(id);
 
@@ -93,7 +101,7 @@ namespace Service.Queries
                 var alicuotas = await _context.AlicuotasIVA.FindAsync(id);
                 if (alicuotas == null)
                 {
-                    throw new EmptyCollectionException("Error al eliminar la Agrupacion Sindical, la Agrupacion Sindical con id" + " " + id + " " + "no existe");
+                    throw new EmptyCollectionException("Error al eliminar la Alicuota, la Alicuota con id" + " " + id + " " + "no existe");
                 }
                 _context.AlicuotasIVA.Remove(alicuotas);
                 

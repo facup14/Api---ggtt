@@ -19,7 +19,7 @@ namespace Service.Queries
 {
     public interface IValoresMedicionesQueryService
     {
-        Task<DataCollection<ValoresMedicionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> ValoresMediciones = null);
+        Task<DataCollection<ValoresMedicionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> ValoresMediciones = null, bool order = false);
         Task<ValoresMedicionesDTO> GetAsync(int id);
         Task<UpdateValoresMedicionesDTO> PutAsync(UpdateValoresMedicionesDTO ValorMedicion, int it);
         Task<ValoresMedicionesDTO> DeleteAsync(int id);
@@ -35,10 +35,18 @@ namespace Service.Queries
             _context = context;
         }
 
-        public async Task<DataCollection<ValoresMedicionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> ValoresMediciones = null)
+        public async Task<DataCollection<ValoresMedicionesDTO>> GetAllAsync(int page, int take, IEnumerable<int> ValoresMediciones = null, bool order = false)
         {
             try
             {
+                if (!order)
+                {
+                    var orderBy = await _context.ValoresMediciones
+                    .Where(x => ValoresMediciones == null || ValoresMediciones.Contains(x.IdValorMedicion))
+                    .OrderBy(x => x.IdValorMedicion)
+                    .GetPagedAsync(page, take);
+                    return orderBy.MapTo<DataCollection<ValoresMedicionesDTO>>();
+                }
                 var collection = await _context.ValoresMediciones
                 .Where(x => ValoresMediciones == null || ValoresMediciones.Contains(x.IdValorMedicion))
                 .OrderByDescending(x => x.IdValorMedicion)

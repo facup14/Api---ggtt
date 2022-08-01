@@ -72,7 +72,7 @@ namespace Service.Queries
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al obtener el Estado");
+                throw new Exception("Error al obtener el Domicilio");
             }
 
         }

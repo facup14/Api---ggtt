@@ -62,9 +62,9 @@ namespace Service.Queries
         {
             try
             {
-                var unidad = await _context.Mecanicos.SingleAsync(x => x.IdMecanico == id);
+                var unidad = await _context.Mecanicos.FindAsync(id);
 
-                if (await _context.Mecanicos.SingleAsync(x => x.IdMecanico == id) == null)
+                if (await _context.Mecanicos.FindAsync(id) == null)
                 {
                     throw new EmptyCollectionException("Error al obtener el Mecanico, el Mecanico con id" + " " + id + " " + "no existe");
                 }

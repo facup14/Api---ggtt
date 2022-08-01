@@ -24,7 +24,7 @@ namespace API.Controllers
             _trabajosQueryService = productQueryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace API.Controllers
                     trabajos = ids.Split(',').Select(x => Convert.ToInt64(x));
                 }
 
-                var listTrabajos = await _trabajosQueryService.GetAllAsync(page, take, trabajos);
+                var listTrabajos = await _trabajosQueryService.GetAllAsync(page, take, trabajos, order);
 
                 var result = new GetResponse()
                 {
@@ -166,6 +166,41 @@ namespace API.Controllers
                 });
             }
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(UpdateTrabajoDTO command)
+        {
+            try
+            {
+                var newTrabajo = await _trabajosQueryService.CreateAsync(command);
+                var result = new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = newTrabajo
+                };
+                return Ok(result);
+            }
+            catch (EmptyCollectionException ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message,
+                    Result = null
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Ok(new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Server error",
+                    Result = null
+                });
+            }
         }
     }
 }

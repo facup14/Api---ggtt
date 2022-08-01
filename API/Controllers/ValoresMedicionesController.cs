@@ -26,7 +26,7 @@ namespace API.Controllers
         }
         //products Trae todos los valores de medicion
         [HttpGet]
-        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null)
+        public async Task<IActionResult> GetAll(int page = 1, int take = 10, string ids = null, bool order = false)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace API.Controllers
                     valores = ids.Split(',').Select(x => Convert.ToInt32(x));
                 }
 
-                var listValores = await _valoresQueryService.GetAllAsync(page, take, valores);
+                var listValores = await _valoresQueryService.GetAllAsync(page, take, valores, order);
                 
                 var result = new GetResponse()
                 {
