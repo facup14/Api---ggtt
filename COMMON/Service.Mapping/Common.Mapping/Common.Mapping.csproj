@@ -8,4 +8,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.26" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Common.Pagging">
+      <HintPath>..\..\Service.Pagging\Common.Pagging\bin\Debug\netcoreapp3.1\Common.Pagging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

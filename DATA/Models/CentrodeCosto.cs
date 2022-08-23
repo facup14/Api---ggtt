@@ -12,7 +12,7 @@ namespace DATA.Models
         [MaxLength(50)]
         public string CentrodeCosto { get; set; }
         public string Obs { get; set; }
-        public int Tipo { get; set; }
+        public int? Tipo { get; set; }
         [ForeignKey("idEstadoUnidad")]
         public long? idEstadoUnidad { get; set; }
         public virtual EstadosUnidades IdEstadoUnidad { get; set; }

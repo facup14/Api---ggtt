@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -14,6 +15,7 @@ namespace DATA.Models
         }
 
         public long IdTaller { get; set; }
+        [Required(ErrorMessage = "Nombre de Taller es obligatorio")]
         public string NombreTaller { get; set; }
         public string Direccion { get; set; }        
         public string Mail { get; set; }

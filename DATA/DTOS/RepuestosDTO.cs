@@ -3,18 +3,18 @@
     public class RepuestosDTO
     {
         public long IdRepuesto { get; set; }
-        public string? Detalle { get; set; }
+        public string Detalle { get; set; }
         public decimal? Precio { get; set; }
-        public string? UnidadMedida { get; set; }
-        public string? Tipo { get; set; }
-        public string? Marca { get; set; }
-        public string? Obs { get; set; }
-        public string? CodRepuesto { get; set; }
+        public string UnidadMedida { get; set; }
+        public string Tipo { get; set; }
+        public string Marca { get; set; }
+        public string Obs { get; set; }
+        public string CodRepuesto { get; set; }
         public long? IdMarcaRepuesto { get; set; }
         public long? IdUnidadDeMedida { get; set; }
-        public string? NroParte { get; set; }
-        public string? NroSerie { get; set; }
-        public string? Descripcion { get; set; }
+        public string NroParte { get; set; }
+        public string NroSerie { get; set; }
+        public string Descripcion { get; set; }
         public bool? Importado { get; set; }
         public int? IdSubRubroRepuesto { get; set; }
         public int? IdProveedor { get; set; }
@@ -25,14 +25,14 @@
         public decimal? PorcentajeGananciaAplicada { get; set; }
         public int? IdCodigo { get; set; }
         public int? IdRepuestoCwa { get; set; }
-        public string? CodCwa { get; set; }
-        public string? TipoCwa { get; set; }
-        public byte[]? Imagen { get; set; }
-        public string? NombreImagen { get; set; }
-        public string? CodArticuloTango { get; set; }
-        public int? TiempoReposicion { get; set; }
+        public string CodCwa { get; set; }
+        public string TipoCwa { get; set; }
+        public byte[] Imagen { get; set; }
+        public string NombreImagen { get; set; }
+        public string CodArticuloTango { get; set; }
+        public long? TiempoReposicion { get; set; }
         public bool? HabilitarEmailStock { get; set; }
-        public string? CodigoBarras { get; set; }
+        public string CodigoBarras { get; set; }
         public int? TipoValorStock { get; set; }
     }
 }

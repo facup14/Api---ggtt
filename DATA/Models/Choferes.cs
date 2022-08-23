@@ -14,25 +14,25 @@ namespace DATA.Models
         [MaxLength(50)]
         public string ApellidoyNombres { get; set; }
         [MaxLength(20)]
-        public string? Legajo { get; set; }
+        public string Legajo { get; set; }
         
         public DateTime? CarnetVence { get; set; }
         
-        public string? Obs { get; set; }
+        public string Obs { get; set; }
         
-        public string? Foto { get; set; }
+        public string Foto { get; set; }
 
         public bool? Activo { get; set; }
         public string NroDocumento { get; set; }
         
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
         
         [ForeignKey("IdTaller")]
         public long? IdTaller { get; set; }
         public virtual Talleres idTaller { get; set; }
         [ForeignKey("IdEmpresa")]
         public string Empresa { get; set; }
-        public int IdEmpresa { get; set; }
+        public int? IdEmpresa { get; set; }
         public virtual Empresas idEmpresa { get; set; }
         [ForeignKey("IdAgrupacionSindical")]
         public string AgrupacionSindical { get; set; }

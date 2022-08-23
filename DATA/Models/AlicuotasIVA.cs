@@ -15,10 +15,10 @@ namespace DATA.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdAlicuota { get; set; }
         [MaxLength(50)]
-        public string? Detalle { get; set; }
+        public string Detalle { get; set; }
         public decimal? Alicuota { get; set; }
         public bool? NumeroCUIT { get; set; }
-        public decimal? AlicuotaRecargo { get; set; }
+        public decimal AlicuotaRecargo { get; set; }
         public virtual ICollection<Proveedores> Proveedores { get; set; }
 
     }

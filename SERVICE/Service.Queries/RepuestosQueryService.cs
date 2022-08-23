@@ -37,7 +37,7 @@ namespace Service.Queries
             {
                 if (!order)
                 {
-                    var orderBy = await _context.Repuestos
+                      var orderBy = await _context.Repuestos
                     .Where(x => repuestos == null || repuestos.Contains(x.IdRepuesto))
                     .OrderBy(x => x.IdRepuesto)
                     .GetPagedAsync(page, take);

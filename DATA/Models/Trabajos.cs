@@ -14,10 +14,10 @@ namespace DATA.Models
         [MaxLength(50)]
         public string Descripcion { get; set; }
         public string Obs { get; set; }
-        public int TipoTrabajo { get; set; }
+        public int? TipoTrabajo { get; set; }
 
         [ForeignKey("IdRubro")]
-        public long IdRubro { get; set; }
+        public long? IdRubro { get; set; }
         public virtual Rubros idRubro { get; set; }
 
     }

@@ -9,6 +9,6 @@ namespace DATA.DTOS
         public long IdRubro { get; set; }
         public string Descripcion { get; set; }
         public string Obs { get; set; }
-        public long IdMecanico{ get; set; }
+        public long? IdMecanico{ get; set; }
     }
 }

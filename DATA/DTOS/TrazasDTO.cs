@@ -7,12 +7,12 @@ namespace DATA.DTOS
     {
         public long IdTraza { get; set; }
         [Required]
-        public long IdLocalidadDesde { get; set; }
+        public long? IdLocalidadDesde { get; set; }
         [Required]
-        public long IdLocalidadHasta { get; set; }
+        public long? IdLocalidadHasta { get; set; }
         public string Obs { get; set; }
-        public int DistanciaKm { get; set; }
-        public int Litros { get; set; }
+        public int? DistanciaKm { get; set; }
+        public int? Litros { get; set; }
         
     }
 }

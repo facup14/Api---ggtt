@@ -23,7 +23,7 @@ namespace DATA.Models
         public string Localidad { get; set; }
         public string CodigoPostal { get; set; }
         [ForeignKey("idProvincia")]
-        public long idProvincia { get; set; }
+        public long? idProvincia { get; set; }
         public virtual Provincias IdProvincia { get; set; }
         [NotMapped]
         public virtual ICollection<Trazas> LocalidadDesde { get; set; } //En la BD salen como FK pero no se de donde las saca ni hay columna a la que vayan 

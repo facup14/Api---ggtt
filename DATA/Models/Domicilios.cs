@@ -14,11 +14,11 @@ namespace DATA.Models
         [ForeignKey("IdCalle")]
         public int? IdCalle { get; set; }
         public virtual Calles idCalle { get; set; }
-        public string? Numero { get; set; }
+        public string Numero { get; set; }
         [ForeignKey("IdBarrio")]
         public int? IdBarrio { get; set; }
         public virtual Barrios idBarrio { get; set; }
-        public string? Dpto { get; set; }
+        public string Dpto { get; set; }
         public int? IdCliente { get; set; }
         
     }

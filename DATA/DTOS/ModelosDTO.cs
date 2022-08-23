@@ -9,7 +9,7 @@ namespace DATA.DTOS
         public long IdModelo { get; set; }
         public string Modelo { get; set; }
         public long idMarca { get; set; }
-        public long IdGrupo { get; set; }
+        public long? IdGrupo { get; set; }
         public string Obs { get; set; }
     }
 }

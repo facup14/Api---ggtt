@@ -17,7 +17,7 @@ namespace DATA.Models
         [ForeignKey("IdLocalidadHasta")]
         public long? IdLocalidadHasta { get; set; }
         public virtual Localidades idLocalidadHasta { get; set; }
-        public string? Obs { get; set; }
+        public string Obs { get; set; }
         public int? DistanciaKM { get; set; }
         public int? Litros { get; set; }
         public virtual ICollection<HistoricoPartesNeumaticos> HistoricoPartes { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace DATA.DTOS
@@ -7,6 +8,7 @@ namespace DATA.DTOS
     public class TalleresDTO
     {
         public long IdTaller { get; set; }
+        [Required(ErrorMessage = "Nombre de Taller es obligatorio")]
         public string NombreTaller { get; set; }
         public string Direccion { get; set; }
         public string Mail { get; set; }

@@ -20,7 +20,7 @@ namespace DATA.Models
         public long idMarca { get; set; }
         public virtual Marcas IdMarca { get; set; }
         [ForeignKey("IdGrupo")]
-        public long IdGrupo { get; set; }
+        public long? IdGrupo { get; set; }
         public virtual Grupos idGrupo { get; set; }
         public virtual ICollection<Unidades> Unidades { get; set; }
     }
