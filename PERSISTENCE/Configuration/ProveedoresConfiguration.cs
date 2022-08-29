@@ -31,7 +31,7 @@ namespace PERSISTENCE.Configuration
                 .HasColumnName("email")
                 .HasMaxLength(250);
 
-            entity.Property(e => e.FechaVencimiento).HasColumnType("datetime");
+            //entity.Property(e => e.FechaVencimiento).HasColumnType("datetime");
 
             entity.Property(e => e.IdAlicuota).HasColumnName("idAlicuota");
 

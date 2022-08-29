@@ -19,8 +19,7 @@ namespace DATA.DTOS
         public string Obs { get; set; }
         public bool RingBrutos { get; set; }
         public bool? AutorizaTrabajos3ros { get; set; }
-        public int? NroTimbrado { get; set; }
-        public DateTime? FechaVencimiento { get; set; }
-
+        //public int? NroTimbrado { get; set; }
+        //public DateTime? FechaVencimiento { get; set; }
     }
 }

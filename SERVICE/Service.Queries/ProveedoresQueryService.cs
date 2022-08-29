@@ -98,8 +98,8 @@ namespace Service.Queries
                 updateProveedor.Obs = proveedores.Obs;
                 updateProveedor.RingBrutos = proveedores.RingBrutos;
                 updateProveedor.AutorizaTrabajos3ros = proveedores.AutorizaTrabajos3ros;
-                updateProveedor.NroTimbrado = proveedores.NroTimbrado;
-                updateProveedor.FechaVencimiento = proveedores.FechaVencimiento;
+                //updateProveedor.NroTimbrado = proveedores.NroTimbrado;
+                //updateProveedor.FechaVencimiento = proveedores.FechaVencimiento;
 
             await _context.SaveChangesAsync();
 
@@ -150,8 +150,8 @@ namespace Service.Queries
                     Obs = proveedor.Obs,
                     RingBrutos = proveedor.RingBrutos,
                     AutorizaTrabajos3ros = proveedor.AutorizaTrabajos3ros,
-                    NroTimbrado = proveedor.NroTimbrado,
-                    FechaVencimiento = proveedor.FechaVencimiento,
+                    //NroTimbrado = proveedor.NroTimbrado,
+                    //FechaVencimiento = proveedor.FechaVencimiento,
                 };
                 await _context.Proveedores.AddAsync(newProveedor);
 

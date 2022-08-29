@@ -9,7 +9,6 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using DATA.Models;
 using DATA.Errors;
@@ -121,7 +120,7 @@ namespace Service.Queries
         {
             try
             {
-                if (rubro.Descripcion is null | rubro.Descripcion == "")
+                if (rubro.Descripcion is null || rubro.Descripcion == "")
                 {
                     var ex = new EmptyCollectionException("Debe ingresar la Descripción");
 

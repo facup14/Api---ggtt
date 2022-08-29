@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<ConveniosDTO> GetAsync(int id);
         Task<UpdateConvenioDTO> PutAsync(UpdateConvenioDTO Convenio, int it);
         Task<ConveniosDTO> DeleteAsync(int id);
-        Task<UpdateConvenioDTO> CreateAsync(UpdateConvenioDTO convenio);
+        Task<GetResponse> CreateAsync(UpdateConvenioDTO convenio);
     }
 
     public class ConveniosQueryService : IConveniosQueryService
@@ -110,13 +112,20 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateConvenioDTO> CreateAsync(UpdateConvenioDTO convenio)
+        public async Task<GetResponse> CreateAsync(UpdateConvenioDTO convenio)
         {
             try
             {
                 if (convenio.Descripcion == null || convenio.Descripcion == "")
                 {
-                    throw new EmptyCollectionException("Debe ingresar una Descripción");
+                    var ex = new EmptyCollectionException("Debe ingresar una Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
                 }
                 var newConvenio = new Convenios()
                 {
@@ -126,7 +135,13 @@ namespace Service.Queries
                 await _context.Convenios.AddAsync(newConvenio);
                 
                 await _context.SaveChangesAsync();
-                return newConvenio.MapTo<UpdateConvenioDTO>();
+                var newConvenios = newConvenio.MapTo<UpdateConvenioDTO>();
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Success",
+                    Result = newConvenios
+                };
             }     
             catch (Exception ex)
             {
