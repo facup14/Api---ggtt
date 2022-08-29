@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<GruposDTO> GetAsync(long id);
         Task<UpdateGruposDTO> PutAsync(UpdateGruposDTO grupo, long id);
         Task<GruposDTO> DeleteAsync(long id);
-        Task<UpdateGruposDTO> CreateAsync(UpdateGruposDTO grupo);
+        Task<GetResponse> CreateAsync(UpdateGruposDTO grupo);
     }
     public class GruposQueryService : IGruposQueryService
     {
@@ -109,10 +111,21 @@ namespace Service.Queries
 
             return grupos.MapTo<GruposDTO>();
         }
-        public async Task<UpdateGruposDTO> CreateAsync(UpdateGruposDTO grupo)
+        public async Task<GetResponse> CreateAsync(UpdateGruposDTO grupo)
         {
             try
             {
+                if (grupo.Descripcion is null || grupo.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newGrupo = new Grupos()
                 {
                     Descripcion = grupo.Descripcion,
@@ -122,7 +135,14 @@ namespace Service.Queries
                 await _context.Grupos.AddAsync(newGrupo);
 
                 await _context.SaveChangesAsync();
-                return newGrupo.MapTo<UpdateGruposDTO>();
+                var nuevoGrupo =  newGrupo.MapTo<UpdateGruposDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoGrupo
+                };
             }
             catch (Exception ex)
             {

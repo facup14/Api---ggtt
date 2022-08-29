@@ -135,13 +135,8 @@ namespace API.Controllers
             try
             {
                 var newChofer = await _choferesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newChofer
-                };
-                return Ok(result);
+                
+                return Ok(newChofer);
             }
             catch (EmptyCollectionException ex)
             {

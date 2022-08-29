@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<TitulosDTO> GetAsync(int id);
         Task<UpdateTitulosDTO> PutAsync(UpdateTitulosDTO titulo, int id);
         Task<TitulosDTO> DeleteAsync(int id);
-        Task<UpdateTitulosDTO> CreateAsync(UpdateTitulosDTO titulo);
+        Task<GetResponse> CreateAsync(UpdateTitulosDTO titulo);
     }
     public class TitulosQueryService : ITitulosQueryService
     {
@@ -117,10 +119,21 @@ namespace Service.Queries
             
             
         }
-        public async Task<UpdateTitulosDTO> CreateAsync(UpdateTitulosDTO titulo)
+        public async Task<GetResponse> CreateAsync(UpdateTitulosDTO titulo)
         {
             try
             {
+                if (titulo.Descripcion is null || titulo.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newTitulo = new Titulos()
                 {
                     Descripcion = titulo.Descripcion,
@@ -129,7 +142,15 @@ namespace Service.Queries
                 await _context.Titulos.AddAsync(newTitulo);
 
                 await _context.SaveChangesAsync();
-                return newTitulo.MapTo<UpdateTitulosDTO>();
+                var nuevoTitulo =  newTitulo.MapTo<UpdateTitulosDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoTitulo
+                };
+
             }
             catch (Exception ex)
             {

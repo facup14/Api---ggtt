@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<ProveedoresDTO> GetAsync(int id);
         Task<UpdateProveedoresDTO> PutAsync(UpdateProveedoresDTO proveedores, int id);
         Task<ProveedoresDTO> DeleteAsync(int id);
-        Task<UpdateProveedoresDTO> CreateAsync(UpdateProveedoresDTO proveedor);
+        Task<GetResponse> CreateAsync(UpdateProveedoresDTO proveedor);
     }
     public class ProveedoresQueryService : IProveedoresQueryService
     {
@@ -117,10 +119,21 @@ namespace Service.Queries
 
             return Proveedor.MapTo<ProveedoresDTO>();
         }
-        public async Task<UpdateProveedoresDTO> CreateAsync(UpdateProveedoresDTO proveedor)
+        public async Task<GetResponse> CreateAsync(UpdateProveedoresDTO proveedor)
         {
             try
             {
+                if (proveedor.RazonSocial is null || proveedor.RazonSocial == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Razon Social");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newProveedor = new Proveedores()
                 {
                     RazonSocial = proveedor.RazonSocial,
@@ -143,7 +156,14 @@ namespace Service.Queries
                 await _context.Proveedores.AddAsync(newProveedor);
 
                 await _context.SaveChangesAsync();
-                return newProveedor.MapTo<UpdateProveedoresDTO>();
+                var nuevoProveedor  = newProveedor.MapTo<UpdateProveedoresDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoProveedor
+                };
             }
             catch (Exception ex)
             {

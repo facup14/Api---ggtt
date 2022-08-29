@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<AlicuotasIVADTO> GetAsync(int id);
         Task<UpdateAlicuotasIVADTO> PutAsync(UpdateAlicuotasIVADTO AlicuotasIVA, int id);
         Task<AlicuotasIVADTO> DeleteAsync(int id);
-        Task<UpdateAlicuotasIVADTO> CreateAsync(UpdateAlicuotasIVADTO alicuotas);
+        Task<GetResponse> CreateAsync(UpdateAlicuotasIVADTO alicuotas);
     }
     
     public class AlicuotasIVAQueryService : IAlicuotasIVAQueryService
@@ -116,10 +118,32 @@ namespace Service.Queries
             }
             
         }
-        public async Task<UpdateAlicuotasIVADTO> CreateAsync(UpdateAlicuotasIVADTO alicuotas)
+        public async Task<GetResponse> CreateAsync(UpdateAlicuotasIVADTO alicuotas)
         {
             try
             {
+                if(alicuotas.Alicuota == 0)
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Alicuota");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
+                if (alicuotas.Detalle is null || alicuotas.Detalle == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar un Detalle");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newAlicuota = new AlicuotasIVA()
                 {
                     Detalle = alicuotas.Detalle,
@@ -130,7 +154,15 @@ namespace Service.Queries
                 await _context.AlicuotasIVA.AddAsync(newAlicuota);
 
                 await _context.SaveChangesAsync();
-                return newAlicuota.MapTo<UpdateAlicuotasIVADTO>();
+
+                var nuevaAlicuota =  newAlicuota.MapTo<UpdateAlicuotasIVADTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaAlicuota
+                };
             }
             catch (Exception ex)
             {

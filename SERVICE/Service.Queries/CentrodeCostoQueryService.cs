@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<CentrodeCostoDTO> GetAsync(long id);
         Task<UpdateCentrodeCostoDTO> PutAsync(UpdateCentrodeCostoDTO CentrodeCosto, long it);
         Task<CentrodeCostoDTO> DeleteAsync(long id);
-        Task<UpdateCentrodeCostoDTO> CreateAsync(UpdateCentrodeCostoDTO centroDeCosto);
+        Task<GetResponse> CreateAsync(UpdateCentrodeCostoDTO centroDeCosto);
     }
     public class CentrodeCostoQueryService : ICentrodeCostoQueryService
     {
@@ -113,10 +115,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateCentrodeCostoDTO> CreateAsync(UpdateCentrodeCostoDTO centroDeCosto)
+        public async Task<GetResponse> CreateAsync(UpdateCentrodeCostoDTO centroDeCosto)
         {
             try
             {
+                if (centroDeCosto.CentrodeCosto is null || centroDeCosto.CentrodeCosto == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar un Centro de Costo");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newCentrodeCosto = new CentroDeCosto()
                 {
                     CentrodeCosto = centroDeCosto.CentrodeCosto,
@@ -128,7 +141,14 @@ namespace Service.Queries
                 await _context.CentroDeCosto.AddAsync(newCentrodeCosto);
 
                 await _context.SaveChangesAsync();
-                return newCentrodeCosto.MapTo<UpdateCentrodeCostoDTO>();
+                var nuevoCentro =  newCentrodeCosto.MapTo<UpdateCentrodeCostoDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoCentro
+                };
             }
             catch (Exception ex)
             {

@@ -191,13 +191,7 @@ namespace API.Controllers
             {
                 var newValor = await _valoresQueryService.CreateAsync(valorM);
 
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newValor
-                };
-                return Ok(result);
+                return Ok(newValor);
             }
             catch (EmptyCollectionException ex)
             {

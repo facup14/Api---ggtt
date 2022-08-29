@@ -142,13 +142,8 @@ namespace API.Controllers
             try
             {
                 var newEmpresa = await _empresasQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newEmpresa
-                };
-                return Ok(result);
+                
+                return Ok(newEmpresa);
             }
             catch (EmptyCollectionException ex)
             {

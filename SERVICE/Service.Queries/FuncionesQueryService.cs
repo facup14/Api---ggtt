@@ -3,6 +3,7 @@
 using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -11,6 +12,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<FuncionesDTO> GetAsync(int id);
         Task<UpdateFuncionesDTO> PutAsync(UpdateFuncionesDTO funcion, int id);
         Task<FuncionesDTO> DeleteAsync(int id);
-        Task<UpdateFuncionesDTO> CreateAsync(UpdateFuncionesDTO funcion);
+        Task<GetResponse> CreateAsync(UpdateFuncionesDTO funcion);
     }
     public class FuncionesQueryService : IFuncionesQueryService
     {
@@ -110,10 +112,21 @@ namespace Service.Queries
 
             return funcion.MapTo<FuncionesDTO>();
         }
-        public async Task<UpdateFuncionesDTO> CreateAsync(UpdateFuncionesDTO funcion)
+        public async Task<GetResponse> CreateAsync(UpdateFuncionesDTO funcion)
         {
             try
             {
+                if (funcion.Descripcion is null || funcion.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Función");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newFuncion = new Funciones()
                 {
                     Descripcion = funcion.Descripcion,
@@ -122,7 +135,14 @@ namespace Service.Queries
                 await _context.Funciones.AddAsync(newFuncion);
 
                 await _context.SaveChangesAsync();
-                return newFuncion.MapTo<UpdateFuncionesDTO>();
+                var nuevaFuncion =  newFuncion.MapTo<UpdateFuncionesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaFuncion
+                };
             }
             catch (Exception ex)
             {

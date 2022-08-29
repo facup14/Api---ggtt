@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newUnidadMedida = await _unidadesDeMedidaQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newUnidadMedida
-                };
-                return Ok(result);
+                
+                return Ok(newUnidadMedida);
             }
             catch (EmptyCollectionException ex)
             {

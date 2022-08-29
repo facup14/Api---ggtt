@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DATA.Models;
 using Common.Collection;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<AgrupacionesSindicalesDTO> GetAsync(int id);
         Task<UpdateAgrupacionSindicalDTO> PutAsync(UpdateAgrupacionSindicalDTO AgrupacionSindical, int it);
         Task<AgrupacionesSindicalesDTO> DeleteAsync(int id);
-        Task<UpdateAgrupacionSindicalDTO> CreateAsync(UpdateAgrupacionSindicalDTO agrupacion);
+        Task<GetResponse> CreateAsync(UpdateAgrupacionSindicalDTO agrupacion);
     }
 
     public class AgrupacionesSindicalesQueryService : IAgrupacionesSindicalesQueryService
@@ -114,10 +116,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateAgrupacionSindicalDTO> CreateAsync(UpdateAgrupacionSindicalDTO agrupacion)
+        public async Task<GetResponse> CreateAsync(UpdateAgrupacionSindicalDTO agrupacion)
         {
             try
             {
+                if (agrupacion.Descripcion is null || agrupacion.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newAgrupacion = new AgrupacionesSindicales()
                 {
                     Descripcion = agrupacion.Descripcion,
@@ -126,7 +139,14 @@ namespace Service.Queries
                 await _context.AgrupacionesSindicales.AddAsync(newAgrupacion);
 
                 await _context.SaveChangesAsync();
-                return newAgrupacion.MapTo<UpdateAgrupacionSindicalDTO>();
+                var nuevaAgrupacion =  newAgrupacion.MapTo<UpdateAgrupacionSindicalDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaAgrupacion
+                };
             }
             catch (Exception ex)
             {

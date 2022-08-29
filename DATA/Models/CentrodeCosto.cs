@@ -6,6 +6,10 @@ namespace DATA.Models
 {
     public class CentroDeCosto
     {
+        public CentroDeCosto()
+        {
+            CambiosCentroDeCosto = new HashSet<CambiosCentroDeCosto>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long idCentrodeCosto { get; set; }
@@ -17,6 +21,7 @@ namespace DATA.Models
         public long? idEstadoUnidad { get; set; }
         public virtual EstadosUnidades IdEstadoUnidad { get; set; }
         public int? CodigoBas { get; set; }
+        public virtual ICollection<CambiosCentroDeCosto> CambiosCentroDeCosto { get; set; }
 
     }
 }

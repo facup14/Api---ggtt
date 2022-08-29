@@ -145,13 +145,8 @@ namespace API.Controllers
             try
             {
                 var newModelo = await _modelosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newModelo
-                };
-                return Ok(result);
+                
+                return Ok(newModelo);
             }
             catch (EmptyCollectionException ex)
             {

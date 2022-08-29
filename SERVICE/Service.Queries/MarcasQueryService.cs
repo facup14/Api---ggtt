@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<MarcasDTO> GetAsync(long id);
         Task<UpdateMarcaDTO> PutAsync(UpdateMarcaDTO Convenio, long it);
         Task<MarcasDTO> DeleteAsync(long id);
-        Task<UpdateMarcaDTO> CreateAsync(UpdateMarcaDTO marcas);
+        Task<GetResponse> CreateAsync(UpdateMarcaDTO marcas);
     }
 
     public class MarcasQueryService : IMarcasQueryService
@@ -113,10 +115,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateMarcaDTO> CreateAsync(UpdateMarcaDTO marcas)
+        public async Task<GetResponse> CreateAsync(UpdateMarcaDTO marcas)
         {
             try
             {
+                if (marcas.Marca is null || marcas.Marca == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Marca");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newMarcas = new Marcas()
                 {
                     Marca = marcas.Marca,
@@ -125,7 +138,14 @@ namespace Service.Queries
                 await _context.Marcas.AddAsync(newMarcas);
 
                 await _context.SaveChangesAsync();
-                return newMarcas.MapTo<UpdateMarcaDTO>();
+                var nuevaMarca  = newMarcas.MapTo<UpdateMarcaDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaMarca
+                };
             }
             catch (Exception ex)
             {

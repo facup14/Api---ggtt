@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<TalleresDTO> GetAsync(long id);
         Task<UpdateTalleresDTO> PutAsync(UpdateTalleresDTO taller, long id);
         Task<TalleresDTO> DeleteAsync(long id);
-        Task<UpdateTalleresDTO> CreateAsync(UpdateTalleresDTO taller);
+        Task<GetResponse> CreateAsync(UpdateTalleresDTO taller);
     }
     public class TalleresQueryService : ITalleresQueryService
     {
@@ -129,10 +131,21 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return taller.MapTo<TalleresDTO>();
         }
-        public async Task<UpdateTalleresDTO> CreateAsync(UpdateTalleresDTO taller)
+        public async Task<GetResponse> CreateAsync(UpdateTalleresDTO taller)
         {
             try
             {
+                if (taller.NombreTaller is null || taller.NombreTaller == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Nombre del Taller");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newTaller = new Talleres()
                 {
                       NombreTaller = taller.NombreTaller,
@@ -163,7 +176,14 @@ namespace Service.Queries
                 await _context.Talleres.AddAsync(newTaller);
 
                 await _context.SaveChangesAsync();
-                return newTaller.MapTo<UpdateTalleresDTO>();
+                var nuevoTaller =  newTaller.MapTo<UpdateTalleresDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoTaller
+                };
             }
             catch (Exception ex)
             {

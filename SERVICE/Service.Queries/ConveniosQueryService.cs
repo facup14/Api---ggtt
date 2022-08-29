@@ -114,6 +114,10 @@ namespace Service.Queries
         {
             try
             {
+                if (convenio.Descripcion == null || convenio.Descripcion == "")
+                {
+                    throw new EmptyCollectionException("Debe ingresar una Descripción");
+                }
                 var newConvenio = new Convenios()
                 {
                     Descripcion = convenio.Descripcion,
@@ -126,7 +130,7 @@ namespace Service.Queries
             }     
             catch (Exception ex)
             {
-                throw new Exception("Error al eliminar el Convenio");
+                throw new Exception("Error al crear el Convenio");
             }
 
         }

@@ -181,13 +181,8 @@ namespace API.Controllers
             try
             {
                 var newEquipamiento = await _equipamientosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newEquipamiento
-                };
-                return Ok(result);
+                
+                return Ok(newEquipamiento);
             }
             catch (EmptyCollectionException ex)
             {

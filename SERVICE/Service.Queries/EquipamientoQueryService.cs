@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<EquipamientoDTO> GetAsync(long id);
         Task<UpdateEquipamientoDTO> PutAsync(UpdateEquipamientoDTO equipamiento, long id);
         Task<EquipamientoDTO> DeleteAsync(long id);
-        Task<UpdateEquipamientoDTO> CreateAsync(UpdateEquipamientoDTO equipamiento);
+        Task<GetResponse> CreateAsync(UpdateEquipamientoDTO equipamiento);
     }
     public class EquipamientoQueryService : IEquipamientoQueryService
     {
@@ -106,10 +108,32 @@ namespace Service.Queries
 
             return equipamiento.MapTo<EquipamientoDTO>();
         }
-        public async Task<UpdateEquipamientoDTO> CreateAsync(UpdateEquipamientoDTO equipamiento)
+        public async Task<GetResponse> CreateAsync(UpdateEquipamientoDTO equipamiento)
         {
             try
             {
+                if (equipamiento.idNombreEquipamiento == 0)
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar un Nombre de Equipamiento");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
+                if (equipamiento.Cantidad.ToString() == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Cantidad");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newEquipamiento = new Equipamientos()
                 {
                     idNombreEquipamiento = equipamiento.idNombreEquipamiento,
@@ -119,7 +143,14 @@ namespace Service.Queries
                 await _context.Equipamientos.AddAsync(newEquipamiento);
 
                 await _context.SaveChangesAsync();
-                return newEquipamiento.MapTo<UpdateEquipamientoDTO>();
+                var nuevoEquipamiento =  newEquipamiento.MapTo<UpdateEquipamientoDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoEquipamiento
+                };
             }
             catch (Exception ex)
             {

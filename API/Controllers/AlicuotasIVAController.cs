@@ -190,13 +190,7 @@ namespace API.Controllers
             {
                 var newAlicuota = await _alicuotasQueryService.CreateAsync(alicuota);
 
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newAlicuota
-                };
-                return Ok(result);
+                return Ok(newAlicuota);
             }
             catch (EmptyCollectionException ex)
             {

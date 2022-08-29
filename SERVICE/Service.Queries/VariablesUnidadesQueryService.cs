@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<VariablesUnidadesDTO> GetAsync(int id);
         Task<UpdateVariableUnidadDTO> PutAsync(UpdateVariableUnidadDTO titulo, int id);
         Task<VariablesUnidadesDTO> DeleteAsync(int id);
-        Task<UpdateVariableUnidadDTO> CreateAsync(UpdateVariableUnidadDTO variables);
+        Task<GetResponse> CreateAsync(UpdateVariableUnidadDTO variables);
     }
     public class VariablesUnidadesQueryService : IVariablesUnidadesQueryService
     {
@@ -103,10 +105,21 @@ namespace Service.Queries
 
             return variableUnidad.MapTo<VariablesUnidadesDTO>();
         }
-        public async Task<UpdateVariableUnidadDTO> CreateAsync(UpdateVariableUnidadDTO variables)
+        public async Task<GetResponse> CreateAsync(UpdateVariableUnidadDTO variables)
         {
             try
             {
+                if (variables.Nombre is null || variables.Nombre == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Nombre");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newVariables = new VariablesUnidades()
                 {
                     Nombre = variables.Nombre,
@@ -114,7 +127,14 @@ namespace Service.Queries
                 await _context.VariablesUnidades.AddAsync(newVariables);
 
                 await _context.SaveChangesAsync();
-                return newVariables.MapTo<UpdateVariableUnidadDTO>();
+                var nuevaVariable =  newVariables.MapTo<UpdateVariableUnidadDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaVariable
+                };
             }
             catch (Exception ex)
             {

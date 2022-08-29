@@ -1,5 +1,6 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -22,7 +24,7 @@ namespace Service.Queries
         Task<DATA.DTOS.UnidadesByIdDTO> GetAsync(long id);
         Task<UpdateUnidadDTO> PutAsync(UpdateUnidadDTO unidad, long it);
         Task<UnidadesDTO> DeleteAsync(long id);
-        Task<UpdateUnidadDTO> CreateAsync(UpdateUnidadDTO unidad);
+        Task<GetResponse> CreateAsync(UpdateUnidadDTO unidad);
     }
     public class UnidadesQueryService : IUnidadesQueryService
     {
@@ -159,10 +161,32 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return unidade.MapTo<UnidadesDTO>();                        
         }
-        public async Task<UpdateUnidadDTO> CreateAsync(UpdateUnidadDTO unidad)
+        public async Task<GetResponse> CreateAsync(UpdateUnidadDTO unidad)
         {
             try
             {
+                if (unidad.NroUnidad is null || unidad.NroUnidad == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Número de la Unidad");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
+                if (unidad.idEstadoUnidad == 0 && unidad.idModelo == 0 && unidad.idSituacionUnidad == 0)
+                {
+                    var ex = new EmptyCollectionException("El Estado de la Unidad, Modelo y SItuación de la Unidad son obligatorios");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newUnidad = new Unidades()
                 {
                     NroUnidad = unidad.NroUnidad,
@@ -207,7 +231,14 @@ namespace Service.Queries
                 await _context.Unidades.AddAsync(newUnidad);
 
                 await _context.SaveChangesAsync();
-                return newUnidad.MapTo<UpdateUnidadDTO>();
+                var nuevaUnidad =  newUnidad.MapTo<UpdateUnidadDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaUnidad
+                };
             }
             catch (Exception ex)
             {

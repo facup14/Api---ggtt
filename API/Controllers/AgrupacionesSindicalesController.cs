@@ -149,13 +149,8 @@ namespace API.Controllers
             {
                 var createAgrupacion = await _agrupacionesQueryService.CreateAsync(command);
 
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = createAgrupacion
-                };
-                return Ok(result);
+               
+                return Ok(createAgrupacion);
             }
             catch(EmptyCollectionException ex)
             {

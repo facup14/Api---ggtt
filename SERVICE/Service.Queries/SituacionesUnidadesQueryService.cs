@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<SituacionesUnidadesDTO> GetAsync(long id);
         Task<UpdateSituacionesUnidadesDTO> PutAsync(UpdateSituacionesUnidadesDTO situacion, long id);
         Task<SituacionesUnidadesDTO> DeleteAsync(long id);
-        Task<UpdateSituacionesUnidadesDTO> CreateAsync(UpdateSituacionesUnidadesDTO situacion);
+        Task<GetResponse> CreateAsync(UpdateSituacionesUnidadesDTO situacion);
     }
     public class SituacionesUnidadesQueryService : ISituacionesUnidadesQueryService
     {
@@ -110,10 +112,21 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return situacion.MapTo<SituacionesUnidadesDTO>();
         }
-        public async Task<UpdateSituacionesUnidadesDTO> CreateAsync(UpdateSituacionesUnidadesDTO situacion)
+        public async Task<GetResponse> CreateAsync(UpdateSituacionesUnidadesDTO situacion)
         {
             try
             {
+                if (situacion.Situacion is null || situacion.Situacion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Situación");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newSituacion = new SituacionesUnidades()
                 {
                     Situacion = situacion.Situacion,
@@ -122,7 +135,14 @@ namespace Service.Queries
                 await _context.SituacionesUnidades.AddAsync(newSituacion);
 
                 await _context.SaveChangesAsync();
-                return newSituacion.MapTo<UpdateSituacionesUnidadesDTO>();
+                var nuevaSituacion =  newSituacion.MapTo<UpdateSituacionesUnidadesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = "Success",
+                    Result = nuevaSituacion
+                };
             }
             catch (Exception ex)
             {

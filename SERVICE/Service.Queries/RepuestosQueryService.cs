@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<RepuestosByIdDTO> GetAsync(long id);
         Task<UpdateRepuestosDTO> PutAsync(UpdateRepuestosDTO repuesto, long id);
         Task<RepuestosDTO> DeleteAsync(long id);
-        Task<UpdateRepuestosDTO> CreateAsync(UpdateRepuestosDTO repuestos);
+        Task<GetResponse> CreateAsync(UpdateRepuestosDTO repuestos);
     }
     public class RepuestosQueryService : IRepuestosQueryService
     {
@@ -136,10 +138,21 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return repuesto.MapTo<RepuestosDTO>();
         }
-        public async Task<UpdateRepuestosDTO> CreateAsync(UpdateRepuestosDTO repuestos)
+        public async Task<GetResponse> CreateAsync(UpdateRepuestosDTO repuestos)
         {
             try
             {
+                if (repuestos.Detalle is null || repuestos.Detalle == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Detalle");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newRepuesto = new Repuestos()
                 {
                     Detalle = repuestos.Detalle,
@@ -177,7 +190,14 @@ namespace Service.Queries
                 await _context.Repuestos.AddAsync(newRepuesto);
 
                 await _context.SaveChangesAsync();
-                return newRepuesto.MapTo<UpdateRepuestosDTO>();
+                var nuevoRepuesto  = newRepuesto.MapTo<UpdateRepuestosDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoRepuesto
+                };
             }
             catch (Exception ex)
             {

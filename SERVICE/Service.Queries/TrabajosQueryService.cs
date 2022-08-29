@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<TrabajosDTO> GetAsync(long id);
         Task<UpdateTrabajoDTO> PutAsync(UpdateTrabajoDTO choferDto, long id);
         Task<TrabajosDTO> DeleteAsync(long id);
-        Task<UpdateTrabajoDTO> CreateAsync(UpdateTrabajoDTO trabajo);
+        Task<GetResponse> CreateAsync(UpdateTrabajoDTO trabajo);
     }
        
     public class TrabajosQueryService:ITrabajosQueryService
@@ -116,10 +118,21 @@ namespace Service.Queries
             return trabajo.MapTo<TrabajosDTO>();
         }
 
-        public async Task<UpdateTrabajoDTO> CreateAsync(UpdateTrabajoDTO trabajo)
+        public async Task<GetResponse> CreateAsync(UpdateTrabajoDTO trabajo)
         {
             try
             {
+                if (trabajo.Descripcion is null || trabajo.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newTrabajo = new Trabajos()
                 {
                     Descripcion = trabajo.Descripcion,
@@ -130,7 +143,14 @@ namespace Service.Queries
                 await _context.Trabajos.AddAsync(newTrabajo);
 
                 await _context.SaveChangesAsync();
-                return newTrabajo.MapTo<UpdateTrabajoDTO>();
+                var nuevoTrabajo = newTrabajo.MapTo<UpdateTrabajoDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoTrabajo
+                };
             }
             catch (Exception ex)
             {

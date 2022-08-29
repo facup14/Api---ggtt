@@ -135,13 +135,8 @@ namespace API.Controllers
             try
             {
                 var newRepuesto = await _repuestosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newRepuesto
-                };
-                return Ok(result);
+                
+                return Ok(newRepuesto);
             }
             catch (EmptyCollectionException ex)
             {

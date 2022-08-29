@@ -145,13 +145,8 @@ namespace API.Controllers
             try
             {
                 var newMarca = await _marcasQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newMarca
-                };
-                return Ok(result);
+                
+                return Ok(newMarca);
             }
             catch (EmptyCollectionException ex)
             {

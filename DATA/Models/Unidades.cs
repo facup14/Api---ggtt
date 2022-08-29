@@ -6,6 +6,12 @@ namespace DATA.Models
 {
     public class Unidades
     {
+        public Unidades()
+        {
+            CambiosCentroDeCosto = new HashSet<CambiosCentroDeCosto>();
+            UnidadesChoferes = new HashSet<UnidadesChoferes>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdUnidad { get; set; }
@@ -64,7 +70,7 @@ namespace DATA.Models
         [ForeignKey("idSituacionUnidad")]
         public long idSituacionUnidad { get; set; }
         public virtual SituacionesUnidades IdSituacionUnidad { get; set; }
-        
-        
+        public virtual ICollection<CambiosCentroDeCosto> CambiosCentroDeCosto { get; set; }
+        public virtual ICollection<UnidadesChoferes> UnidadesChoferes { get; set; }
     }
 }

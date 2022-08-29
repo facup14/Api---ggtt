@@ -192,13 +192,8 @@ namespace API.Controllers
             {
                 var newTarea = await _tareasQueryService.CreateAsync(tarea);
 
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newTarea
-                };
-                return Ok(result);
+                
+                return Ok(newTarea);
             }
             catch (EmptyCollectionException ex)
             {

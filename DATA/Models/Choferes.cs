@@ -7,7 +7,10 @@ namespace DATA.Models
 {
     public class Choferes
     {
-        
+        public Choferes()
+        {
+            UnidadesChoferes = new HashSet<UnidadesChoferes>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long IdChofer { get; set; }
@@ -56,5 +59,6 @@ namespace DATA.Models
         public int? IdTitulo { get; set; }
         [MaxLength(50)]
         public virtual Titulos idTitulo { get; set; }
+        public virtual ICollection<UnidadesChoferes> UnidadesChoferes { get; set; }
     }
 }

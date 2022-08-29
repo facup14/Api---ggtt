@@ -174,13 +174,8 @@ namespace API.Controllers
             try
             {
                 var newRubro = await _rubrosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newRubro
-                };
-                return Ok(result);
+                
+                return Ok(newRubro);
             }
             catch (EmptyCollectionException ex)
             {

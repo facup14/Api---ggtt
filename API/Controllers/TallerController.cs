@@ -135,13 +135,8 @@ namespace API.Controllers
             try
             {
                 var newTaller = await _talleresQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newTaller
-                };
-                return Ok(result);
+                
+                return Ok(newTaller);
             }
             catch (EmptyCollectionException ex)
             {

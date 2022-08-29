@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<ArticulosDTO> GetAsync(long id);
         Task<UpdateArticuloDTO> PutAsync(UpdateArticuloDTO Articulo, long it);
         Task<ArticulosDTO> DeleteAsync(long id);
-        Task<UpdateArticuloDTO> CreateAsync(UpdateArticuloDTO Articulo);
+        Task<GetResponse> CreateAsync(UpdateArticuloDTO Articulo);
     }
     public class ArticulosQueryService : IArticulosQueryService
     {
@@ -112,10 +114,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateArticuloDTO> CreateAsync(UpdateArticuloDTO Articulo)
+        public async Task<GetResponse> CreateAsync(UpdateArticuloDTO Articulo)
         {
             try
             {
+                if (Articulo.DetalleArticulo is null || Articulo.DetalleArticulo == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Detalle");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newArticulo = new Articulos()
                 {
                     DetalleArticulo = Articulo.DetalleArticulo,
@@ -126,7 +139,14 @@ namespace Service.Queries
                 await _context.Articulos.AddAsync(newArticulo);
 
                 await _context.SaveChangesAsync();
-                return newArticulo.MapTo<UpdateArticuloDTO>();
+                var nuevoArticulo  =  newArticulo.MapTo<UpdateArticuloDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoArticulo
+                };
             }
             catch (Exception ex)
             {

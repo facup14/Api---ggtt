@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<DomiciliosDTO> GetAsync(int id);
         Task<UpdateDomiciliosDTO> PutAsync(UpdateDomiciliosDTO Domicilio, int id);
         Task<DomiciliosDTO> DeleteAsync(int id);
-        Task<UpdateDomiciliosDTO> CreateAsync(UpdateDomiciliosDTO domicilio);
+        Task<GetResponse> CreateAsync(UpdateDomiciliosDTO domicilio);
     }
     public class DomiciliosQueryService : IDomiciliosQueryService
     {
@@ -114,10 +116,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateDomiciliosDTO> CreateAsync(UpdateDomiciliosDTO domicilio)
+        public async Task<GetResponse> CreateAsync(UpdateDomiciliosDTO domicilio)
         {
             try
             {
+                if (domicilio.Numero is null || domicilio.Numero == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Número");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newDomicilio = new Domicilios()
                 {
                     Predeterminado = domicilio.Predeterminado,
@@ -131,7 +144,14 @@ namespace Service.Queries
                 await _context.Domicilios.AddAsync(newDomicilio);
 
                 await _context.SaveChangesAsync();
-                return newDomicilio.MapTo<UpdateDomiciliosDTO>();
+                var nuevoDomicilio =  newDomicilio.MapTo<UpdateDomiciliosDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoDomicilio
+                };
             }
             catch (Exception ex)
             {

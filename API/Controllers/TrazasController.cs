@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newTraza = await _trazasQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newTraza
-                };
-                return Ok(result);
+                
+                return Ok(newTraza);
             }
             catch (EmptyCollectionException ex)
             {

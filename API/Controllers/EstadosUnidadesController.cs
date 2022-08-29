@@ -145,13 +145,8 @@ namespace API.Controllers
             try
             {
                 var newEstadoUnidad = await _estadosunidadesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newEstadoUnidad
-                };
-                return Ok(result);
+                
+                return Ok(newEstadoUnidad);
             }
             catch (EmptyCollectionException ex)
             {

@@ -148,13 +148,8 @@ namespace API.Controllers
             try
             {
                 var newCalle = await _callesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newCalle
-                };
-                return Ok(result);
+                
+                return Ok(newCalle);
             }
             catch (EmptyCollectionException ex)
             {

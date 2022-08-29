@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -125,10 +127,32 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return choferes.MapTo<ChoferesDTO>();
         }
-        public async Task<UpdateChoferesDTO> CreateAsync(UpdateChoferesDTO chofer)
+        public async Task<GetResponse> CreateAsync(UpdateChoferesDTO chofer)
         {
             try
             {
+                if (chofer.ApellidoyNombres is null || chofer.ApellidoyNombres == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Apellido y Nombre");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
+                if (chofer.Legajo is null || chofer.Legajo == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Legajo");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newChofer = new Choferes()
                 {
                     ApellidoyNombres = chofer.ApellidoyNombres,
@@ -149,7 +173,14 @@ namespace Service.Queries
                 await _context.Choferes.AddAsync(newChofer);
 
                 await _context.SaveChangesAsync();
-                return newChofer.MapTo<UpdateChoferesDTO>();
+                var nuevoChofer =  newChofer.MapTo<UpdateChoferesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoChofer
+                };
             }
             catch (Exception ex)
             {

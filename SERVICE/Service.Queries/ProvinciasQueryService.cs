@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<ProvinciasDTO> GetAsync(long id);
         Task<UpdateProvinciaDTO> PutAsync(UpdateProvinciaDTO Provincias, long it);
         Task<ProvinciasDTO> DeleteAsync(long id);
-        Task<UpdateProvinciaDTO> CreateAsync(UpdateProvinciaDTO provincia);
+        Task<GetResponse> CreateAsync(UpdateProvinciaDTO provincia);
     }
 
     public class ProvinciasQueryService : IProvinciasQueryService
@@ -112,10 +114,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateProvinciaDTO> CreateAsync(UpdateProvinciaDTO provincia)
+        public async Task<GetResponse> CreateAsync(UpdateProvinciaDTO provincia)
         {
             try
             {
+                if (provincia.Provincia is null || provincia.Provincia == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Provincia");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newProvincia = new Provincias()
                 {
                     Provincia = provincia.Provincia,
@@ -123,7 +136,14 @@ namespace Service.Queries
                 await _context.Provincias.AddAsync(newProvincia);
 
                 await _context.SaveChangesAsync();
-                return newProvincia.MapTo<UpdateProvinciaDTO>();
+                var nuevaProvincia =  newProvincia.MapTo<UpdateProvinciaDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaProvincia
+                };
             }
             catch (Exception ex)
             {

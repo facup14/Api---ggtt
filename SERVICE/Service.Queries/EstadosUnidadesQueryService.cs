@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<EstadosUnidadesDTO> GetAsync(long id);
         Task<UpdateEstadoUnidadDTO> PutAsync(UpdateEstadoUnidadDTO EstadosUnidades, long it);
         Task<EstadosUnidadesDTO> DeleteAsync(long id);
-        Task<UpdateEstadoUnidadDTO> CreateAsync(UpdateEstadoUnidadDTO estadoUnidad);
+        Task<GetResponse> CreateAsync(UpdateEstadoUnidadDTO estadoUnidad);
     }
 
     public class EstadosUnidadesQueryService : IEstadosUnidadesQueryService
@@ -112,10 +114,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateEstadoUnidadDTO> CreateAsync(UpdateEstadoUnidadDTO estadoUnidad)
+        public async Task<GetResponse> CreateAsync(UpdateEstadoUnidadDTO estadoUnidad)
         {
             try
             {
+                if (estadoUnidad.Estado is null || estadoUnidad.Estado == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar un Estado");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newEstadoUnidad = new EstadosUnidades()
                 {
                     Estado = estadoUnidad.Estado,
@@ -124,7 +137,14 @@ namespace Service.Queries
                 await _context.EstadosUnidades.AddAsync(newEstadoUnidad);
 
                 await _context.SaveChangesAsync();
-                return newEstadoUnidad.MapTo<UpdateEstadoUnidadDTO>();
+                var nuewvoEstadoUnidad = newEstadoUnidad.MapTo<UpdateEstadoUnidadDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuewvoEstadoUnidad
+                };
             }
             catch (Exception ex)
             {

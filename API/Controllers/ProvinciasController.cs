@@ -146,13 +146,8 @@ namespace API.Controllers
             try
             {
                 var newProvincia = await _provinciasQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newProvincia
-                };
-                return Ok(result);
+                
+                return Ok(newProvincia);
             }
             catch (EmptyCollectionException ex)
             {

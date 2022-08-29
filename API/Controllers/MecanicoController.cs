@@ -135,13 +135,8 @@ namespace API.Controllers
             try
             {
                 var newMecanico = await _mecanicosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = command
-                };
-                return Ok(result);
+                
+                return Ok(newMecanico);
             }
             catch (EmptyCollectionException ex)
             {

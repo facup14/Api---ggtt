@@ -145,13 +145,8 @@ namespace API.Controllers
             try
             {
                 var newEspecialidad = await _especialidadesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newEspecialidad
-                };
-                return Ok(result);
+                
+                return Ok(newEspecialidad);
             }
             catch (EmptyCollectionException ex)
             {

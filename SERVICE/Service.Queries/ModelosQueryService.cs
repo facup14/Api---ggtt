@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -21,7 +23,7 @@ namespace Service.Queries
         Task<ModelosDTO> GetAsync(long id);
         Task<UpdateModeloDTO> PutAsync(UpdateModeloDTO Modelos, long it);
         Task<ModelosDTO> DeleteAsync(long id);
-        Task<UpdateModeloDTO> CreateAsync(UpdateModeloDTO modelo);
+        Task<GetResponse> CreateAsync(UpdateModeloDTO modelo);
     }
 
     public class ModelosQueryService : IModelosQueryService
@@ -113,10 +115,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateModeloDTO> CreateAsync(UpdateModeloDTO modelo)
+        public async Task<GetResponse> CreateAsync(UpdateModeloDTO modelo)
         {
             try
             {
+                if (modelo.Modelo is null || modelo.Modelo == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Modelo");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newModelo = new Modelos()
                 {
                     Modelo = modelo.Modelo,
@@ -127,7 +140,14 @@ namespace Service.Queries
                 await _context.Modelos.AddAsync(newModelo);
 
                 await _context.SaveChangesAsync();
-                return newModelo.MapTo<UpdateModeloDTO>();
+                var nuevoModelo =  newModelo.MapTo<UpdateModeloDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoModelo
+                };
             }
             catch (Exception ex)
             {

@@ -12,7 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DATA.Models;
-
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -22,7 +23,7 @@ namespace Service.Queries
         Task<RubrosDTO> GetAsync(long id);
         Task<UpdateRubroDTO> PutAsync(UpdateRubroDTO choferDto, long id);
         Task<RubrosDTO> DeleteAsync(long id);
-        Task<UpdateRubroDTO> CreateAsync(UpdateRubroDTO rubro);
+        Task<GetResponse> CreateAsync(UpdateRubroDTO rubro);
     }
 
     public class RubrosQueryService : IRubrosQueryService
@@ -116,10 +117,21 @@ namespace Service.Queries
             return rubro.MapTo<RubrosDTO>();
         }
 
-        public async Task<UpdateRubroDTO> CreateAsync(UpdateRubroDTO rubro)
+        public async Task<GetResponse> CreateAsync(UpdateRubroDTO rubro)
         {
             try
             {
+                if (rubro.Descripcion is null | rubro.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newRubro = new Rubros()
                 {
         
@@ -130,7 +142,14 @@ namespace Service.Queries
                 await _context.Rubros.AddAsync(newRubro);
 
                 await _context.SaveChangesAsync();
-                return newRubro.MapTo<UpdateRubroDTO>();
+                var nuevoRubro  = newRubro.MapTo<UpdateRubroDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoRubro
+                };
             }
             catch (Exception ex)
             {

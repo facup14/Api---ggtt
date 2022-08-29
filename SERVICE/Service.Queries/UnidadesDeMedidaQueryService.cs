@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<UnidadesDeMedidaDTO> GetAsync(long id);
         Task<UpdateUnidadDeMedidaDTO> PutAsync(UpdateUnidadDeMedidaDTO titulo, long id);
         Task<UnidadesDeMedidaDTO> DeleteAsync(long id);
-        Task<UpdateUnidadDeMedidaDTO> CreateAsync(UpdateUnidadDeMedidaDTO unidadesMedida);
+        Task<GetResponse> CreateAsync(UpdateUnidadDeMedidaDTO unidadesMedida);
     }
     public class UnidadesDeMedidaQueryService : IUnidadesDeMedidaQueryService
     {
@@ -103,10 +105,21 @@ namespace Service.Queries
 
             return unidadMedida.MapTo<UnidadesDeMedidaDTO>();
         }
-        public async Task<UpdateUnidadDeMedidaDTO> CreateAsync(UpdateUnidadDeMedidaDTO unidadesMedida)
+        public async Task<GetResponse> CreateAsync(UpdateUnidadDeMedidaDTO unidadesMedida)
         {
             try
             {
+                if (unidadesMedida.UnidadDeMedida is null || unidadesMedida.UnidadDeMedida == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Unidad de Medida");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newUnidadesMedida = new UnidadesDeMedida()
                 {
                     UnidadDeMedida = unidadesMedida.UnidadDeMedida,
@@ -114,7 +127,14 @@ namespace Service.Queries
                 await _context.UnidadesDeMedida.AddAsync(newUnidadesMedida);
 
                 await _context.SaveChangesAsync();
-                return newUnidadesMedida.MapTo<UpdateUnidadDeMedidaDTO>();
+                var nuevaUnidadMedida =  newUnidadesMedida.MapTo<UpdateUnidadDeMedidaDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaUnidadMedida
+                };
             }
             catch (Exception ex)
             {

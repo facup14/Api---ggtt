@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<TareasDTO> GetAsync(long id);
         Task<UpdateTareasDTO> PutAsync(UpdateTareasDTO Tareas, long id);
         Task<TareasDTO> DeleteAsync(long id);
-        Task<UpdateTareasDTO> CreateAsync(UpdateTareasDTO tarea);
+        Task<GetResponse> CreateAsync(UpdateTareasDTO tarea);
     }
     
     public class TareasQueryService : ITareasQueryService
@@ -115,10 +117,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateTareasDTO> CreateAsync(UpdateTareasDTO tarea)
+        public async Task<GetResponse> CreateAsync(UpdateTareasDTO tarea)
         {
             try
             {
+                if (tarea.Descripcion is null || tarea.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newTarea = new Tareas()
                 {
                     Descripcion = tarea.Descripcion,
@@ -127,7 +140,14 @@ namespace Service.Queries
                 await _context.Tareas.AddAsync(newTarea);
 
                 await _context.SaveChangesAsync();
-                return newTarea.MapTo<UpdateTareasDTO>();
+                var nuevaTarea =  newTarea.MapTo<UpdateTareasDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaTarea
+                };
             }
             catch (Exception ex)
             {

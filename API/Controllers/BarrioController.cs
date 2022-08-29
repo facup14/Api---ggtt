@@ -147,13 +147,8 @@ namespace API.Controllers
             try
             {
                 var newBarrio = await _barriosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newBarrio
-                };
-                return Ok(result);
+                
+                return Ok(newBarrio);
             }
             catch (EmptyCollectionException ex)
             {

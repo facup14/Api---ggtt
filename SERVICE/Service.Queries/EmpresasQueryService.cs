@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DATA.Extensions;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<EmpresasDTO> GetAsync(int id);
         Task<UpdateEmpresaDTO> PutAsync(UpdateEmpresaDTO Empresa, int it);
         Task<EmpresasDTO> DeleteAsync(int id);
-        Task<UpdateEmpresaDTO> CreateAsync(UpdateEmpresaDTO empresa);
+        Task<GetResponse> CreateAsync(UpdateEmpresaDTO empresa);
     }
 
     public class EmpresasQueryService : IEmpresasQueryService
@@ -113,10 +115,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateEmpresaDTO> CreateAsync(UpdateEmpresaDTO empresa)
+        public async Task<GetResponse> CreateAsync(UpdateEmpresaDTO empresa)
         {
             try
             {
+                if (empresa.Descripcion is null || empresa.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newEmpresa = new Empresas()
                 {
                     Descripcion = empresa.Descripcion,
@@ -125,7 +138,14 @@ namespace Service.Queries
                 await _context.Empresas.AddAsync(newEmpresa);
 
                 await _context.SaveChangesAsync();
-                return newEmpresa.MapTo<UpdateEmpresaDTO>();
+                var nuevaEmpresa =  newEmpresa.MapTo<UpdateEmpresaDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaEmpresa
+                };
             }
             catch (Exception ex)
             {

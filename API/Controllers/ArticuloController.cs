@@ -148,13 +148,7 @@ namespace API.Controllers
             {
                 var createArticulo = await _articulosQueryService.CreateAsync(command);
 
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = createArticulo
-                };
-                return Ok(result);
+                return Ok(createArticulo);
             }
             catch (EmptyCollectionException ex)
             {

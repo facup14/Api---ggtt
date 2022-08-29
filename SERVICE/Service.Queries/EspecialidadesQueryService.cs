@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<EspecialidadesDTO> GetAsync(int id);
         Task<UpdateEspecialidadesDTO> PutAsync(UpdateEspecialidadesDTO Especialidad, int it);
         Task<EspecialidadesDTO> DeleteAsync(int id);
-        Task<UpdateEspecialidadesDTO> CreateAsync(UpdateEspecialidadesDTO especialidad);
+        Task<GetResponse> CreateAsync(UpdateEspecialidadesDTO especialidad);
     }
 
     public class EspecialidadesQueryService : IEspecialidadesQueryService
@@ -112,10 +114,21 @@ namespace Service.Queries
             }
             
         }
-        public async Task<UpdateEspecialidadesDTO> CreateAsync(UpdateEspecialidadesDTO especialidad)
+        public async Task<GetResponse> CreateAsync(UpdateEspecialidadesDTO especialidad)
         {
             try
             {
+                if (especialidad.Descripcion is null || especialidad.Descripcion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Descripción");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newEspecialidad = new Especialidades()
                 {
                     Descripcion = especialidad.Descripcion,
@@ -124,7 +137,14 @@ namespace Service.Queries
                 await _context.Especialidades.AddAsync(newEspecialidad);
 
                 await _context.SaveChangesAsync();
-                return newEspecialidad.MapTo<UpdateEspecialidadesDTO>();
+                var nuevaEspecialidad =  newEspecialidad.MapTo<UpdateEspecialidadesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaEspecialidad
+                };
             }
             catch (Exception ex)
             {

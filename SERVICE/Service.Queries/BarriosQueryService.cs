@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<BarriosDTO> GetAsync(int id);
         Task<UpdateBarrioDTO> PutAsync(UpdateBarrioDTO Barrio, int it);
         Task<BarriosDTO> DeleteAsync(int id);
-        Task<UpdateBarrioDTO> CreateAsync(UpdateBarrioDTO barrio);
+        Task<GetResponse> CreateAsync(UpdateBarrioDTO barrio);
     }
     public class BarriosQueryService : IBarriosQueryService
     {
@@ -115,10 +117,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateBarrioDTO> CreateAsync(UpdateBarrioDTO barrio)
+        public async Task<GetResponse> CreateAsync(UpdateBarrioDTO barrio)
         {
             try
             {
+                if (barrio.Barrio is null ||  barrio.Barrio == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar un Barrio");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newBarrio = new Barrios()
                 {
                     Barrio = barrio.Barrio,
@@ -129,7 +142,14 @@ namespace Service.Queries
                 await _context.Barrios.AddAsync(newBarrio);
 
                 await _context.SaveChangesAsync();
-                return newBarrio.MapTo<UpdateBarrioDTO>();
+                var nuevoBarrio =  newBarrio.MapTo<UpdateBarrioDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoBarrio
+                };
             }
             catch (Exception ex)
             {

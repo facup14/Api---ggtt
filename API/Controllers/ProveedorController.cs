@@ -186,13 +186,8 @@ namespace API.Controllers
             {
                 var newProveedor = await _proveedoresQueryService.CreateAsync(proveedor);
 
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newProveedor
-                };
-                return Ok(result);
+                
+                return Ok(newProveedor);
             }
             catch (EmptyCollectionException ex)
             {

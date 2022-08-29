@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<MecanicosDTO> GetAsync(long id);
         Task<UpdateMecanicoDTO> PutAsync(UpdateMecanicoDTO mecanico, long it);
         Task<MecanicosDTO> DeleteAsync(long id);
-        Task<UpdateMecanicoDTO> CreateAsync(UpdateMecanicoDTO mecanico);
+        Task<GetResponse> CreateAsync(UpdateMecanicoDTO mecanico);
 
     }
     public class MecanicoQueryService : IMecanicoQueryService
@@ -157,10 +159,32 @@ namespace Service.Queries
             await _context.SaveChangesAsync();
             return mecaninco.MapTo<MecanicosDTO>();
         }
-        public async Task<UpdateMecanicoDTO> CreateAsync(UpdateMecanicoDTO mecanico)
+        public async Task<GetResponse> CreateAsync(UpdateMecanicoDTO mecanico)
         {
             try
             {
+                if (mecanico.ApellidoyNombres is null || mecanico.ApellidoyNombres == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Apellido y Nombre");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
+                if (mecanico.Legajo is null || mecanico.Legajo == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Legajo");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newMecanico = new Mecanicos()
                 {
                     ApellidoyNombres = mecanico.ApellidoyNombres,
@@ -188,7 +212,14 @@ namespace Service.Queries
                 await _context.Mecanicos.AddAsync(newMecanico);
 
                 await _context.SaveChangesAsync();
-                return newMecanico.MapTo<UpdateMecanicoDTO>();
+                var nuevoMecanico =  newMecanico.MapTo<UpdateMecanicoDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoMecanico
+                };
             }
             catch (Exception ex)
             {

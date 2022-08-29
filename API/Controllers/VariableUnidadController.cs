@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newVariable = await _variablesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newVariable
-                };
-                return Ok(result);
+                
+                return Ok(newVariable);
             }
             catch (EmptyCollectionException ex)
             {

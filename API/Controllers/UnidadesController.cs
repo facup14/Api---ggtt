@@ -135,13 +135,8 @@ namespace API.Controllers
             try
             {
                 var newUnidad = await _unidadesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newUnidad
-                };
-                return Ok(result);
+                
+                return Ok(newUnidad);
             }catch(EmptyCollectionException ex)
             {
                 _logger.LogError(ex.Message);

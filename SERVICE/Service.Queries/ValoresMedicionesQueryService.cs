@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DATA.Models;
+using DATA.Errors;
+using System.Net;
 
 namespace Service.Queries
 {
@@ -23,7 +25,7 @@ namespace Service.Queries
         Task<ValoresMedicionesDTO> GetAsync(int id);
         Task<UpdateValoresMedicionesDTO> PutAsync(UpdateValoresMedicionesDTO ValorMedicion, int it);
         Task<ValoresMedicionesDTO> DeleteAsync(int id);
-        Task<UpdateValoresMedicionesDTO> CreateAsync(UpdateValoresMedicionesDTO valores);
+        Task<GetResponse> CreateAsync(UpdateValoresMedicionesDTO valores);
     }
 
     public class ValoresMedicionesQueryService : IValoresMedicionesQueryService
@@ -117,10 +119,21 @@ namespace Service.Queries
             }
             
         }
-        public async Task<UpdateValoresMedicionesDTO> CreateAsync(UpdateValoresMedicionesDTO valores)
+        public async Task<GetResponse> CreateAsync(UpdateValoresMedicionesDTO valores)
         {
             try
             {
+                if (valores.ValorMedicion is null || valores.ValorMedicion == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar el Valor de la Medición");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newValorM = new ValoresMediciones()
                 {
                     ValorMedicion = valores.ValorMedicion,
@@ -129,7 +142,14 @@ namespace Service.Queries
                 await _context.ValoresMediciones.AddAsync(newValorM);
 
                 await _context.SaveChangesAsync();
-                return newValorM.MapTo<UpdateValoresMedicionesDTO>();
+                var nuevoValor = newValorM.MapTo<UpdateValoresMedicionesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevoValor
+                };
             }
             catch (Exception ex)
             {

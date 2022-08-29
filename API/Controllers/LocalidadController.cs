@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newLocalidad = await _localidadesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newLocalidad
-                };
-                return Ok(result);
+                
+                return Ok(newLocalidad);
             }
             catch (EmptyCollectionException ex)
             {

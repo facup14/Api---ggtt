@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newSituacion = await _situacionesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newSituacion
-                };
-                return Ok(result);
+                
+                return Ok(newSituacion);
             }
             catch (EmptyCollectionException ex)
             {

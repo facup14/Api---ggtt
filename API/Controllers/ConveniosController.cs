@@ -142,13 +142,8 @@ namespace API.Controllers
             try
             {
                 var convenioCreate = await _conveniosQueryService.CreateAsync(convenio);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = convenioCreate
-                };
-                return Ok(result);
+               
+                return Ok(convenioCreate);
             }
             catch (EmptyCollectionException ex)
             {

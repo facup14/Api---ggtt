@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<TrazasDTO> GetAsync(long id);
         Task<UpdateTrazasDTO> PutAsync(UpdateTrazasDTO traza, long id);
         Task<TrazasDTO> DeleteAsync(long id);
-        Task<UpdateTrazasDTO> CreateAsync(UpdateTrazasDTO traza);
+        Task<GetResponse> CreateAsync(UpdateTrazasDTO traza);
     }
     public class TrazasQueryService : ITrazasQueryService
     {
@@ -118,10 +120,21 @@ namespace Service.Queries
 
             return traza.MapTo<TrazasDTO>();
         }
-        public async Task<UpdateTrazasDTO> CreateAsync(UpdateTrazasDTO traza)
+        public async Task<GetResponse> CreateAsync(UpdateTrazasDTO traza)
         {
             try
             {
+                if (traza.DistanciaKm <= 0 || traza.DistanciaKm.ToString() == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar la Distancia");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newTraza = new Trazas()
                 {
                     IdLocalidadDesde = traza.IdLocalidadDesde,
@@ -133,7 +146,14 @@ namespace Service.Queries
                 await _context.Trazas.AddAsync(newTraza);
 
                 await _context.SaveChangesAsync();
-                return newTraza.MapTo<UpdateTrazasDTO>();
+                var nuevaTraza =  newTraza.MapTo<UpdateTrazasDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaTraza
+                };
             }
             catch (Exception ex)
             {

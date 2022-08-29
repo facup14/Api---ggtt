@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -20,7 +22,7 @@ namespace Service.Queries
         Task<CallesDTO> GetAsync(int id);
         Task<UpdateCallesDTO> PutAsync(UpdateCallesDTO Calle, int it);
         Task<CallesDTO> DeleteAsync(int id);
-        Task<UpdateCallesDTO> CreateAsync(UpdateCallesDTO calle);
+        Task<GetResponse> CreateAsync(UpdateCallesDTO calle);
     }
     public class CallesQueryService : ICallesQueryService
     {
@@ -114,10 +116,21 @@ namespace Service.Queries
             }
 
         }
-        public async Task<UpdateCallesDTO> CreateAsync(UpdateCallesDTO calle)
+        public async Task<GetResponse> CreateAsync(UpdateCallesDTO calle)
         {
             try
             {
+                if (calle.Calle is null || calle.Calle == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Calle");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newCalle = new Calles()
                 {
                     Calle = calle.Calle,
@@ -127,7 +140,15 @@ namespace Service.Queries
                 await _context.Calles.AddAsync(newCalle);
 
                 await _context.SaveChangesAsync();
-                return newCalle.MapTo<UpdateCallesDTO>();
+
+                var nuevaCalle =  newCalle.MapTo<UpdateCallesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaCalle
+                };
             }
             catch (Exception ex)
             {

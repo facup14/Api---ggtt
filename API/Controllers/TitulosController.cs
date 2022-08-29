@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newTitulo = await _titulosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newTitulo
-                };
-                return Ok(result);
+                
+                return Ok(newTitulo);
             }
             catch (EmptyCollectionException ex)
             {

@@ -173,13 +173,8 @@ namespace API.Controllers
             try
             {
                 var newTrabajo = await _trabajosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newTrabajo
-                };
-                return Ok(result);
+                
+                return Ok(newTrabajo);
             }
             catch (EmptyCollectionException ex)
             {

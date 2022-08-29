@@ -1,6 +1,7 @@
 ﻿using Common.Collection;
 using DATA.DTOS;
 using DATA.DTOS.Updates;
+using DATA.Errors;
 using DATA.Extensions;
 using DATA.Models;
 using PERSISTENCE;
@@ -9,6 +10,7 @@ using Services.Common.Paging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Service.Queries
@@ -19,7 +21,7 @@ namespace Service.Queries
         Task<LocalidadesDTO> GetAsync(long id);
         Task<UpdateLocalidadesDTO> PutAsync(UpdateLocalidadesDTO localidad, long id);
         Task<LocalidadesDTO> DeleteAsync(long id);
-        Task<UpdateLocalidadesDTO> CreateAsync(UpdateLocalidadesDTO localidades);
+        Task<GetResponse> CreateAsync(UpdateLocalidadesDTO localidades);
     }
     public class LocalidadesQueryService : ILocalidadQueryService
     {
@@ -109,10 +111,21 @@ namespace Service.Queries
 
             return localidad.MapTo<LocalidadesDTO>();
         }
-        public async Task<UpdateLocalidadesDTO> CreateAsync(UpdateLocalidadesDTO localidades)
+        public async Task<GetResponse> CreateAsync(UpdateLocalidadesDTO localidades)
         {
             try
             {
+                if (localidades.Localidad is null || localidades.Localidad == "")
+                {
+                    var ex = new EmptyCollectionException("Debe ingresar una Localidad");
+
+                    return new GetResponse()
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest,
+                        Message = ex.ToString(),
+                        Result = null
+                    };
+                }
                 var newLocalidad = new Localidades()
                 {
                     Localidad = localidades.Localidad,
@@ -122,7 +135,14 @@ namespace Service.Queries
                 await _context.Localidades.AddAsync(newLocalidad);
 
                 await _context.SaveChangesAsync();
-                return newLocalidad.MapTo<UpdateLocalidadesDTO>();
+                var nuevaLocalidad =  newLocalidad.MapTo<UpdateLocalidadesDTO>();
+
+                return new GetResponse()
+                {
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Success",
+                    Result = nuevaLocalidad
+                };
             }
             catch (Exception ex)
             {

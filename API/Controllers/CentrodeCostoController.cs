@@ -72,13 +72,8 @@ namespace API.Controllers
             try
             {
                 var centroCosto = await _centrosdecostoQueryService.GetAsync(id);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = centroCosto
-                };
-                return Ok(result);
+                
+                return Ok(centroCosto);
             }
             catch(EmptyCollectionException ex)
             {

@@ -171,13 +171,8 @@ namespace API.Controllers
             try
             {
                 var newFuncion = await _funcionesQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "Success",
-                    Result = newFuncion
-                };
-                return Ok(result);
+                
+                return Ok(newFuncion);
             }
             catch (EmptyCollectionException ex)
             {

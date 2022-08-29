@@ -141,13 +141,8 @@ namespace API.Controllers
             try
             {
                 var newDomicilio = await _domiciliosQueryService.CreateAsync(command);
-                var result = new GetResponse()
-                {
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Message = "success",
-                    Result = newDomicilio
-                };
-                return Ok(result);
+                
+                return Ok(newDomicilio);
             }
             catch (EmptyCollectionException ex)
             {
