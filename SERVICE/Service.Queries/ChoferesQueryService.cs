@@ -23,7 +23,7 @@ namespace Service.Queries
         Task<ChoferesDTO> GetAsync(long id);
         Task<UpdateChoferesDTO> PutAsync(UpdateChoferesDTO choferDto, long id);
         Task<ChoferesDTO> DeleteAsync(long id);
-        Task<UpdateChoferesDTO> CreateAsync(UpdateChoferesDTO chofer);
+        Task<GetResponse> CreateAsync(UpdateChoferesDTO chofer);
     }
     public class ChoferesQueryService : IChoferesQueryService
     {
